@@ -90,6 +90,10 @@
   "dependencies": {
     "express": "^4.16.4"
   },
+  repository": {
+    "url": "https://github.com/HWuYing/ts-tools",
+    "type": "git"
+  },
   "babel": {
     "presets": [
       [
