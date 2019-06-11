@@ -1,14 +1,16 @@
 import nodeExtrnals from 'webpack-node-externals';
+import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
 import path from 'path';
+import { requireSync } from '../../core/fs';
 import { jsLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc } = config;
-
+const mergeServerConfig = requireSync(`${baseDir}/webpack.server.js`) || {};
 const jsRules = jsLoader({ options: babellrc });
 
-export default (): Configuration => ({
+export default (): Configuration => merge({
   context: baseDir,
   target: 'node',
   entry: {
@@ -50,4 +52,4 @@ export default (): Configuration => ({
     colors: true,
     timings: true,
   },
-});
+}, mergeServerConfig);

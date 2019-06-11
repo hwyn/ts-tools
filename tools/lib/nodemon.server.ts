@@ -42,7 +42,6 @@ function startServer(): Promise<any> {
   _stdion.stderr();
   return new Promise((_resolve) => 
     _stdion.stdout((data: Buffer) => {
-      console.log(data);
       const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
       if (match && match[1]) {
         host = match[1];

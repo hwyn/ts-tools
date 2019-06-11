@@ -44,3 +44,11 @@ export const writeFile = async (path: string, data: Buffer | string, options: an
     });
   })
 };
+
+export const requireSync = (path: string) => {
+  if (!existsSync(path)) {
+    return ;
+  }
+  const moduleRequire = require(path);
+  return moduleRequire;
+};
