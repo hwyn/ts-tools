@@ -13,7 +13,7 @@
     "name": "HWuYing",
     "email": "237617561@qq.com"
   },
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
