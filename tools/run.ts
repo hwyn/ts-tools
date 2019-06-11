@@ -8,7 +8,7 @@ function run<T>(fn: FN | any, options?: object): Promise<T> {
   return (task as FN)(options) as Promise<T>;
 }
 
-if (require.main === module && arvg.length > 2) {
+if (require.main === module || require.main === module.parent && arvg.length > 2) {
   delete require.cache[__filename];
   const { default: exports } = require(`${path.join(__dirname, arvg.slice(2)[0])}`);
   run(exports);
