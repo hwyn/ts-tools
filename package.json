@@ -9,7 +9,6 @@
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
-  
   "author": {
     "name": "HWuYing",
     "email": "237617561@qq.com"
