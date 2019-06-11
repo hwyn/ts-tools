@@ -1,8 +1,15 @@
 {
-  "name": "demo",
+  "name": "ts-tools",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "bin": {
+    "ts-tools": "./bin/ts-tools.js"
+  },
   "scripts": {
     "start": "babel-node tools/run.ts start --extensions '.ts,.tsx'",
     "debug": "babel src --out-dir debug --extensions '.ts,.tsx'",
@@ -12,7 +19,8 @@
     "build:client-and-server-bundles": "ng build --prod && ng run angular.io-example:server",
     "clean": "babel-node tools/run.ts clean --extensions '.ts,.tsx' ",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'"
+    "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
+    "dist": "babel tools --extensions '.ts,.tsx' --out-dir dist"
   },
   "author": "",
   "license": "ISC",
