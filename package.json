@@ -37,8 +37,7 @@
     "@types/webpack-dev-middleware": "^2.0.2",
     "@types/webpack-hot-middleware": "^2.16.5",
     "@types/webpack-merge": "^4.1.3",
-    "@types/webpack-node-externals": "^1.6.3",
-    
+    "@types/webpack-node-externals": "^1.6.3"
   },
   "dependencies": {
     "@babel/cli": "^7.0.0",
