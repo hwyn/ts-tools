@@ -9,19 +9,11 @@
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
-  "scripts": {
-    "start": "babel-node tools/run.ts start --extensions '.ts,.tsx'",
-    "debug": "babel src --out-dir debug --extensions '.ts,.tsx'",
-    "build": "babel-node tools/run.ts build --extensions '.ts,.tsx'",
-    "build:stats": "babel-node tools/run.ts build --extensions '.ts,.tsx' --release",
-    "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
-    "build:client-and-server-bundles": "ng build --prod && ng run angular.io-example:server",
-    "clean": "babel-node tools/run.ts clean --extensions '.ts,.tsx' ",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
-    "dist": "babel tools --extensions '.ts,.tsx' --out-dir dist"
+  
+  "author": {
+    "name": "HWuYing",
+    "email": "237617561@qq.com"
   },
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -85,10 +77,22 @@
     "webpack-dev-middleware": "^3.6.2",
     "webpack-hot-middleware": "^2.24.3",
     "webpack-merge": "^4.2.1",
-    "webpack-node-externals": "1.7.2"
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "express": "4.16.4"
+    "express": "^4.16.4"
+  },
+  "scripts": {
+    "start": "babel-node tools/run.ts start --extensions '.ts,.tsx'",
+    "debug": "babel src --out-dir debug --extensions '.ts,.tsx'",
+    "build": "babel-node tools/run.ts build --extensions '.ts,.tsx'",
+    "build:stats": "babel-node tools/run.ts build --extensions '.ts,.tsx' --release",
+    "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
+    "build:client-and-server-bundles": "ng build --prod && ng run angular.io-example:server",
+    "clean": "babel-node tools/run.ts clean --extensions '.ts,.tsx' ",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
+    "dist": "babel tools --extensions '.ts,.tsx' --out-dir dist"
   },
   "repository": {
     "url": "https://github.com/HWuYing/ts-tools",
