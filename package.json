@@ -7,12 +7,9 @@
     "dist"
   ],
   "bin": {
-    "ts-tools": "./dist/run.js"
+    "ts-tools": "./bin/ts-tools.js"
   },
-  "author": {
-    "name": "HWuYing",
-    "email": "237617561@qq.com"
-  },
+  "author": "",
   "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -92,10 +89,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
     "dist": "babel tools --extensions '.ts,.tsx' --out-dir dist"
-  },
-  "repository": {
-    "url": "https://github.com/HWuYing/ts-tools",
-    "type": "git"
   },
   "babel": {
     "presets": [
