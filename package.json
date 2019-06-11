@@ -1,13 +1,13 @@
 {
   "name": "ts-tools",
   "version": "1.0.0",
-  "description": "",
+  "description": "a ts tools",
   "files": [
     "bin",
     "dist"
   ],
   "bin": {
-    "ts-tools": "./bin/ts-tools.js"
+    "ts-tools": "./dist/run.js"
   },
   "author": {
     "name": "HWuYing",
