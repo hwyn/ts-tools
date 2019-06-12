@@ -14,7 +14,7 @@ const mergePackage = Object.assign({}, {
   browserslist: pkg.browserslist,
 }, !processPkg ? { } : {
   ...processPkg,
-}, existsSync(babel) ? { } : {
+}, !existsSync(babel) ? { } : {
   babellrc: JSON.parse(readFileSync(babel).toString('utf-8')),
 });
 
