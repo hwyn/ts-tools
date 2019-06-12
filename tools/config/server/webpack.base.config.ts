@@ -36,6 +36,7 @@ export default (): Configuration => merge({
       jsRules.ts({
         transpileOnly: true,
         context: baseDir,
+        configFile: 'ts.server.json',
       }),
     ],
   },
