@@ -1,6 +1,5 @@
 import rimraf from 'rimraf';
 import { existsSync, mkdir as fsMkkdir, writeFile as fsWriteFile } from 'fs';
-import { rejects } from 'assert';
 
 export const exists = (path: string): Promise<boolean> => {
   return Promise.resolve(existsSync(path));

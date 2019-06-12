@@ -1,7 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.requireSync = exports.writeFile = exports.mkdir = exports.cleanDir = exports.exists = void 0;var _rimraf = _interopRequireDefault(require("rimraf"));
 var _fs = require("fs");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-
 const exists = path => {
   return Promise.resolve((0, _fs.existsSync)(path));
 };exports.exists = exists;
