@@ -4,7 +4,8 @@
   "description": "a ts tools",
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "tsconfig.json"
   ],
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
