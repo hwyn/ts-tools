@@ -9,8 +9,12 @@
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
-  "author": "",
-  "license": "MIT BSD-3-Clause",
+  "author": {
+    "name": " HWuYing",
+    "email": "237617561@qq.com"
+  },
+  "private": true,
+  "license": "MIT",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
