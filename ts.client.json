@@ -5,9 +5,5 @@
     "module": "es2015",
     "outDir": "./build/app",
     "sourceMap": true
-  },
-  "angularCompilerOptions": {
-    "strictMetadataEmit": true,
-    "alwaysCompileGeneratedCode": true
   }
 }

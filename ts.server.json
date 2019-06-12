@@ -3,6 +3,6 @@
   "compilerOptions": {
     "sourceMap": true,
     "module": "es2015",
-    "outDir": "./build/"
+    "outDir": "./build/server"
   }
 }
