@@ -15,7 +15,7 @@ const mergePackage = Object.assign({}, {
 !processPkg ? {} : {
   ...processPkg },
 (0, _fs.existsSync)(babel) ? {} : {
-  ...JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) });var _default =
+  babellrc: JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) });var _default =
 
 
 {

@@ -18,7 +18,10 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
 
     plugins: [
     new _webpack.default.HotModuleReplacementPlugin(),
-    new _webpack.default.NoEmitOnErrorsPlugin()],
+    new _webpack.default.NoEmitOnErrorsPlugin(),
+    new _webpack.default.DefinePlugin({
+      'process.env.NODE_ENV': "'development'" })],
+
 
     devtool: 'source-map' });
 
