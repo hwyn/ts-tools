@@ -55,7 +55,11 @@ export default (): Configuration => merge({
   module: {
     rules: [
       jsRules.babel({}),
-      jsRules.ts({}),
+      jsRules.ts({
+        transpileOnly: true,
+        context: baseDir,
+        configFile: 'ts.client.json',
+      }),
       cssRules.less({}, extractLess),
       cssRules.sass({}, extractScss),
     ],
