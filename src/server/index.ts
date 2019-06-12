@@ -4,7 +4,7 @@ import serializationSource, { Source } from './serializationSource';
 
 const app = express();
 
-app.use(express.static(path.resolve(__dirname, '../build/public')));
+app.use(express.static(path.resolve(__dirname, '../../build/public')));
 
 app.get('*', async (req, res, next): Promise<void> => {
   const source: Source<string> = serializationSource();

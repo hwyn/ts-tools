@@ -40,7 +40,7 @@ export default (): Configuration => merge({
   context: baseDir,
   target: 'web',
   entry: {
-    main: path.resolve(srcDir, 'app/main.ts'),
+    main: path.resolve(srcDir, 'client/main.ts'),
   },
   output: {
     publicPath: '',

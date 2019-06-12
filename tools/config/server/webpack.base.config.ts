@@ -14,12 +14,12 @@ export default (): Configuration => merge({
   context: baseDir,
   target: 'node',
   entry: {
-    server: path.resolve(srcDir, 'index.ts'),
+    index: path.resolve(srcDir, 'server/index.ts'),
   },
   output: {
     path: buildDir,
-    chunkFilename: `[name].check.[hash:8].js`,
-    filename: `[name].js`,
+    chunkFilename: `server/[name].check.[hash:8].js`,
+    filename: `server/[name].js`,
     library: 'commonjs2',
   },
   resolve: {

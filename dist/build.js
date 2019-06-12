@@ -11,7 +11,7 @@ var _run = _interopRequireDefault(require("./run"));function _interopRequireDefa
   await (0, _fs.writeFile)(`${buildDir}/package.json`, JSON.stringify({
     private: true,
     scripts: {
-      "start": "node server.js" },
+      "start": "node server/index.js" },
 
     dependencies: pkg.dependencies }));
 

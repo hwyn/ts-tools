@@ -5,5 +5,5 @@ const { buildDir, distDir } = config;
 
 export default async () => {
   await cleanDir(buildDir);
-  await cleanDir(distDir);
+  // await cleanDir(distDir);
 };

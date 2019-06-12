@@ -14,12 +14,12 @@ const jsRules = (0, _util.jsLoader)({ options: babellrc });var _default =
   context: baseDir,
   target: 'node',
   entry: {
-    server: _path.default.resolve(srcDir, 'index.ts') },
+    index: _path.default.resolve(srcDir, 'server/index.ts') },
 
   output: {
     path: buildDir,
-    chunkFilename: `[name].check.[hash:8].js`,
-    filename: `[name].js`,
+    chunkFilename: `server/[name].check.[hash:8].js`,
+    filename: `server/[name].js`,
     library: 'commonjs2' },
 
   resolve: {

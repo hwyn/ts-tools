@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 import { spawn } from 'child_process';
 import { config } from '../config';
 
-const { baseDir } = config;
+const { baseDir, srcDir } = config;
 let host: number | string = 'localhost:3000';
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
@@ -27,7 +27,7 @@ const stdioPipe = (cp: any, pro: any): any => {
 };
 
 function startServer(): Promise<any> {
-  const cp = spawn('sh', ['-c', 'babel-node src/index.ts --extensions \'.ts,.tsx\''], {
+  const cp = spawn('sh', ['-c', 'babel-node src/server/index.ts --extensions \'.ts,.tsx\''], {
     env: Object.assign({}, process.env, {
       PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}`
     }),
@@ -53,7 +53,7 @@ function startServer(): Promise<any> {
 
 async function runNodemon(): Promise<any> {
   let nodemonExa = await startServer();
-  const watch = chokidar.watch([path.join(baseDir, 'src/index.ts')], {});
+  const watch = chokidar.watch([path.join(srcDir, 'server/index.ts')], {});
   watch.on('change', delay(100, () => nodemonExa()
     .then(startServer)
     .then((exa: any) => exa && (nodemonExa = exa))));

@@ -9,7 +9,7 @@ export interface Source<T> {
 type serialization = () => Source<string>;
 
 function getAssets() {
-  return JSON.parse(fs.readFileSync(path.join(__dirname, '../build/assets.json'), { encoding: 'utf-8' }));
+  return JSON.parse(fs.readFileSync(path.join(__dirname, '../../build/assets.json'), { encoding: 'utf-8' }));
 }
 
 const serializationSource = (source: any) => ['runtime', 'polyfill', 'main'].reduce((o: Source<string>, key): Source<string> => {

@@ -40,7 +40,7 @@ const cssRules = (0, _util.cssLoader)({}, isDebug);var _default =
   context: baseDir,
   target: 'web',
   entry: {
-    main: _path.default.resolve(srcDir, 'app/main.ts') },
+    main: _path.default.resolve(srcDir, 'client/main.ts') },
 
   output: {
     publicPath: '',

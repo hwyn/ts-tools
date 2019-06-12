@@ -11,7 +11,7 @@ export default ((pkg: any, buildDir) => async () => {
   await writeFile(`${buildDir}/package.json`, JSON.stringify({
     private: true,
     scripts: {
-      "start": "node server.js",
+      "start": "node server/index.js",
     },
     dependencies: pkg.dependencies,
   }));

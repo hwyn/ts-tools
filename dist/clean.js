@@ -5,5 +5,5 @@ const { buildDir, distDir } = _config.config;var _default =
 
 async () => {
   await (0, _fs.cleanDir)(buildDir);
-  await (0, _fs.cleanDir)(distDir);
+  // await cleanDir(distDir);
 };exports.default = _default;
