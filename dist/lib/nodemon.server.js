@@ -53,7 +53,7 @@ function startServer() {
 
 async function runNodemon() {
   let nodemonExa = await startServer();
-  const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server/index.ts')], {});
+  const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server')], {});
   watch.on('change', delay(100, () => nodemonExa().
   then(startServer).
   then(exa => exa && (nodemonExa = exa))));

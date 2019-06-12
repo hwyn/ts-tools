@@ -53,7 +53,7 @@ function startServer(): Promise<any> {
 
 async function runNodemon(): Promise<any> {
   let nodemonExa = await startServer();
-  const watch = chokidar.watch([path.join(srcDir, 'server/index.ts')], {});
+  const watch = chokidar.watch([path.join(srcDir, 'server')], {});
   watch.on('change', delay(100, () => nodemonExa()
     .then(startServer)
     .then((exa: any) => exa && (nodemonExa = exa))));
