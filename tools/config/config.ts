@@ -7,13 +7,10 @@ const baseDir: string = process.cwd();
 const resolve = (base: string) => (_path: string) => path.resolve(base, _path);
 const baseResolve = resolve(baseDir);
 const processPkg = requireSync(`${baseDir}/package.json`);
-let mergePackage = Object.assign({}, {
+const mergePackage = Object.assign({}, {
   babellrc: pkg.babel,
   browserslist: pkg.browserslist,
-}, processPkg ? {
-  babellrc: processPkg.babel,
-  browserslist: processPkg.browserslist,
-} : {});
+}, processPkg ? { ...processPkg } : {});
 
 export default {
   baseDir,
