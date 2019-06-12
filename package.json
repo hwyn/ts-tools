@@ -10,7 +10,7 @@
     "ts-tools": "./bin/ts-tools.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT BSD-3-Clause",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
