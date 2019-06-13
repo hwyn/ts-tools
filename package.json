@@ -94,7 +94,7 @@
     "clean": "babel-node tools/run.ts clean --extensions '.ts,.tsx' ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
-    "dist": "babel tools --extensions '.ts,.tsx' --out-dir dist"
+    "dist": "babel tools --extensions '.js,.ts,.tsx' --out-dir dist"
   },
   "babel": {
     "presets": [

@@ -21,7 +21,7 @@ const factoryLoaders = (loader: any, mergeOption?: any): any[] => (loader || [])
 }));
 
 const factoryConcatUse = (defaultUse: any[] | any) => (loader: string[], mergeOption?: any): any[] => {
-  return Array.isArray(defaultUse) ? defaultUse : [defaultUse].concat(factoryLoaders(loader, mergeOption));
+  return (Array.isArray(defaultUse) ? defaultUse : [defaultUse]).concat(factoryLoaders(loader, mergeOption));
 }
 
 export function jsLoader(config: any) {
