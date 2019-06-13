@@ -6,9 +6,11 @@ import { requireSync } from '../../core/fs';
 import { jsLoader } from '../../core/util';
 import config from '../config';
 
-const { srcDir, baseDir, buildDir, babellrc } = config;
+const { srcDir, baseDir, buildDir, babellrc, isDebug } = config;
 const mergeServerConfig = requireSync(`${baseDir}/webpack.server.js`) || {};
 const jsRules = jsLoader({ options: babellrc });
+
+const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServerConfig : () => mergeServerConfig)(jsRules, undefined, isDebug);
 
 export default (): Configuration => merge({
   context: baseDir,
@@ -53,4 +55,4 @@ export default (): Configuration => merge({
     colors: true,
     timings: true,
   },
-}, mergeServerConfig);
+}, _mergeServerConfig);

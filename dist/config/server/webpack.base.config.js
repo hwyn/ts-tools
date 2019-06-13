@@ -6,9 +6,11 @@ var _fs = require("../../core/fs");
 var _util = require("../../core/util");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const { srcDir, baseDir, buildDir, babellrc } = _config.default;
+const { srcDir, baseDir, buildDir, babellrc, isDebug } = _config.default;
 const mergeServerConfig = (0, _fs.requireSync)(`${baseDir}/webpack.server.js`) || {};
-const jsRules = (0, _util.jsLoader)({ options: babellrc });var _default =
+const jsRules = (0, _util.jsLoader)({ options: babellrc });
+
+const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServerConfig : () => mergeServerConfig)(jsRules, undefined, isDebug);var _default =
 
 () => (0, _webpackMerge.default)({
   context: baseDir,
@@ -53,4 +55,4 @@ const jsRules = (0, _util.jsLoader)({ options: babellrc });var _default =
     colors: true,
     timings: true } },
 
-mergeServerConfig);exports.default = _default;
+_mergeServerConfig);exports.default = _default;

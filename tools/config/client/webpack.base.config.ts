@@ -9,7 +9,8 @@ import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug } = config;
-const  mergeClientConfig = requireSync(`${baseDir}/webpack.client.js`);
+const mergeClientConfig = requireSync(`${baseDir}/webpack.client.js`);
+
 const assetsPlugin = new AssetsWebpackPlugin({
   filename: 'assets.json',
   path: buildDir,
@@ -34,7 +35,14 @@ const jsRules = jsLoader({
 
 const extractLess = new ExtractTextPlugin(`styleSheet/[name]less.[hash:8].css`);
 const extractScss = new ExtractTextPlugin(`styleSheet/[name]scss.[hash:8].css`);
+const extractOther = new ExtractTextPlugin(`styleSheet/[name]css.[hash:8].css`);
 const cssRules = cssLoader({}, isDebug);
+
+const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, {
+  extractLess,
+  extractScss,
+  extractOther,
+}, isDebug);
 
 export default (): Configuration => merge({
   context: baseDir,
@@ -60,14 +68,16 @@ export default (): Configuration => merge({
         context: baseDir,
         configFile: 'ts.client.json',
       }),
-      cssRules.less({}, extractLess),
-      cssRules.sass({}, extractScss),
+      cssRules.less({
+        javascriptEnabled: true,
+      }, extractLess),
     ],
   },
   plugins: [
     copyPlugin,
     extractLess,
     extractScss,
+    extractOther,
     new ProgressPlugin(),
     assetsPlugin,
   ],
@@ -75,4 +85,4 @@ export default (): Configuration => merge({
     colors: true,
     timings: true,
   },
-}, mergeClientConfig);
+}, _mergeClientConfig);

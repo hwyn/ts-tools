@@ -10,6 +10,7 @@ var _config = _interopRequireDefault(require("../config"));function _interopRequ
 
 const { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug } = _config.default;
 const mergeClientConfig = (0, _fs.requireSync)(`${baseDir}/webpack.client.js`);
+
 const assetsPlugin = new _assetsWebpackPlugin.default({
   filename: 'assets.json',
   path: buildDir,
@@ -34,7 +35,14 @@ const jsRules = (0, _util.jsLoader)({
 
 const extractLess = new _extractTextWebpackPlugin.default(`styleSheet/[name]less.[hash:8].css`);
 const extractScss = new _extractTextWebpackPlugin.default(`styleSheet/[name]scss.[hash:8].css`);
-const cssRules = (0, _util.cssLoader)({}, isDebug);var _default =
+const extractOther = new _extractTextWebpackPlugin.default(`styleSheet/[name]css.[hash:8].css`);
+const cssRules = (0, _util.cssLoader)({}, isDebug);
+
+const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, {
+  extractLess,
+  extractScss,
+  extractOther },
+isDebug);var _default =
 
 () => (0, _webpackMerge.default)({
   context: baseDir,
@@ -60,14 +68,16 @@ const cssRules = (0, _util.cssLoader)({}, isDebug);var _default =
       context: baseDir,
       configFile: 'ts.client.json' }),
 
-    cssRules.less({}, extractLess),
-    cssRules.sass({}, extractScss)] },
+    cssRules.less({
+      javascriptEnabled: true },
+    extractLess)] },
 
 
   plugins: [
   copyPlugin,
   extractLess,
   extractScss,
+  extractOther,
   new _webpack.ProgressPlugin(),
   assetsPlugin],
 
@@ -75,4 +85,4 @@ const cssRules = (0, _util.cssLoader)({}, isDebug);var _default =
     colors: true,
     timings: true } },
 
-mergeClientConfig);exports.default = _default;
+_mergeClientConfig);exports.default = _default;
