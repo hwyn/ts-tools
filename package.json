@@ -6,7 +6,7 @@
     "bin",
     "dist"
   ],
-  "main": "dist/package.js",
+  "main": "dist/index.js",
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
