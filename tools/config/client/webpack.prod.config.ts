@@ -1,7 +1,11 @@
-import webpack, { HashedModuleIdsPlugin } from 'webpack';
+import webpack, { HashedModuleIdsPlugin, DllReferencePlugin } from 'webpack';
 import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import { existsSync } from 'fs';
 import baseConfig from './webpack.base.config';
+import config from '../config';
+
+const { buildDir, baseDir } = config;
 
 export default () => merge(baseConfig(), {
   mode: 'production',
@@ -52,5 +56,11 @@ export default () => merge(baseConfig(), {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': "'production'"
     }),
+    ...existsSync(`${buildDir}/dll-manifest.json`) ? [
+      new DllReferencePlugin({
+        context: baseDir,
+        manifest: require(`${buildDir}/dll-manifest.json`),
+      })
+    ] : [],
   ]
 });
