@@ -6,8 +6,9 @@ const factoryUse = (loader, options, mergeOption) => ({
   options: Object.assign({}, options, mergeOption || {}) });
 
 
-const factoryRules = (regExp, options = {}) => use => Object.assign({
-  ...options,
+const factoryRules = (regExp, options = {}) => use => Object.keys(options).reduce((o, key) => Object.assign(o, options[key] ? {
+  [key]: options[key] } :
+{}), {
   test: regExp,
   use });
 

@@ -64,6 +64,7 @@ export default (): Configuration => merge({
     rules: [
       jsRules.babel({}),
       jsRules.ts({
+        happyPackMode: true,
         transpileOnly: true,
         context: baseDir,
         configFile: 'ts.client.json',

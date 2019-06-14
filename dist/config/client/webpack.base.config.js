@@ -64,6 +64,7 @@ isDebug);var _default =
     rules: [
     jsRules.babel({}),
     jsRules.ts({
+      happyPackMode: true,
       transpileOnly: true,
       context: baseDir,
       configFile: 'ts.client.json' }),
