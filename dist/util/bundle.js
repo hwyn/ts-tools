@@ -1,5 +1,5 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.webpackRun = webpackRun;exports.default = void 0;var _webpack = _interopRequireDefault(require("webpack"));
-var _config = require("./config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 function webpackRun(webpackconfig, _stast) {
   return new Promise((resolve, reject) => {

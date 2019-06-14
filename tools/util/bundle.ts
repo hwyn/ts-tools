@@ -1,5 +1,5 @@
 import webpack, { Configuration, Stats } from 'webpack';
-import { webpackServer, webpackClient, webpackDll, config } from './config';
+import { webpackServer, webpackClient, webpackDll, config } from '../config';
 
 export function webpackRun(webpackconfig: Configuration | Configuration[], _stast?: any): Promise<any> {
   return new Promise((resolve, reject) => {

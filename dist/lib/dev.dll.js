@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _bundle = require("../bundle");
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _bundle = require("../util/bundle");
 var _config = require("../config");var _default =
 
 async () => {

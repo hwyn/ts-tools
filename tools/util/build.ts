@@ -1,6 +1,6 @@
-import { config } from './config';
-import { writeFile } from './core/fs';
-import pkg from '../package.json';
+import { config } from '../config';
+import { writeFile } from '../core/fs';
+import pkg from '../../package.json';
 import clean from './clean';
 import bundle from './bundle';
 import run from './run';

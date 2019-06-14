@@ -1,4 +1,4 @@
-import { webpackRun } from '../bundle';
+import { webpackRun } from '../util/bundle';
 import { webpackDevDll } from '../config';
 
 export default async () => {

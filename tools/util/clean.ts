@@ -1,5 +1,5 @@
-import { cleanDir } from './core/fs';
-import { config } from './config';
+import { cleanDir } from '../core/fs';
+import { config } from '../config';
 
 const { buildDir, distDir } = config;
 

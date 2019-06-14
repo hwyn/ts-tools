@@ -1,11 +1,11 @@
 import express from 'express';
 import path from 'path';
 import browserSync from 'browser-sync';
-import { config } from './config';
+import { config } from '../config';
 import cleanDir from './clean';
-import serverHotDev from  './lib/dev.server';
-import clientHotDev from './lib/dev.client';
-import dllDev from './lib/dev.dll';
+import serverHotDev from  '../lib/dev.server';
+import clientHotDev from '../lib/dev.client';
+import dllDev from '../lib/dev.dll';
 
 const { buildDir } = config;
 const app = express();
