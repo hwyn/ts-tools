@@ -88,13 +88,13 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start": "babel-node tools/run.ts start --extensions '.ts,.tsx'",
+    "start": "babel-node tools/util/run.ts start --extensions '.ts,.tsx'",
     "debug": "babel src --out-dir debug --extensions '.ts,.tsx'",
-    "build": "babel-node tools/run.ts build --extensions '.ts,.tsx'",
-    "build:stats": "babel-node tools/run.ts build --extensions '.ts,.tsx' --release",
+    "build": "babel-node tools/util/run.ts build --extensions '.ts,.tsx'",
+    "build:stats": "babel-node tools/util/run.ts build --extensions '.ts,.tsx' --release",
     "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
     "build:client-and-server-bundles": "ng build --prod && ng run angular.io-example:server",
-    "clean": "babel-node tools/run.ts clean --extensions '.ts,.tsx' ",
+    "clean": "babel-node tools/util/run.ts clean --extensions '.ts,.tsx' ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
     "dist": "babel tools --extensions '.js,.ts,.tsx' --out-dir dist"
