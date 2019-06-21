@@ -58,20 +58,18 @@ export default (): Configuration => merge({
   },
   resolve: {
     modules: [path.resolve(baseDir, 'node_modules'), path.relative(baseDir, 'src')],
-    extensions: ['.js', '.ts'],
+    extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   module: {
     rules: [
-      jsRules.babel({}),
-      jsRules.ts({
-        happyPackMode: true,
-        transpileOnly: true,
-        context: baseDir,
-        configFile: 'ts.client.json',
-      }),
-      cssRules.less({
-        javascriptEnabled: true,
-      }, extractLess),
+      // jsRules.babel({}),
+      // jsRules.ts({
+      //   happyPackMode: true,
+      //   transpileOnly: true,
+      //   context: baseDir,
+      //   configFile: 'ts.client.json',
+      // }),
+      // cssRules.less({ }, extractLess),
     ],
   },
   plugins: [

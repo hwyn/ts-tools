@@ -13,11 +13,12 @@ export default () => {
   return happypackMerge(merge(config, {
     mode: 'development',
     entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {
-      [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [entry[key], hotPlug(key)],
+      [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
     }), {}),
     output: {
       filename: config.output.filename.replace('\.[hash:8]', ''),
     },
+    watch: true,
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),

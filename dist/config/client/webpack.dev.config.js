@@ -13,11 +13,12 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
   return (0, _happypack.happypackMerge)((0, _webpackMerge.default)(config, {
     mode: 'development',
     entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {
-      [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [entry[key], hotPlug(key)] }),
+      [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]] }),
     {}),
     output: {
       filename: config.output.filename.replace('\.[hash:8]', '') },
 
+    watch: true,
     plugins: [
     new _webpack.default.HotModuleReplacementPlugin(),
     new _webpack.default.NoEmitOnErrorsPlugin(),

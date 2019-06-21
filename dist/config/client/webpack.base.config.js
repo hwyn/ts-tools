@@ -58,21 +58,19 @@ isDebug);var _default =
 
   resolve: {
     modules: [_path.default.resolve(baseDir, 'node_modules'), _path.default.relative(baseDir, 'src')],
-    extensions: ['.js', '.ts'] },
+    extensions: ['.ts', '.tsx', '.mjs', '.js'] },
 
   module: {
     rules: [
-    jsRules.babel({}),
-    jsRules.ts({
-      happyPackMode: true,
-      transpileOnly: true,
-      context: baseDir,
-      configFile: 'ts.client.json' }),
-
-    cssRules.less({
-      javascriptEnabled: true },
-    extractLess)] },
-
+      // jsRules.babel({}),
+      // jsRules.ts({
+      //   happyPackMode: true,
+      //   transpileOnly: true,
+      //   context: baseDir,
+      //   configFile: 'ts.client.json',
+      // }),
+      // cssRules.less({ }, extractLess),
+    ] },
 
   plugins: [
   copyPlugin,

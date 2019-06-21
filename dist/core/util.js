@@ -24,8 +24,9 @@ const factoryConcatUse = defaultUse => (loader, mergeOption) => {
 
 function jsLoader(config) {
   const { options = {}, exclude = /node_modules/, include } = config;
-  const concatUse = factoryConcatUse(factoryUse('babel-loader', options));
-  const factory = (regExp, loader) => (_regExp, mergeOption) => {
+  const concatBabelUse = factoryConcatUse(factoryUse('babel-loader', options));
+  const factory = (regExp, loader, isNoBabelLoader) => (_regExp, mergeOption) => {
+    const concatUse = isNoBabelLoader ? factoryConcatUse([]) : concatBabelUse;
     if (_regExp instanceof RegExp) {
       regExp = _regExp;
     } else {
@@ -39,25 +40,28 @@ function jsLoader(config) {
   return {
     babel: factory(/\.(js|jsx)$/),
     ts: factory(/\.(ts|tsx)/, ['ts-loader']),
-    ngJs: factory(/\.(js)/, ['@angular-devkit/build-optimizer/webpack-loader']),
-    ngTs: factory(/(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/, ['@ngtools/webpack']) };
+    ngOptimizerJs: factory(/\.(js)/, ['@angular-devkit/build-optimizer/webpack-loader'], true),
+    ngTs: factory(/(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/, ['@ngtools/webpack'], true) };
 
 }
 
 
-function cssLoader(config, isExtract) {
+function cssLoader(config, isNotExtract) {
+  const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include } = config;
   const styleUse = factoryUse('style-loader', {});
   const concatUse = factoryConcatUse([
-  factoryUse('css-loader', options),
-  factoryUse('postcss-loader', { config: { path: _path.default.join(__dirname, 'postcss.config.js') } })]);
+  factoryUse('css-loader', { ...publicOptions, ...options }),
+  factoryUse('postcss-loader', Object.assign({
+    config: { path: _path.default.join(__dirname, 'postcss.config.js') } },
+  !isNotExtract ? {} : { sourceMap: 'inline' }))]);
 
 
-  const factory = (regExp, loader) => (mergeOption, extractTextPlugin) => {
+  const factory = (regExp, loader, defaultOptions) => (mergeOption, extractTextPlugin) => {
     const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
     const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
-    let use = concatUse(loader || [], loaderOption);
-    if (isExtract) {
+    let use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
+    if (isNotExtract) {
       use.unshift(styleUse);
     } else {
       use = (extractTextPlugin || _extractTextWebpackPlugin.default).extract({ fallback: 'style-loader', use });
@@ -67,7 +71,7 @@ function cssLoader(config, isExtract) {
 
   return {
     css: factory(/\.(css)/),
-    less: factory(/\.(less)/, ['less-loader']),
+    less: factory(/\.(less)/, ['less-loader'], { javascriptEnabled: true }),
     sass: factory(/\.(sass|scss)/, ['sass-loader']) };
 
 }
