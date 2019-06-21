@@ -17,6 +17,9 @@ class HappyPackUtil {
   isCanHappyPack(): boolean {
     const { loader, use=[] } = this.rule;
     const exclude = ['@ngtools/webpack'];
+    if (!loader || !use || (use as any).length) {
+      return false;
+    }
     return !(exclude.includes(loader as string) || (use as any).filter((item: any) => item.loader && exclude.includes(item.loader)).length);
   }
 
