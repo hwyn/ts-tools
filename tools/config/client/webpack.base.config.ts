@@ -2,6 +2,7 @@ import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import { requireSync } from '../../core/fs';
@@ -33,22 +34,19 @@ const jsRules = jsLoader({
   }
 });
 
-const extractLess = new ExtractTextPlugin(`styleSheet/[name]less.[hash:8].css`);
-const extractScss = new ExtractTextPlugin(`styleSheet/[name]scss.[hash:8].css`);
-const extractOther = new ExtractTextPlugin(`styleSheet/[name]css.[hash:8].css`);
 const cssRules = cssLoader({}, isDebug);
 
-const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, {
-  extractLess,
-  extractScss,
-  extractOther,
-}, isDebug);
+const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
 
 export default (): Configuration => merge({
   context: baseDir,
   target: 'web',
   entry: {
     main: path.resolve(srcDir, 'client/main.ts'),
+    style: [
+      './src/styles/theme.less',
+      './src/styles/theme.scss'
+    ],
   },
   output: {
     publicPath: '',
@@ -57,28 +55,25 @@ export default (): Configuration => merge({
     filename: `javascript/[name].[hash:8].js`,
   },
   resolve: {
+    symlinks: true,
     modules: [path.resolve(baseDir, 'node_modules'), path.relative(baseDir, 'src')],
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   module: {
     rules: [
-      // jsRules.babel({}),
-      // jsRules.ts({
-      //   happyPackMode: true,
-      //   transpileOnly: true,
-      //   context: baseDir,
-      //   configFile: 'ts.client.json',
-      // }),
-      // cssRules.less({ }, extractLess),
+      jsRules.babel({}),
+      cssRules.less({}),
+      cssRules.sass({}),
     ],
   },
   plugins: [
-    copyPlugin,
-    extractLess,
-    extractScss,
-    extractOther,
     new ProgressPlugin(),
+    copyPlugin,
     assetsPlugin,
+    new MiniCssExtractPlugin({
+      filename: 'styleSheet/[name].[hash:8].css',
+      chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
+    }),
   ],
   stats: {
     colors: true,

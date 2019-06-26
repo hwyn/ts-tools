@@ -1,7 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
-var _extractTextWebpackPlugin = _interopRequireDefault(require("extract-text-webpack-plugin"));
+
+var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 var _fs = require("../../core/fs");
@@ -33,22 +34,19 @@ const jsRules = (0, _util.jsLoader)({
 
 
 
-const extractLess = new _extractTextWebpackPlugin.default(`styleSheet/[name]less.[hash:8].css`);
-const extractScss = new _extractTextWebpackPlugin.default(`styleSheet/[name]scss.[hash:8].css`);
-const extractOther = new _extractTextWebpackPlugin.default(`styleSheet/[name]css.[hash:8].css`);
 const cssRules = (0, _util.cssLoader)({}, isDebug);
 
-const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, {
-  extractLess,
-  extractScss,
-  extractOther },
-isDebug);var _default =
+const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);var _default =
 
 () => (0, _webpackMerge.default)({
   context: baseDir,
   target: 'web',
   entry: {
-    main: _path.default.resolve(srcDir, 'client/main.ts') },
+    main: _path.default.resolve(srcDir, 'client/main.ts'),
+    style: [
+    './src/styles/theme.less',
+    './src/styles/theme.scss'] },
+
 
   output: {
     publicPath: '',
@@ -57,28 +55,25 @@ isDebug);var _default =
     filename: `javascript/[name].[hash:8].js` },
 
   resolve: {
+    symlinks: true,
     modules: [_path.default.resolve(baseDir, 'node_modules'), _path.default.relative(baseDir, 'src')],
     extensions: ['.ts', '.tsx', '.mjs', '.js'] },
 
   module: {
     rules: [
-      // jsRules.babel({}),
-      // jsRules.ts({
-      //   happyPackMode: true,
-      //   transpileOnly: true,
-      //   context: baseDir,
-      //   configFile: 'ts.client.json',
-      // }),
-      // cssRules.less({ }, extractLess),
-    ] },
+    jsRules.babel({}),
+    cssRules.less({}),
+    cssRules.sass({})] },
+
 
   plugins: [
-  copyPlugin,
-  extractLess,
-  extractScss,
-  extractOther,
   new _webpack.ProgressPlugin(),
-  assetsPlugin],
+  copyPlugin,
+  assetsPlugin,
+  new _miniCssExtractPlugin.default({
+    filename: 'styleSheet/[name].[hash:8].css',
+    chunkFilename: 'styleSheet/[name].[chunkhash:8].css' })],
+
 
   stats: {
     colors: true,

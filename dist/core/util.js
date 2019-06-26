@@ -1,5 +1,5 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.jsLoader = jsLoader;exports.cssLoader = cssLoader;var _path = _interopRequireDefault(require("path"));
-var _extractTextWebpackPlugin = _interopRequireDefault(require("extract-text-webpack-plugin"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const factoryUse = (loader, options, mergeOption) => ({
   loader,
@@ -49,23 +49,18 @@ function jsLoader(config) {
 function cssLoader(config, isNotExtract) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include } = config;
-  const styleUse = factoryUse('style-loader', {});
   const concatUse = factoryConcatUse([
+  factoryUse(isNotExtract ? 'style-loader' : _miniCssExtractPlugin.default.loader, {}),
   factoryUse('css-loader', { ...publicOptions, ...options }),
   factoryUse('postcss-loader', Object.assign({
     config: { path: _path.default.join(__dirname, 'postcss.config.js') } },
   !isNotExtract ? {} : { sourceMap: 'inline' }))]);
 
 
-  const factory = (regExp, loader, defaultOptions) => (mergeOption, extractTextPlugin) => {
+  const factory = (regExp, loader, defaultOptions) => mergeOption => {
     const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
     const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
     let use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
-    if (isNotExtract) {
-      use.unshift(styleUse);
-    } else {
-      use = (extractTextPlugin || _extractTextWebpackPlugin.default).extract({ fallback: 'style-loader', use });
-    }
     return factory(use);
   };
 

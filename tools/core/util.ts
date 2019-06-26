@@ -1,5 +1,5 @@
 import path from 'path';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 const factoryUse = (loader: string, options: any, mergeOption?: any): any => ({
   loader,
@@ -49,23 +49,18 @@ export function jsLoader(config: any) {
 export function cssLoader(config: any, isNotExtract?: boolean) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include } = config;
-  const styleUse = factoryUse('style-loader', {});
   const concatUse = factoryConcatUse([
+    factoryUse(isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {}),
     factoryUse('css-loader', { ...publicOptions, ...options }),
     factoryUse('postcss-loader', Object.assign({
       config: { path: path.join(__dirname, 'postcss.config.js') },
     }, !isNotExtract ? {} : { sourceMap: 'inline'})),
   ]);
 
-  const factory = (regExp: RegExp, loader?: string[], defaultOptions?: object) => (mergeOption?: any, extractTextPlugin?: ExtractTextPlugin) => {
+  const factory = (regExp: RegExp, loader?: string[], defaultOptions?: object) => (mergeOption?: any) => {
     const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
     const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
     let use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
-    if (isNotExtract) {
-      use.unshift(styleUse);
-    } else {
-      use = (extractTextPlugin || ExtractTextPlugin).extract({ fallback: 'style-loader', use });
-    }
     return factory(use);
   }
 
