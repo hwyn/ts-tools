@@ -1,7 +1,6 @@
 import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -43,10 +42,6 @@ export default (): Configuration => merge({
   target: 'web',
   entry: {
     main: path.resolve(srcDir, 'client/main.ts'),
-    style: [
-      './src/styles/theme.less',
-      './src/styles/theme.scss'
-    ],
   },
   output: {
     publicPath: '',
@@ -60,11 +55,7 @@ export default (): Configuration => merge({
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   module: {
-    rules: [
-      jsRules.babel({}),
-      cssRules.less({}),
-      cssRules.sass({}),
-    ],
+    rules: [ ],
   },
   plugins: [
     new ProgressPlugin(),

@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { jsLoader, cssLoader } from '../../core/util';
 import { requireSync } from '../../core/fs';
 import config from '../config';
@@ -24,15 +24,8 @@ const jsRules = jsLoader({
     ],
   }
 });
-const extractLess = new ExtractTextPlugin(`styleSheet/[name]less.[hash:8].css`);
-const extractScss = new ExtractTextPlugin(`styleSheet/[name]scss.[hash:8].css`);
-const extractOther = new ExtractTextPlugin(`styleSheet/[name]css.[hash:8].css`);
-const cssRules = cssLoader({});
-const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, { 
-  extractLess,
-  extractScss,
-  extractOther,
-}, isDebug);
+const cssRules = cssLoader({}, false);
+const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, isDebug);
 const assetsPlugin = new AssetsWebpackPlugin({
   filename: 'dll.json',
   path: buildDir,
@@ -60,16 +53,17 @@ export default (): Configuration => merge({
       }),
       cssRules.less({
         javascriptEnabled: true,
-      }, extractLess),
-      cssRules.css({}, extractOther),
+      }),
+      cssRules.css({}),
     ]
   },
   plugins: [
     assetsPlugin,
-    extractLess,
-    extractScss,
-    extractOther,
     new ProgressPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'styleSheet/[name].[hash:8].css',
+      chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
+    }),
     new webpack.DllPlugin({
       path: path.join(buildDir, "dll-manifest.json"),
       name: "[name]_[hash:8]"

@@ -3,7 +3,7 @@ var _webpack = _interopRequireWildcard(require("webpack"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
-var _extractTextWebpackPlugin = _interopRequireDefault(require("extract-text-webpack-plugin"));
+var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _util = require("../../core/util");
 var _fs = require("../../core/fs");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};if (desc.get || desc.set) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}}newObj.default = obj;return newObj;}}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
@@ -24,15 +24,8 @@ const jsRules = (0, _util.jsLoader)({
 
 
 
-const extractLess = new _extractTextWebpackPlugin.default(`styleSheet/[name]less.[hash:8].css`);
-const extractScss = new _extractTextWebpackPlugin.default(`styleSheet/[name]scss.[hash:8].css`);
-const extractOther = new _extractTextWebpackPlugin.default(`styleSheet/[name]css.[hash:8].css`);
-const cssRules = (0, _util.cssLoader)({});
-const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, {
-  extractLess,
-  extractScss,
-  extractOther },
-isDebug);
+const cssRules = (0, _util.cssLoader)({}, false);
+const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, isDebug);
 const assetsPlugin = new _assetsWebpackPlugin.default({
   filename: 'dll.json',
   path: buildDir,
@@ -59,17 +52,18 @@ const assetsPlugin = new _assetsWebpackPlugin.default({
       configFile: 'ts.client.json' }),
 
     cssRules.less({
-      javascriptEnabled: true },
-    extractLess),
-    cssRules.css({}, extractOther)] },
+      javascriptEnabled: true }),
+
+    cssRules.css({})] },
 
 
   plugins: [
   assetsPlugin,
-  extractLess,
-  extractScss,
-  extractOther,
   new _webpack.ProgressPlugin(),
+  new _miniCssExtractPlugin.default({
+    filename: 'styleSheet/[name].[hash:8].css',
+    chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
+
   new _webpack.default.DllPlugin({
     path: _path.default.join(buildDir, "dll-manifest.json"),
     name: "[name]_[hash:8]" })],

@@ -1,7 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
-
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
@@ -42,11 +41,7 @@ const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClien
   context: baseDir,
   target: 'web',
   entry: {
-    main: _path.default.resolve(srcDir, 'client/main.ts'),
-    style: [
-    './src/styles/theme.less',
-    './src/styles/theme.scss'] },
-
+    main: _path.default.resolve(srcDir, 'client/main.ts') },
 
   output: {
     publicPath: '',
@@ -60,11 +55,7 @@ const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClien
     extensions: ['.ts', '.tsx', '.mjs', '.js'] },
 
   module: {
-    rules: [
-    jsRules.babel({}),
-    cssRules.less({}),
-    cssRules.sass({})] },
-
+    rules: [] },
 
   plugins: [
   new _webpack.ProgressPlugin(),
