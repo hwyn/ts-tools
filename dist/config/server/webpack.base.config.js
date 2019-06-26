@@ -2,6 +2,7 @@
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
 var _path = _interopRequireDefault(require("path"));
+var _webpack = _interopRequireDefault(require("../base/webpack.config"));
 var _fs = require("../../core/fs");
 var _util = require("../../core/util");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
@@ -12,8 +13,7 @@ const jsRules = (0, _util.jsLoader)({ options: babellrc });
 
 const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServerConfig : () => mergeServerConfig)(jsRules, undefined, isDebug);var _default =
 
-() => (0, _webpackMerge.default)({
-  context: baseDir,
+() => (0, _webpackMerge.default)(_webpack.default, {
   target: 'node',
   entry: {
     index: _path.default.resolve(srcDir, 'server/index.ts') },
@@ -49,10 +49,6 @@ const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServe
     process: false,
     Buffer: false,
     __filename: false,
-    __dirname: false },
-
-  stats: {
-    colors: true,
-    timings: true } },
+    __dirname: false } },
 
 _mergeServerConfig);exports.default = _default;

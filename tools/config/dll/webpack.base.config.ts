@@ -4,6 +4,7 @@ import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import webpackConfig from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import { requireSync } from '../../core/fs';
 import config from '../config';
@@ -33,8 +34,7 @@ const assetsPlugin = new AssetsWebpackPlugin({
   update: true,
 });
 
-export default (): Configuration => merge({
-  context: baseDir,
+export default (): Configuration => merge(webpackConfig, {
   target: 'web',
   entry: {},
   output: {
@@ -69,8 +69,4 @@ export default (): Configuration => merge({
       name: "[name]_[hash:8]"
     }),
   ],
-  stats: {
-    colors: true,
-    timings: true,
-  },
 }, _mergeDllConfig);

@@ -4,6 +4,7 @@ import { Configuration, ProgressPlugin } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import webpackConfig from '../base/webpack.config';
 import { requireSync } from '../../core/fs';
 import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
@@ -37,8 +38,7 @@ const cssRules = cssLoader({}, isDebug);
 
 const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
 
-export default (): Configuration => merge({
-  context: baseDir,
+export default (): Configuration => merge(webpackConfig, {
   target: 'web',
   entry: {
     main: path.resolve(srcDir, 'client/main.ts'),
@@ -66,8 +66,4 @@ export default (): Configuration => merge({
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
     }),
   ],
-  stats: {
-    colors: true,
-    timings: true,
-  },
 }, _mergeClientConfig);

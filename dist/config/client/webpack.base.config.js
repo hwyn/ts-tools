@@ -4,6 +4,7 @@ var _webpack = require("webpack");
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
+var _webpack2 = _interopRequireDefault(require("../base/webpack.config"));
 var _fs = require("../../core/fs");
 var _util = require("../../core/util");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
@@ -37,8 +38,7 @@ const cssRules = (0, _util.cssLoader)({}, isDebug);
 
 const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);var _default =
 
-() => (0, _webpackMerge.default)({
-  context: baseDir,
+() => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
   entry: {
     main: _path.default.resolve(srcDir, 'client/main.ts') },
@@ -63,11 +63,7 @@ const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClien
   assetsPlugin,
   new _miniCssExtractPlugin.default({
     filename: 'styleSheet/[name].[hash:8].css',
-    chunkFilename: 'styleSheet/[name].[chunkhash:8].css' })],
+    chunkFilename: 'styleSheet/[name].[chunkhash:8].css' })] },
 
-
-  stats: {
-    colors: true,
-    timings: true } },
 
 _mergeClientConfig);exports.default = _default;

@@ -4,6 +4,7 @@ var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
+var _webpack2 = _interopRequireDefault(require("../base/webpack.config"));
 var _util = require("../../core/util");
 var _fs = require("../../core/fs");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};if (desc.get || desc.set) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}}newObj.default = obj;return newObj;}}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
@@ -33,8 +34,7 @@ const assetsPlugin = new _assetsWebpackPlugin.default({
   update: true });var _default =
 
 
-() => (0, _webpackMerge.default)({
-  context: baseDir,
+() => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
   entry: {},
   output: {
@@ -66,11 +66,7 @@ const assetsPlugin = new _assetsWebpackPlugin.default({
 
   new _webpack.default.DllPlugin({
     path: _path.default.join(buildDir, "dll-manifest.json"),
-    name: "[name]_[hash:8]" })],
+    name: "[name]_[hash:8]" })] },
 
-
-  stats: {
-    colors: true,
-    timings: true } },
 
 _mergeDllConfig);exports.default = _default;

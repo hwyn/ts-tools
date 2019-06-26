@@ -2,6 +2,7 @@ import nodeExtrnals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
 import path from 'path';
+import webpackConfig from '../base/webpack.config';
 import { requireSync } from '../../core/fs';
 import { jsLoader } from '../../core/util';
 import config from '../config';
@@ -12,8 +13,7 @@ const jsRules = jsLoader({ options: babellrc });
 
 const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServerConfig : () => mergeServerConfig)(jsRules, undefined, isDebug);
 
-export default (): Configuration => merge({
-  context: baseDir,
+export default (): Configuration => merge(webpackConfig, {
   target: 'node',
   entry: {
     index: path.resolve(srcDir, 'server/index.ts'),
@@ -50,9 +50,5 @@ export default (): Configuration => merge({
     Buffer: false,
     __filename: false,
     __dirname: false,
-  },
-  stats: {
-    colors: true,
-    timings: true,
   },
 }, _mergeServerConfig);
