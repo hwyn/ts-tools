@@ -16,11 +16,12 @@ class HappyPackUtil {
 
   isCanHappyPack() {
     const { loader, use = [] } = this.rule;
-    const exclude = ['@ngtools/webpack'];
-    if (!loader || !use || use.length) {
+    const exclude = ['@ngtools/webpack', '@angular-devkit/build-optimizer/webpack-loader'];
+    if (!loader && (!use || !use.length)) {
       return false;
     }
-    return !(exclude.includes(loader) || use.filter(item => item.loader && exclude.includes(item.loader)).length);
+    return !(loader && exclude.includes(loader) ||
+    use.filter(item => item.loader && exclude.includes(item.loader)).length);
   }
 
   getHappyPackRule() {
@@ -64,6 +65,5 @@ const happypackMerge = config => {
   }, { module: { rules: [] }, plugins: [] });
 
   delete config.module.rules;
-
   return (0, _webpackMerge.default)(config, happyPackConfig);
 };exports.happypackMerge = happypackMerge;
