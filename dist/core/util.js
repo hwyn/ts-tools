@@ -67,6 +67,9 @@ function cssLoader(config, isNotExtract) {
   return {
     css: factory(/\.(css)/),
     less: factory(/\.(less)/, ['less-loader'], { javascriptEnabled: true }),
-    sass: factory(/\.(sass|scss)/, ['sass-loader']) };
+    sass: factory(/\.(sass|scss)/, ['sass-loader']),
+    more: function (types, options) {
+      return types.map(type => this[type](options));
+    } };
 
 }
