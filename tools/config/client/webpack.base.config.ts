@@ -1,25 +1,17 @@
 import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import webpackConfig from '../base/webpack.config';
-import { requireSync } from '../../core/fs';
+import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
 
-const { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug } = config;
-const mergeClientConfig = requireSync(`${baseDir}/webpack.client.js`);
+const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = config;
 
-const assetsPlugin = new AssetsWebpackPlugin({
-  filename: 'assets.json',
-  path: buildDir,
-  prettyPrint: true,
-  update: true,
-});
 const copyPlugin = new CopyPlugin([{ from: path.join(baseDir, 'public'), to: path.join(buildDir, 'public') }]);
-const { presets, plugins } = babellrc;
+
+const cssRules = cssLoader({}, isDebug);
 const jsRules = jsLoader({
   options: {
     presets: [
@@ -34,9 +26,7 @@ const jsRules = jsLoader({
   }
 });
 
-const cssRules = cssLoader({}, isDebug);
-
-const _mergeClientConfig = (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
+const _mergeClientConfig = getMergeConfig(`webpack.client.js`, jsRules, cssRules);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
@@ -60,10 +50,11 @@ export default (): Configuration => merge(webpackConfig, {
   plugins: [
     new ProgressPlugin(),
     copyPlugin,
-    assetsPlugin,
-    new MiniCssExtractPlugin({
-      filename: 'styleSheet/[name].[hash:8].css',
-      chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
+    new AssetsWebpackPlugin({
+      filename: 'assets.json',
+      path: buildDir,
+      prettyPrint: true,
+      update: true,
     }),
   ],
 }, _mergeClientConfig);

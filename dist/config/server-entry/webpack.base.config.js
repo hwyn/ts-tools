@@ -1,43 +1,25 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
-var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
-var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};if (desc.get || desc.set) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}}newObj.default = obj;return newObj;}}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = _config.default;
-
-const copyPlugin = new _copyWebpackPlugin.default([{ from: _path.default.join(baseDir, 'public'), to: _path.default.join(buildDir, 'public') }]);
-
+const { baseDir, babellrc, isDebug, buildDir } = _config.default;
+const jsRules = (0, _util.jsLoader)({ options: babellrc });
 const cssRules = (0, _util.cssLoader)({}, isDebug);
-const jsRules = (0, _util.jsLoader)({
-  options: {
-    presets: [
-    ["@babel/preset-env", {
-      "targets": browserslist }],
 
-    ...(presets || []).slice(1)],
-
-    plugins: [
-    ...(plugins || [])] } });
-
-
-
-
-const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.client.js`, jsRules, cssRules);var _default =
+const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.server.entry.js`, jsRules, cssRules);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
-  target: 'web',
-  entry: {
-    main: _path.default.resolve(srcDir, 'client/main.ts') },
-
+  target: 'node',
+  entry: {},
   output: {
     publicPath: '',
-    path: _path.default.join(buildDir, 'public'),
-    chunkFilename: `check/[name].[chunkhash:8].js`,
-    filename: `javascript/[name].[hash:8].js` },
+    path: _path.default.join(buildDir, 'server'),
+    chunkFilename: `check/[name].js`,
+    filename: `[name].js`,
+    libraryTarget: 'commonjs' },
 
   resolve: {
     symlinks: true,
@@ -48,13 +30,7 @@ const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.client.js`, js
     rules: [] },
 
   plugins: [
-  new _webpack.ProgressPlugin(),
-  copyPlugin,
-  new _assetsWebpackPlugin.default({
-    filename: 'assets.json',
-    path: buildDir,
-    prettyPrint: true,
-    update: true })] },
+  new _webpack.ProgressPlugin()],
 
-
+  node: false },
 _mergeClientConfig);exports.default = _default;

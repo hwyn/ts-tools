@@ -1,6 +1,14 @@
-import config from '../config';
+import { Configuration } from 'webpack';
 
-const { baseDir } = config;
+import config from '../config';
+import { requireSync } from '../../core/fs';
+
+const { baseDir, isDebug } = config;
+
+export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): Configuration => {
+  const mergeClientConfig = requireSync(`${baseDir}/${fileName}`);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
+};
 
 export default {
   context: baseDir,

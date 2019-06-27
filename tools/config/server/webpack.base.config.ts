@@ -20,8 +20,8 @@ export default (): Configuration => merge(webpackConfig, {
   },
   output: {
     path: buildDir,
-    chunkFilename: `server/[name].check.[hash:8].js`,
-    filename: `server/[name].js`,
+    chunkFilename: `[name].check.[hash:8].js`,
+    filename: `[name].js`,
     library: 'commonjs2',
   },
   resolve: {

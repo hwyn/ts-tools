@@ -5,14 +5,16 @@ var _config = require("../config");
 var _clean = _interopRequireDefault(require("./clean"));
 var _dev = _interopRequireDefault(require("../lib/dev.server"));
 var _dev2 = _interopRequireDefault(require("../lib/dev.client"));
+var _devServer = _interopRequireDefault(require("../lib/dev.server.entry"));
 var _dev3 = _interopRequireDefault(require("../lib/dev.dll"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const { buildDir } = _config.config;
 const app = (0, _express.default)();var _default =
 async () => {
   app.use(_express.default.static(_path.default.join(buildDir, 'public')));
-  await (0, _clean.default)();
   await (0, _dev3.default)();
+  await (0, _devServer.default)(app);
+  await (0, _clean.default)();
   await (0, _dev2.default)(app);
   const host = await (0, _dev.default)(app);
   return new Promise((resolve, reject) => {

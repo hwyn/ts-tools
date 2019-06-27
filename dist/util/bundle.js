@@ -2,7 +2,14 @@
 var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 function webpackRun(webpackconfig, _stast) {
+  if (Array.isArray(webpackconfig)) {
+    return Promise.all(webpackconfig.map(config => webpackRun(config, config.stats)));
+  }
   return new Promise((resolve, reject) => {
+    const isRun = Array.isArray(webpackconfig.entry) ? !!webpackconfig.entry.length : !!Object.keys(webpackconfig.entry).length;
+    if (!isRun) {
+      return resolve();
+    }
     (0, _webpack.default)(webpackconfig).run((err, stats) => {
       if (err) {
         return reject();
@@ -13,12 +20,8 @@ function webpackRun(webpackconfig, _stast) {
   });
 }var _default =
 
-
-async () => {
-  const dll = (0, _config.webpackDll)();
-  const isCanDll = Array.isArray(dll.entry) ? !!dll.entry.length : !!Object.keys(dll.entry).length;
-  return (isCanDll ? webpackRun(dll, dll.stats) : Promise.resolve()).then(() => {
-    const client = (0, _config.webpackClient)();
-    return webpackRun([client, (0, _config.webpackServer)()], client.stats);
-  });
-};exports.default = _default;
+async () => webpackRun([
+(0, _config.webpackDll)(),
+(0, _config.webpackServerEntry)(),
+(0, _config.webpackClient)(),
+(0, _config.webpackServer)()]);exports.default = _default;

@@ -1,6 +1,14 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _config = _interopRequireDefault(require("../config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.getMergeConfig = void 0;
 
-const { baseDir } = _config.default;var _default =
+var _config = _interopRequireDefault(require("../config"));
+var _fs = require("../../core/fs");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+const { baseDir, isDebug } = _config.default;
+
+const getMergeConfig = (fileName, jsRules, cssRules) => {
+  const mergeClientConfig = (0, _fs.requireSync)(`${baseDir}/${fileName}`);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
+};exports.getMergeConfig = getMergeConfig;var _default =
 
 {
   context: baseDir,

@@ -49,18 +49,19 @@ export function jsLoader(config: any) {
 export function cssLoader(config: any, isNotExtract?: boolean) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include } = config;
+  const preUse = factoryUse(isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {});
   const concatUse = factoryConcatUse([
-    factoryUse(isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {}),
     factoryUse('css-loader', { ...publicOptions, ...options }),
     factoryUse('postcss-loader', Object.assign({
       config: { path: path.join(__dirname, 'postcss.config.js') },
     }, !isNotExtract ? {} : { sourceMap: 'inline'})),
   ]);
 
-  const factory = (regExp: RegExp, loader?: string[], defaultOptions?: object) => (mergeOption?: any) => {
+  const factory = (regExp: RegExp, loader?: string[], defaultOptions?: object) => (mergeOption?: any, preLoader?: string) => {
     const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
     const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
-    let use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
+    const use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
+    use.unshift(preLoader ? factoryUse(preLoader, {}) : preUse);
     return factory(use);
   }
 
@@ -73,3 +74,5 @@ export function cssLoader(config: any, isNotExtract?: boolean) {
     },
   }
 }
+
+
