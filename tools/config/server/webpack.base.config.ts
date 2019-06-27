@@ -38,7 +38,7 @@ export default (): Configuration => merge(webpackConfig, {
       jsRules.ts({
         transpileOnly: true,
         context: baseDir,
-        configFile: 'ts.server.json',
+        configFile: 'src/server/ts.server.json',
       }),
     ],
   },

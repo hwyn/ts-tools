@@ -38,7 +38,7 @@ const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServe
     jsRules.ts({
       transpileOnly: true,
       context: baseDir,
-      configFile: 'ts.server.json' })] },
+      configFile: 'src/server/ts.server.json' })] },
 
 
 

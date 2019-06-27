@@ -18,7 +18,6 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
     output: {
       filename: config.output.filename.replace('\.[hash:8]', '') },
 
-    watch: true,
     plugins: [
     new _webpack.default.HotModuleReplacementPlugin(),
     new _webpack.default.NoEmitOnErrorsPlugin(),

@@ -18,7 +18,6 @@ export default () => {
     output: {
       filename: config.output.filename.replace('\.[hash:8]', ''),
     },
-    watch: true,
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
