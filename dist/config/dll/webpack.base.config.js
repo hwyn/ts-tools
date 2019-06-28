@@ -26,20 +26,15 @@ const jsRules = (0, _util.jsLoader)({
 
 
 const cssRules = (0, _util.cssLoader)({}, false);
-const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, isDebug);
-const assetsPlugin = new _assetsWebpackPlugin.default({
-  filename: 'dll.json',
-  path: buildDir,
-  prettyPrint: true,
-  update: true });var _default =
-
+const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, isDebug);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
   entry: {},
   output: {
     path: _path.default.join(buildDir, 'public'),
-    filename: 'javascript/dll_[name].js',
+    filename: 'javascript/[name].dll.js',
+    chunkFilename: `check/[name].[chunkhash:8].js`,
     library: "[name]_[hash:8]" },
 
   module: {
@@ -58,14 +53,19 @@ const assetsPlugin = new _assetsWebpackPlugin.default({
 
 
   plugins: [
-  assetsPlugin,
   new _webpack.ProgressPlugin(),
   new _miniCssExtractPlugin.default({
     filename: 'styleSheet/[name].[hash:8].css',
     chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
 
+  new _assetsWebpackPlugin.default({
+    filename: 'dll.json',
+    path: buildDir,
+    prettyPrint: true,
+    update: true }),
+
   new _webpack.default.DllPlugin({
-    path: _path.default.join(buildDir, "dll-manifest.json"),
+    path: _path.default.join(buildDir, "static/dll-manifest.json"),
     name: "[name]_[hash:8]" })] },
 
 

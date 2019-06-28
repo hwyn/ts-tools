@@ -1,5 +1,4 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _webpack = _interopRequireWildcard(require("webpack"));
-var _fs = require("fs");
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _uglifyjsWebpackPlugin = _interopRequireDefault(require("uglifyjs-webpack-plugin"));
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
@@ -57,12 +56,6 @@ const { buildDir, baseDir } = _config.default;var _default =
   new _webpack.default.DefinePlugin({
     'process.env.NODE_ENV': "'production'" }),
 
-  ...((0, _fs.existsSync)(`${buildDir}/dll-manifest.json`) ? [
-  new _webpack.DllReferencePlugin({
-    context: baseDir,
-    manifest: require(`${buildDir}/dll-manifest.json`) })] :
-
-  []),
   new _miniCssExtractPlugin.default({
     filename: 'styleSheet/[name].[hash:8].css',
     chunkFilename: 'styleSheet/[name].[chunkhash:8].css' })] });exports.default = _default;

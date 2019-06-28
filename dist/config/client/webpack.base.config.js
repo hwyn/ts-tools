@@ -3,6 +3,7 @@ var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
 var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
+var _fs = require("fs");
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
 var _config = _interopRequireDefault(require("../config"));function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;} else {var newObj = {};if (obj != null) {for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {};if (desc.get || desc.set) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}}newObj.default = obj;return newObj;}}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
@@ -54,7 +55,13 @@ const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.client.js`, js
     filename: 'assets.json',
     path: buildDir,
     prettyPrint: true,
-    update: true })] },
+    update: true }),
 
+  ...((0, _fs.existsSync)(`${buildDir}/static/dll-manifest.json`) ? [
+  new _webpack.DllReferencePlugin({
+    context: baseDir,
+    manifest: require(`${buildDir}/static/dll-manifest.json`) })] :
+
+  [])] },
 
 _mergeClientConfig);exports.default = _default;

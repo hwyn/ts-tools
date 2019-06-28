@@ -39,8 +39,8 @@ export function jsLoader(config: any) {
 
   return {
     babel: factory(/\.(js|jsx)$/),
-    ts: factory(/\.(ts|tsx)/, ['ts-loader']),
-    ngOptimizerJs: factory(/\.(js)/, ['@angular-devkit/build-optimizer/webpack-loader'], true),
+    ts: factory(/\.(ts|tsx)$/, ['ts-loader']),
+    ngOptimizerJs: factory(/\.(js)$/, ['@angular-devkit/build-optimizer/webpack-loader'], true),
     ngTs: factory(/(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/, ['@ngtools/webpack'], true),
   };
 }
@@ -66,9 +66,9 @@ export function cssLoader(config: any, isNotExtract?: boolean) {
   }
 
   return {
-    css: factory(/\.(css)/),
-    less: factory(/\.(less)/, ['less-loader'], { javascriptEnabled: true }),
-    sass: factory(/\.(sass|scss)/, ['sass-loader']),
+    css: factory(/\.(css)$/),
+    less: factory(/\.(less)$/, ['less-loader'], { javascriptEnabled: true }),
+    sass: factory(/\.(sass|scss)$/, ['sass-loader']),
     more: function (types: string[], options?: any) {
       return types.map((type: string) => this[type](options));
     },

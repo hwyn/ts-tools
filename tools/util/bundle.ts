@@ -14,16 +14,17 @@ export function webpackRun(webpackconfig: Configuration | Configuration[], _stas
       if (err) {
         return reject();
       }
-      console.info(stats.toString(_stast));
+      console.info(stats.toString(webpackconfig.stats || _stast));
       resolve();
     });
   })
 }
 
-export default async (): Promise<any> => webpackRun([
-  webpackDll(),
-  webpackServerEntry(),
-  webpackClient(),
-  webpackServer()
-]);
+export default async (): Promise<any> => {
+  return webpackRun(webpackDll()).then(() => webpackRun([
+    webpackServerEntry(),
+    webpackClient(),
+    webpackServer(),
+  ]));
+};
 

@@ -1,5 +1,4 @@
-import webpack, { HashedModuleIdsPlugin, DllReferencePlugin } from 'webpack';
-import { existsSync } from 'fs';
+import webpack, { HashedModuleIdsPlugin } from 'webpack';
 import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -57,12 +56,6 @@ export default () => merge(baseConfig(), {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': "'production'"
     }),
-    ...existsSync(`${buildDir}/dll-manifest.json`) ? [
-      new DllReferencePlugin({
-        context: baseDir,
-        manifest: require(`${buildDir}/dll-manifest.json`),
-      })
-    ] : [],
     new MiniCssExtractPlugin({
       filename: 'styleSheet/[name].[hash:8].css',
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',

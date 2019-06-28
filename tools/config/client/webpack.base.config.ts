@@ -1,8 +1,9 @@
 import path from 'path';
 import merge from 'webpack-merge';
-import { Configuration, ProgressPlugin } from 'webpack';
+import { Configuration, ProgressPlugin, DllReferencePlugin } from 'webpack';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
@@ -56,5 +57,11 @@ export default (): Configuration => merge(webpackConfig, {
       prettyPrint: true,
       update: true,
     }),
+    ...existsSync(`${buildDir}/static/dll-manifest.json`) ? [
+      new DllReferencePlugin({
+        context: baseDir,
+        manifest: require(`${buildDir}/static/dll-manifest.json`),
+      })
+    ] : [],
   ],
 }, _mergeClientConfig);
