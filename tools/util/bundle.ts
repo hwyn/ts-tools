@@ -24,7 +24,6 @@ export default async (): Promise<any> => {
   return webpackRun(webpackDll()).then(() => webpackRun([
     webpackServerEntry(),
     webpackClient(),
-    webpackServer(),
-  ]));
+  ])).then(() => webpackRun(webpackServer()));
 };
 

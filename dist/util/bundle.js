@@ -23,7 +23,6 @@ function webpackRun(webpackconfig, _stast) {
 async () => {
   return webpackRun((0, _config.webpackDll)()).then(() => webpackRun([
   (0, _config.webpackServerEntry)(),
-  (0, _config.webpackClient)(),
-  (0, _config.webpackServer)()]));
-
+  (0, _config.webpackClient)()])).
+  then(() => webpackRun((0, _config.webpackServer)()));
 };exports.default = _default;

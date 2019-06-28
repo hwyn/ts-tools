@@ -2,13 +2,16 @@ import { Configuration } from 'webpack';
 import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import baseConfig from './webpack.base.config';
+import config from '../config';
+
+const { isDebug } = config;
 
 export default (): Configuration => merge(baseConfig(), {
   mode: 'production',
   optimization: {
     minimizer: [
       new UglifyJSPlugin({
-        sourceMap: true,
+        sourceMap: isDebug,
         cache: true,
         parallel: true,
         uglifyOptions: {

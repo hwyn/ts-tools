@@ -29,7 +29,6 @@ export default (): Configuration => merge(webpackConfig, {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   externals: [
-    '../build/assets.json',
     nodeExtrnals(),
   ],
   module: {
@@ -38,7 +37,7 @@ export default (): Configuration => merge(webpackConfig, {
       jsRules.ts({
         transpileOnly: true,
         context: baseDir,
-        configFile: 'src/server/ts.server.json',
+        configFile: 'tsconfig.json',
       }),
     ],
   },

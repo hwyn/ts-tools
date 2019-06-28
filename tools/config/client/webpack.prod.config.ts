@@ -5,7 +5,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.base.config';
 import config from '../config';
 
-const { buildDir, baseDir } = config;
+const { isDebug } = config;
 
 export default () => merge(baseConfig(), {
   mode: 'production',
@@ -33,7 +33,7 @@ export default () => merge(baseConfig(), {
     minimizer: [
       new HashedModuleIdsPlugin(),
       new UglifyJSPlugin({
-        sourceMap: true,
+        sourceMap: isDebug,
         cache: true,
         parallel: true,
         uglifyOptions: {

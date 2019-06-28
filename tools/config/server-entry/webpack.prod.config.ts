@@ -5,35 +5,13 @@ import { existsSync } from 'fs';
 import baseConfig from './webpack.base.config';
 import config from '../config';
 
-const { buildDir, baseDir } = config;
-
 export default () => merge(baseConfig(), {
   mode: 'production',
   optimization: {
     noEmitOnErrors: true,
-    runtimeChunk: 'single',
-    splitChunks: {
-      cacheGroups: {
-        default: {
-          chunks: 'async',
-          minChunks: 2,
-          priority: 10
-        },
-        common: {
-          name: 'common',
-          chunks: 'async',
-          minChunks: 2,
-          enforce: true,
-          priority: 5
-        },
-        vendors: false,
-        vendor: false
-      }
-    },
     minimizer: [
       new HashedModuleIdsPlugin(),
       new UglifyJSPlugin({
-        sourceMap: true,
         cache: true,
         parallel: true,
         uglifyOptions: {

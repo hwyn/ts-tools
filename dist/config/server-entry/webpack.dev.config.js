@@ -5,6 +5,7 @@ var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));func
 () => {
   const config = (0, _webpackBase.default)();
   return (0, _webpackMerge.default)(config, {
-    mode: 'development' });
+    mode: 'development',
+    devtool: false });
 
 };exports.default = _default;

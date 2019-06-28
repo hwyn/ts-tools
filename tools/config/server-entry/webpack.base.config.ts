@@ -1,6 +1,7 @@
 import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
+import nodeExtrnals from 'webpack-node-externals';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
@@ -26,6 +27,10 @@ export default (): Configuration => merge(webpackConfig, {
     modules: [path.resolve(baseDir, 'node_modules'), path.relative(baseDir, 'src')],
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
+  externals: [
+    '../build/assets.json',
+    nodeExtrnals(),
+  ],
   module: {
     rules: [],
   },

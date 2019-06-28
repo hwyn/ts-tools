@@ -6,5 +6,6 @@ export default (): Configuration => {
   const config = baseConfig();
   return merge(config, {
     mode: 'development',
+    devtool: false,
   });
 }

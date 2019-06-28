@@ -29,7 +29,6 @@ const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServe
     extensions: ['.js', '.jsx', '.ts', '.tsx'] },
 
   externals: [
-  '../build/assets.json',
   (0, _webpackNodeExternals.default)()],
 
   module: {
@@ -38,7 +37,7 @@ const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServe
     jsRules.ts({
       transpileOnly: true,
       context: baseDir,
-      configFile: 'src/server/ts.server.json' })] },
+      configFile: 'tsconfig.json' })] },
 
 
 

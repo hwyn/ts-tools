@@ -3,6 +3,5 @@ var _config = require("../config");var _default =
 
 async () => {
   const dll = (0, _config.webpackDevDll)();
-  const isCanDll = Array.isArray(dll.entry) ? !!dll.entry.length : !!Object.keys(dll.entry).length;
-  return isCanDll ? (0, _bundle.webpackRun)(dll, dll.stats) : Promise.resolve();
+  return (0, _bundle.webpackRun)(dll, dll.stats);
 };exports.default = _default;

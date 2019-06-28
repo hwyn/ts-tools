@@ -12,9 +12,9 @@ const { buildDir } = _config.config;
 const app = (0, _express.default)();var _default =
 async () => {
   app.use(_express.default.static(_path.default.join(buildDir, 'public')));
+  await (0, _clean.default)();
   await (0, _dev3.default)();
   await (0, _devServer.default)(app);
-  await (0, _clean.default)();
   await (0, _dev2.default)(app);
   const host = await (0, _dev.default)(app);
   return new Promise((resolve, reject) => {
