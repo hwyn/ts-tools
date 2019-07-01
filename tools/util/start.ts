@@ -14,8 +14,8 @@ export default async (): Promise<any> => {
   app.use(express.static(path.join(buildDir, 'public')));
   await cleanDir();
   await dllDev();
-  await serverEntryHotDev(app);
   await clientHotDev(app);
+  await serverEntryHotDev(app);
   const host = await serverHotDev(app);
   return new Promise((resolve, reject) => {
     browserSync.create().init({
