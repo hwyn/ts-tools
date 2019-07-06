@@ -4,14 +4,11 @@ import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import webpackConfig from '../base/webpack.config';
+import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import { requireSync } from '../../core/fs';
 import config from '../config';
 
-const { baseDir, buildDir, browserslist, babellrc: { presets, plugins }, isDebug } = config;
-const mergeDllConfig = requireSync(`${baseDir}/webpack.dll.js`);
-
+const { baseDir, buildDir, browserslist, babellrc: { presets, plugins } } = config;
 const jsRules = jsLoader({
   options: {
     presets: [
@@ -25,8 +22,9 @@ const jsRules = jsLoader({
     ],
   }
 });
+
 const cssRules = cssLoader({}, false);
-const _mergeDllConfig = (typeof mergeDllConfig === 'function' ? mergeDllConfig : () => mergeDllConfig)(jsRules, cssRules, isDebug);
+const _mergeDllConfig = getMergeConfig(`webpack.dll.js`, jsRules, undefined);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',

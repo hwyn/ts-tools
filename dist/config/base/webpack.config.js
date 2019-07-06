@@ -4,9 +4,10 @@ var _config = _interopRequireDefault(require("../config"));
 var _fs = require("../../core/fs");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const { baseDir, isDebug } = _config.default;
+const webpackDir = 'webpack';
 
 const getMergeConfig = (fileName, jsRules, cssRules) => {
-  const mergeClientConfig = (0, _fs.requireSync)(`${baseDir}/${fileName}`);
+  const mergeClientConfig = (0, _fs.requireSync)(`${baseDir}/${webpackDir}/${fileName}`);
   return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
 };exports.getMergeConfig = getMergeConfig;var _default =
 
