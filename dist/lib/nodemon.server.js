@@ -54,9 +54,9 @@ function startServer() {
 runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* () {
     let nodemonExa = yield startServer();
     const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server')], {});
-    watch.on('change', delay(100, () => nodemonExa().
-    then(startServer).
-    then(exa => exa && (nodemonExa = exa))));
+    watch.on('change', delay(100, () => nodemonExa().catch(e => {
+      console.log(e);
+    }).finally(() => startServer().then(exa => exa && (nodemonExa = exa)))));
     return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(() => {
           watch.close();
         });}));

@@ -37,7 +37,7 @@ function startServer(): Promise<any> {
     return new Promise((resolve, reject) => {
       kill(cp.pid, (err) => err ? reject(err) : resolve());
     });
-  }
+  };
   let _stdion: any = stdioPipe(cp, process);;
   _stdion.stderr();
   return new Promise((_resolve) => 
@@ -54,9 +54,9 @@ function startServer(): Promise<any> {
 async function runNodemon(): Promise<any> {
   let nodemonExa = await startServer();
   const watch = chokidar.watch([path.join(srcDir, 'server')], {});
-  watch.on('change', delay(100, () => nodemonExa()
-    .then(startServer)
-    .then((exa: any) => exa && (nodemonExa = exa))));
+  watch.on('change', delay(100, () => nodemonExa().catch((e) => {
+    console.log(e);
+  }).finally(() => startServer() .then((exa: any) => exa && (nodemonExa = exa)))));
   return async ():Promise<any> => nodemonExa().then(() => {
     watch.close();
   });
