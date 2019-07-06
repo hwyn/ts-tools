@@ -9,9 +9,7 @@ let host = 'localhost:3000';
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
   let _delay = null;
-  return () => !_delay && (_delay = setTimeout(() => callback().then(() => {
-    _delay = null;
-  }), timer));
+  return () => !_delay && (_delay = setTimeout(() => callback().finally(() => _delay = null), timer));
 };
 
 const stdioPipe = (cp, pro) => {
@@ -26,42 +24,73 @@ const stdioPipe = (cp, pro) => {
 
 };
 
-function startServer() {
-  const cp = (0, _child_process.spawn)('sh', ['-c', 'babel-node src/server/index.ts --extensions \'.ts,.tsx\''], {
+const getSpawnArgs = () => {
+  const platform = process.platform;
+  const spawnArgs = [];
+  let spawnFlags = [];
+  const spawnOptions = {
     env: Object.assign({}, process.env, {
-      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }) });
+      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }) };
 
 
+  if (platform === 'win32') {
+    spawnArgs.push(process.env.ComSpec || 'cmd.exe');
+    spawnFlags = ['/d', '/s', '/c'];
+    spawnOptions.windowsVerbatimArguments = true;
+  } else {
+    spawnArgs.push('sh');
+    spawnFlags.push('-c');
+  }
+  spawnFlags.push("babel-node src/server/index.ts --extensions \".ts,.tsx\"");
+  spawnArgs.push(spawnFlags);
+  spawnArgs.push(spawnOptions);
+  return spawnArgs;
+};
+
+function startServer() {
+  console.log(getSpawnArgs());
+  const cp = _child_process.spawn.apply(null, getSpawnArgs());
   const killCp = () => {
     _stdion = null;
     return new Promise((resolve, reject) => {
       (0, _treeKill.default)(cp.pid, err => err ? reject(err) : resolve());
     });
   };
-  let _stdion = stdioPipe(cp, process);;
-  _stdion.stderr();
-  return new Promise((_resolve) =>
-  _stdion.stdout(data => {
-    const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
-    if (match && match[1]) {
-      host = match[1];
-      _resolve(killCp);
-    }
-  }));
-
+  let _stdion = stdioPipe(cp, process);
+  return new Promise((_resolve, _reject) => {
+    _stdion.stderr(() => _reject(killCp));
+    _stdion.stdout(data => {
+      const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
+      if (match && match[1]) {
+        host = match[1];
+        _resolve(killCp);
+      }
+    });
+  });
 }function
 
 runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* () {
-    let nodemonExa = yield startServer();
+    let nodemonExa;
     const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server')], {});
-    watch.on('change', delay(100, () => nodemonExa().catch(e => {
-      console.log(e);
-    }).finally(() => startServer().then(exa => exa && (nodemonExa = exa)))));
-    return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(() => {
+    try {
+      nodemonExa = yield startServer();
+    } catch (e) {
+      nodemonExa = e;
+    } finally {
+      watch.on('change', delay(100, () => nodemonExa().finally(() => startServer().
+      then(exa => exa && (nodemonExa = exa)).
+      catch(exa => exa && (nodemonExa = exa)))));
+    }
+    return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().finally(() => {
           watch.close();
         });}));
   });return _runNodemon.apply(this, arguments);}
 
 process.on('exit', () => clearNodemon());var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
 
-  function* (app) {return clearNodemon().then(() => clearNodemon = runNodemon()).then(() => host);});return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;
+  function* (app) {return clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+      if (host) {
+        return host;
+      }
+      throw new Error(`server run fail`);
+    });});return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;

@@ -9,10 +9,8 @@ let host: number | string = 'localhost:3000';
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
   let _delay: any = null;
-  return () => !_delay && (_delay = setTimeout(() => callback().then(() => {
-    _delay = null;
-  }), timer));
-}
+  return () => !_delay && (_delay = setTimeout(() => callback().finally(() => _delay = null), timer));
+};
 
 const stdioPipe = (cp: any, pro: any): any => {
   const stdio = (fnName: string) => (callback?: any) =>
@@ -26,21 +24,41 @@ const stdioPipe = (cp: any, pro: any): any => {
   };
 };
 
-function startServer(): Promise<any> {
-  const cp = spawn('sh', ['-c', 'babel-node src/server/index.ts --extensions \'.ts,.tsx\''], {
+const getSpawnArgs = () => {
+  const platform = process.platform;
+  const spawnArgs = [];
+  let spawnFlags = [];
+  const spawnOptions = {
     env: Object.assign({}, process.env, {
-      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}`
+      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}`,
     }),
-  });
+  };
+  if (platform === 'win32') {
+    spawnArgs.push(process.env.ComSpec || 'cmd.exe');
+    spawnFlags = ['/d', '/s', '/c'];
+    spawnOptions.windowsVerbatimArguments = true;
+  } else {
+    spawnArgs.push('sh');
+    spawnFlags.push('-c');
+  }
+  spawnFlags.push("babel-node src/server/index.ts --extensions \".ts,.tsx\"");
+  spawnArgs.push(spawnFlags);
+  spawnArgs.push(spawnOptions);
+  return spawnArgs;
+};
+
+function startServer(): Promise<any> {
+  console.log(getSpawnArgs());
+  const cp = spawn.apply(null, getSpawnArgs());
   const killCp = (): Promise<any> => {
     _stdion = null;
     return new Promise((resolve, reject) => {
       kill(cp.pid, (err) => err ? reject(err) : resolve());
     });
   };
-  let _stdion: any = stdioPipe(cp, process);;
-  _stdion.stderr();
-  return new Promise((_resolve) => 
+  let _stdion: any = stdioPipe(cp, process);
+  return new Promise((_resolve, _reject) => {
+    _stdion.stderr(() => _reject(killCp));
     _stdion.stdout((data: Buffer) => {
       const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
       if (match && match[1]) {
@@ -48,20 +66,31 @@ function startServer(): Promise<any> {
         _resolve(killCp);
       }
     })
-  );
+  });
 }
 
 async function runNodemon(): Promise<any> {
-  let nodemonExa = await startServer();
+  let nodemonExa;
   const watch = chokidar.watch([path.join(srcDir, 'server')], {});
-  watch.on('change', delay(100, () => nodemonExa().catch((e) => {
-    console.log(e);
-  }).finally(() => startServer() .then((exa: any) => exa && (nodemonExa = exa)))));
-  return async ():Promise<any> => nodemonExa().then(() => {
+  try {
+    nodemonExa = await startServer();
+  } catch (e) {
+    nodemonExa = e;
+  } finally  {
+    watch.on('change', delay(100, () => nodemonExa().finally(() => startServer()
+      .then((exa: any) => exa && (nodemonExa = exa))
+      .catch((exa: any) => exa && (nodemonExa = exa)))));
+  }
+  return async ():Promise<any> => nodemonExa().finally(() => {
     watch.close();
   });
 }
 
 process.on('exit', () => clearNodemon());
 
-export default async (app?: any) => clearNodemon().then(() => clearNodemon = runNodemon()).then(() => host);
+export default async (app?: any) => clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+  if (host) {
+    return host;
+  }
+  throw new Error(`server run fail`)
+});
