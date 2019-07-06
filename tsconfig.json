@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",    // 编译目标平台
-    "module": "commonjs", // 组织代码的方式
+    "module": "es2015", // 组织代码的方式
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,  // 让TypeScript支持为带有装饰器的声明生成元数据
     "experimentalDecorators": true, // 是否启用实验性装饰器特性
@@ -10,11 +10,7 @@
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "outDir": "./build",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"],
-    },
+    "baseUrl": "./",
     "lib": [
       "es2017",
       "dom"

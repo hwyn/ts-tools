@@ -17,6 +17,7 @@
   "private": true,
   "license": "MIT",
   "devDependencies": {
+    "@babel/plugin-transform-async-to-generator": "^7.5.0",
     "@types/assets-webpack-plugin": "^3.9.0",
     "@types/browser-sync": "0.0.43",
     "@types/copy-webpack-plugin": "^4.4.4",
@@ -36,14 +37,14 @@
     "ng-zorro-antd": "^7.5.1"
   },
   "dependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/node": "^7.0.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.0",
+    "@babel/node": "^7.2.2",
     "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/plugin-transform-typescript": "^7.4.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-env": "^7.4.2",
     "@babel/preset-typescript": "^7.3.3",
     "@types/node": "^11.13.0",
     "assets-webpack-plugin": "^3.9.10",
@@ -91,16 +92,16 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start": "babel-node tools/util/run.ts start --extensions '.ts,.tsx'",
-    "debug": "babel src --out-dir debug --extensions '.ts,.tsx'",
-    "build": "babel-node tools/util/run.ts build --extensions '.ts,.tsx'",
-    "build:stats": "babel-node tools/util/run.ts build --extensions '.ts,.tsx' --release",
+    "start": "babel-node  --extensions \".ts,.tsx\" tools/util/run.ts start",
+    "debug": "babel src --out-dir debug --extensions \".ts,.tsx\"",
+    "build": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\"",
+    "build:stats": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\" --release",
     "build:ssr": "npm run build:client-and-server-bundles && npm run webpack:server",
     "build:client-and-server-bundles": "ng build --prod && ng run angular.io-example:server",
-    "clean": "babel-node tools/util/run.ts clean --extensions '.ts,.tsx' ",
+    "clean": "babel-node tools/util/run.ts clean --extensions \".ts,.tsx\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tools-debug": "babel tools --out-dir debug --extensions '.ts,.tsx'",
-    "dist": "babel tools --extensions '.js,.ts,.tsx' --out-dir dist"
+    "tools-debug": "babel tools --out-dir debug --extensions \".ts,.tsx\"",
+    "dist": "babel tools --extensions \".js,.ts,.tsx\" --out-dir dist"
   },
   "babel": {
     "presets": [
@@ -115,6 +116,7 @@
       "@babel/preset-typescript"
     ],
     "plugins": [
+      "@babel/plugin-transform-async-to-generator",
       "@babel/plugin-syntax-dynamic-import",
       "@babel/plugin-syntax-import-meta",
       "@babel/plugin-transform-typescript",

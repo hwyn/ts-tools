@@ -5,7 +5,7 @@ export const exists = (path: string): Promise<boolean> => {
   return Promise.resolve(existsSync(path));
 }
 
-export const cleanDir = async (path: string, options: any = {}): Promise<undefined> => new Promise((resolve, reject) => {
+export const cleanDir = async (path: string, options?: any): Promise<undefined> => new Promise((resolve, reject) => {
   if (!existsSync(path)) {
     return resolve();
   }
@@ -17,7 +17,7 @@ export const cleanDir = async (path: string, options: any = {}): Promise<undefin
   });
 });
 
-export const mkdir = async (path: string, options: any = {}): Promise<any> => cleanDir(path).then(() => {
+export const mkdir = async (path: string, options?: any): Promise<any> => cleanDir(path).then(() => {
   return new Promise((resolve, reject) => {
     fsMkkdir(path, Object.assign({ recursive: true }, options), (err) => {
       if (err) {
@@ -29,7 +29,7 @@ export const mkdir = async (path: string, options: any = {}): Promise<any> => cl
 });
 
 
-export const writeFile = async (path: string, data: Buffer | string, options: any = {}): Promise<string> => {
+export const writeFile = async (path: string, data: Buffer | string, options?: any): Promise<string> => {
   let _code = data;
   if (data instanceof String) {
     _code = new Buffer(data as string);
