@@ -16,7 +16,7 @@ const _mergeServerConfig = (typeof mergeServerConfig === 'function' ? mergeServe
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
   entry: {
-    index: path.resolve(srcDir, 'server/index.ts'),
+    server: path.resolve(srcDir, 'server/index.ts'),
   },
   output: {
     path: buildDir,
