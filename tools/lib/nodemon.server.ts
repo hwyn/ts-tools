@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 import { spawn } from 'child_process';
 import { config } from '../config';
 
-const { baseDir, srcDir } = config;
+const { baseDir, srcDir, buildDir } = config;
 let host: number | string = 'localhost:3000';
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
@@ -48,7 +48,6 @@ const getSpawnArgs = () => {
 };
 
 function startServer(): Promise<any> {
-  console.log(getSpawnArgs());
   const cp = spawn.apply(null, getSpawnArgs());
   const killCp = (): Promise<any> => {
     _stdion = null;
@@ -71,7 +70,7 @@ function startServer(): Promise<any> {
 
 async function runNodemon(): Promise<any> {
   let nodemonExa;
-  const watch = chokidar.watch([path.join(srcDir, 'server')], {});
+  const watch = chokidar.watch([path.join(srcDir, 'server'), path.join(buildDir, 'server')], {});
   try {
     nodemonExa = await startServer();
   } catch (e) {
