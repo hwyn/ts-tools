@@ -48,7 +48,6 @@ const getSpawnArgs = () => {
 };
 
 function startServer() {
-  console.log(getSpawnArgs());
   const cp = _child_process.spawn.apply(null, getSpawnArgs());
   const killCp = () => {
     _stdion = null;
