@@ -9,7 +9,8 @@ let host = 'localhost:3000';
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
   let _delay = null;
-  return () => !_delay && (_delay = setTimeout(() => callback().finally(() => _delay = null), timer));
+  const clearDely = () => _delay = null;
+  return () => !_delay && (_delay = setTimeout(() => callback().then(clearDely).catch(clearDely), timer));
 };
 
 const stdioPipe = (cp, pro) => {
@@ -71,18 +72,16 @@ function startServer() {
 runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* () {
     let nodemonExa;
     const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server'), _path.default.join(buildDir, 'server')], {});
+    const finallServer = () => startServer().then(exa => exa && (nodemonExa = exa)).catch(exa => exa && (nodemonExa = exa));
+    const watchClose = () => watch.close();
     try {
       nodemonExa = yield startServer();
     } catch (e) {
       nodemonExa = e;
     } finally {
-      watch.on('change', delay(100, () => nodemonExa().finally(() => startServer().
-      then(exa => exa && (nodemonExa = exa)).
-      catch(exa => exa && (nodemonExa = exa)))));
+      watch.on('change', delay(100, () => nodemonExa().then(finallServer).catch(finallServer)));
     }
-    return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().finally(() => {
-          watch.close();
-        });}));
+    return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(watchClose).catch(watchClose);}));
   });return _runNodemon.apply(this, arguments);}
 
 process.on('exit', () => clearNodemon());var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(

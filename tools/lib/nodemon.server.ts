@@ -9,7 +9,8 @@ let host: number | string = 'localhost:3000';
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
   let _delay: any = null;
-  return () => !_delay && (_delay = setTimeout(() => callback().finally(() => _delay = null), timer));
+  const clearDely = (): any => _delay = null;
+  return () => !_delay && (_delay = setTimeout(() => callback().then(clearDely).catch(clearDely), timer));
 };
 
 const stdioPipe = (cp: any, pro: any): any => {
@@ -28,7 +29,7 @@ const getSpawnArgs = () => {
   const platform = process.platform;
   const spawnArgs = [];
   let spawnFlags = [];
-  const spawnOptions = {
+  const spawnOptions: any = {
     env: Object.assign({}, process.env, {
       PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}`,
     }),
@@ -69,20 +70,18 @@ function startServer(): Promise<any> {
 }
 
 async function runNodemon(): Promise<any> {
-  let nodemonExa;
+  let nodemonExa: any;
   const watch = chokidar.watch([path.join(srcDir, 'server'), path.join(buildDir, 'server')], {});
+  const finallServer = () => startServer().then((exa: any) => exa && (nodemonExa = exa)).catch((exa: any) => exa && (nodemonExa = exa));
+  const watchClose = () => watch.close();
   try {
     nodemonExa = await startServer();
   } catch (e) {
     nodemonExa = e;
   } finally  {
-    watch.on('change', delay(100, () => nodemonExa().finally(() => startServer()
-      .then((exa: any) => exa && (nodemonExa = exa))
-      .catch((exa: any) => exa && (nodemonExa = exa)))));
+    watch.on('change', delay(100, () => nodemonExa().then(finallServer).catch(finallServer)));
   }
-  return async ():Promise<any> => nodemonExa().finally(() => {
-    watch.close();
-  });
+  return async ():Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
 }
 
 process.on('exit', () => clearNodemon());
