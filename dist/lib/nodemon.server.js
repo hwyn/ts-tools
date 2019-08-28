@@ -23,7 +23,7 @@ const stdioPipe = (cp, pro) => {
 
 };
 
-const getSpawnArgs = () => {
+const getSpawnArgs = entryFile => {
   const platform = process.platform;
   const spawnArgs = [];
   let spawnFlags = [];
@@ -40,14 +40,14 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
-  spawnFlags.push("babel-node src/server/index.ts --extensions \".ts,.tsx\"");
+  spawnFlags.push(`babel-node ${entryFile} --extensions \".ts,.tsx\"`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
 };
 
-function startServer() {
-  const cp = _child_process.spawn.apply(null, getSpawnArgs());
+function startServer(entryFile) {
+  const cp = _child_process.spawn.apply(null, getSpawnArgs(entryFile));
   const killCp = () => {
     _stdion = null;
     return new Promise((resolve, reject) => {
@@ -67,13 +67,13 @@ function startServer() {
   });
 }function
 
-runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* () {
+runNodemon(_x) {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* (entryFile) {
     let nodemonExa;
     const watch = _chokidar.default.watch([_path.default.join(srcDir, 'server'), _path.default.join(buildDir, 'server')], {});
-    const finallServer = () => startServer().then(exa => exa && (nodemonExa = exa)).catch(exa => exa && (nodemonExa = exa));
+    const finallServer = () => startServer(entryFile).then(exa => exa && (nodemonExa = exa)).catch(exa => exa && (nodemonExa = exa));
     const watchClose = () => watch.close();
     try {
-      nodemonExa = yield startServer();
+      nodemonExa = yield startServer(entryFile);
     } catch (e) {
       nodemonExa = e;
     } finally {
@@ -84,9 +84,9 @@ runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() 
 
 process.on('exit', () => clearNodemon());var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
 
-  function* (app) {return clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+  function* (app, entryFile) {return clearNodemon().then(() => clearNodemon = runNodemon(entryFile)).then(() => {
       if (host) {
         return host;
       }
       throw new Error(`server run fail`);
-    });});return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;
+    });});return function (_x2, _x3) {return _ref.apply(this, arguments);};}();exports.default = _default;

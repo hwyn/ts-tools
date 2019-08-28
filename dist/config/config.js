@@ -3,7 +3,7 @@ var _fs = require("fs");
 var _fs2 = require("../core/fs");
 var _package = _interopRequireDefault(require("../../package.json"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const factoryConfig = str => attr => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)`, 'g'), '$1');
+const factoryConfig = str => attr => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)\[\\s\\S\]*`, 'g'), '$1');
 
 const resolve = base => _path => _path2.default.resolve(base, _path);
 
@@ -14,7 +14,7 @@ const getArvgConfig = factoryConfig(argvStr);
 
 const webpackDir = getArvgConfig('webpackDir');
 const runClient = getArvgConfig('runClient') === 'false' ? false : true;
-console.log(runClient);
+
 const isDebug = !argv.includes('--release');
 
 

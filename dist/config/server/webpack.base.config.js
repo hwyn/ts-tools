@@ -12,7 +12,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsR
 
 () => (0, _webpackMerge.default)(_webpack.default, {
   target: 'node',
-  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig && _mergeServerConfig.entry : {
+  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig.entry : {
     server: _path.default.resolve(srcDir, 'server/index.ts') },
 
   output: {

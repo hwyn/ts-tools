@@ -23,7 +23,7 @@ const stdioPipe = (cp: any, pro: any): any => {
   };
 };
 
-const getSpawnArgs = () => {
+const getSpawnArgs = (entryFile: string) => {
   const platform = process.platform;
   const spawnArgs = [];
   let spawnFlags = [];
@@ -40,14 +40,14 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
-  spawnFlags.push("babel-node src/server/index.ts --extensions \".ts,.tsx\"");
+  spawnFlags.push(`babel-node ${entryFile} --extensions \".ts,.tsx\"`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
 };
 
-function startServer(): Promise<any> {
-  const cp = spawn.apply(null, getSpawnArgs());
+function startServer(entryFile: string): Promise<any> {
+  const cp = spawn.apply(null, getSpawnArgs(entryFile));
   const killCp = (): Promise<any> => {
     _stdion = null;
     return new Promise((resolve, reject) => {
@@ -67,13 +67,13 @@ function startServer(): Promise<any> {
   });
 }
 
-async function runNodemon(): Promise<any> {
+async function runNodemon(entryFile: string): Promise<any> {
   let nodemonExa: any;
   const watch = chokidar.watch([path.join(srcDir, 'server'), path.join(buildDir, 'server')], {});
-  const finallServer = () => startServer().then((exa: any) => exa && (nodemonExa = exa)).catch((exa: any) => exa && (nodemonExa = exa));
+  const finallServer = () => startServer(entryFile).then((exa: any) => exa && (nodemonExa = exa)).catch((exa: any) => exa && (nodemonExa = exa));
   const watchClose = () => watch.close();
   try {
-    nodemonExa = await startServer();
+    nodemonExa = await startServer(entryFile);
   } catch (e) {
     nodemonExa = e;
   } finally  {
@@ -84,7 +84,7 @@ async function runNodemon(): Promise<any> {
 
 process.on('exit', () => clearNodemon());
 
-export default async (app?: any) => clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+export default async (app: any, entryFile: string) => clearNodemon().then(() => clearNodemon = runNodemon(entryFile)).then(() => {
   if (host) {
     return host;
   }

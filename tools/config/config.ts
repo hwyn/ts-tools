@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'fs';
 import { requireSync, exists } from '../core/fs';
 import pkg from '../../package.json';
 
-const factoryConfig = (str: string) => (attr: string) => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)`, 'g'), '$1');
+const factoryConfig = (str: string) => (attr: string) => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)\[\\s\\S\]*`, 'g'), '$1');
 
 const resolve = (base: string) => (_path: string) => path.resolve(base, _path);
 
@@ -14,7 +14,7 @@ const getArvgConfig = factoryConfig(argvStr);
 
 const webpackDir = getArvgConfig('webpackDir');
 const runClient = getArvgConfig('runClient') === 'false' ? false : true;
-console.log(runClient);
+
 const isDebug = !argv.includes('--release');
 
 
