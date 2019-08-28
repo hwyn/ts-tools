@@ -4,7 +4,7 @@ var _chokidar = _interopRequireDefault(require("chokidar"));
 var _child_process = require("child_process");
 var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
 
-const { baseDir, srcDir, buildDir } = _config.config;
+const { baseDir, srcDir, buildDir, runClient } = _config.config;
 let host = 'localhost:3000';
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -56,12 +56,14 @@ function startServer(entryFile) {
   };
   let _stdion = stdioPipe(cp, process);
   return new Promise((_resolve, _reject) => {
+    let count = 0;
     _stdion.stderr(() => _reject(killCp));
     _stdion.stdout(data => {
-      const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
-      if (match && match[1]) {
+      const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
+      if (match && match[1] && count === 0) {
         host = match[1];
         _resolve(killCp);
+        count++;
       }
     });
   });

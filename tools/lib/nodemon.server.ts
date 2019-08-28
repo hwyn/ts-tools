@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 import { spawn } from 'child_process';
 import { config } from '../config';
 
-const { baseDir, srcDir, buildDir } = config;
+const { baseDir, srcDir, buildDir, runClient } = config;
 let host: number | string = 'localhost:3000';
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
@@ -56,12 +56,14 @@ function startServer(entryFile: string): Promise<any> {
   };
   let _stdion: any = stdioPipe(cp, process);
   return new Promise((_resolve, _reject) => {
+    let count = 0;
     _stdion.stderr(() => _reject(killCp));
     _stdion.stdout((data: Buffer) => {
-      const match = data.toString('utf-8').match(/http:\/\/(.*?)\//);
-      if (match && match[1]) {
+      const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
+      if (match && match[1] && count === 0) {
         host = match[1];
         _resolve(killCp);
+        count ++;
       }
     })
   });

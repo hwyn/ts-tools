@@ -17,6 +17,7 @@ function* () {
   runClient ? yield (0, _dev2.default)(app) : null;
   yield (0, _devServer.default)(app);
   const host = yield (0, _dev.default)(app);
+  if (!runClient) return Promise.resolve();
   return new Promise((resolve, reject) => {
     _browserSync.default.create().init({
       ui: false,
