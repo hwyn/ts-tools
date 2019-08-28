@@ -3,7 +3,10 @@ var _fs = require("fs");
 var _fs2 = require("../core/fs");
 var _package = _interopRequireDefault(require("../../package.json"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const factoryConfig = str => attr => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)\[\\s\\S\]*`, 'g'), '$1');
+const factoryConfig = str => attr => {
+  if (str.indexOf(attr) === -1) return null;
+  return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)\[\\s\\S\]*`, 'g'), '$1');
+};
 
 const resolve = base => _path => _path2.default.resolve(base, _path);
 
