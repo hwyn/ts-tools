@@ -17,6 +17,7 @@ export default async (): Promise<any> => {
   runClient ? await clientHotDev(app) : null;
   await serverEntryHotDev(app);
   const host = await serverHotDev(app);
+  if (!runClient) return Promise.resolve();
   return new Promise((resolve, reject) => {
     browserSync.create().init({
       ui: false,
