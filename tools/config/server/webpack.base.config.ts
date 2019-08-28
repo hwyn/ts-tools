@@ -12,7 +12,7 @@ const _mergeServerConfig = getMergeConfig(`webpack.server.js`, jsRules, undefine
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
-  entry: {
+  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig && _mergeServerConfig.entry :  {
     server: path.resolve(srcDir, 'server/index.ts'),
   },
   output: {
