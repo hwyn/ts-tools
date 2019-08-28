@@ -3,9 +3,22 @@ var _fs = require("fs");
 var _fs2 = require("../core/fs");
 var _package = _interopRequireDefault(require("../../package.json"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const isDebug = !process.argv.includes('--release');
-const baseDir = process.cwd();
+const factoryConfig = str => attr => str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^,\]+\)`, 'g'), '$1');
+
 const resolve = base => _path => _path2.default.resolve(base, _path);
+
+const argv = process.argv;
+const argvStr = argv.join(',');
+
+const getArvgConfig = factoryConfig(argvStr);
+
+const webpackDir = getArvgConfig('webpackDir');
+const runClient = getArvgConfig('runClient') === 'false' ? false : true;
+console.log(runClient);
+const isDebug = !argv.includes('--release');
+
+
+const baseDir = process.cwd();
 const baseResolve = resolve(baseDir);
 const processPkg = (0, _fs2.requireSync)(`${baseDir}/package.json`);
 const babel = `${baseDir}/.babelrc`;
@@ -19,6 +32,8 @@ const mergePackage = Object.assign({}, {
 
 
 {
+  runClient,
+  webpackDir,
   baseDir,
   isDebug,
   srcDir: baseResolve('src'),

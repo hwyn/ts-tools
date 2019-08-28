@@ -3,11 +3,11 @@ import { Configuration } from 'webpack';
 import config from '../config';
 import { requireSync } from '../../core/fs';
 
-const { baseDir, isDebug } = config;
-const webpackDir = 'webpack';
+const { baseDir, isDebug, webpackDir } = config;
+const webpackDirConfig = webpackDir || 'webpack';
 
 export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): Configuration => {
-  const mergeClientConfig = requireSync(`${baseDir}/${webpackDir}/${fileName}`);
+  const mergeClientConfig = requireSync(`${baseDir}/${webpackDirConfig}/${fileName}`);
   return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
 };
 

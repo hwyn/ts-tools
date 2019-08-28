@@ -8,13 +8,13 @@ import clientHotDev from '../lib/dev.client';
 import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
 
-const { buildDir } = config;
+const { buildDir, runClient } = config;
 const app = express();
 export default async (): Promise<any> => {
   app.use(express.static(path.join(buildDir, 'public')));
   await cleanDir();
   await dllDev();
-  await clientHotDev(app);
+  runClient ? await clientHotDev(app) : null;
   await serverEntryHotDev(app);
   const host = await serverHotDev(app);
   return new Promise((resolve, reject) => {

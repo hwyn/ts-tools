@@ -15,9 +15,7 @@ const delay = (timer, callback) => {
 
 const stdioPipe = (cp, pro) => {
   const stdio = fnName => (callback) =>
-  cp[fnName].on('data', (data) =>
-  pro[fnName].write(callback ? callback(data) || data : data));
-
+  cp[fnName].on('data', data => pro[fnName].write(callback ? callback(data) || data : data));
 
   return {
     stdout: stdio('stdout'),
