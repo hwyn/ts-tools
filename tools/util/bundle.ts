@@ -1,5 +1,8 @@
 import webpack, { Configuration, Stats } from 'webpack';
 import { webpackServer, webpackClient, webpackDll, webpackServerEntry } from '../config';
+import { config } from '../config'
+
+const { runClient } = config;
 
 export const isRun = (webpackconfig: Configuration) => {
   return Array.isArray(webpackconfig.entry) ? !!webpackconfig.entry.length : !!Object.keys(webpackconfig.entry).length;
@@ -27,7 +30,7 @@ export function webpackRun(webpackconfig: Configuration | Configuration[], _stas
 export default async (): Promise<any> => {
   return webpackRun(webpackDll()).then(() => webpackRun([
     webpackServerEntry(),
-    webpackClient(),
+    ...runClient ? [ webpackClient() ]: [],
   ])).then(() => webpackRun(webpackServer()));
 };
 
