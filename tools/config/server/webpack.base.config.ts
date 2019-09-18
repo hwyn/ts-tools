@@ -2,13 +2,13 @@ import nodeExtrnals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
 import path from 'path';
-import webpackConfig, { getMergeConfig } from '../base/webpack.config';
+import webpackConfig, { getMergeConfig, filterAttr } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc } = config;
 const jsRules = jsLoader({ options: babellrc });
-const _mergeServerConfig = getMergeConfig(`webpack.server.js`, jsRules, undefined);
+const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
@@ -25,9 +25,9 @@ export default (): Configuration => merge(webpackConfig, {
     modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
   },
-  externals: [
+  externals: _mergeServerConfig.isNodExternals !== false ? [
     nodeExtrnals(),
-  ],
+  ] : [],
   module: {
     rules: [
       jsRules.babel(),
@@ -47,4 +47,4 @@ export default (): Configuration => merge(webpackConfig, {
     __filename: false,
     __dirname: false,
   },
-}, _mergeServerConfig);
+}, filterAttr(_mergeServerConfig, ['isNodExternals']));

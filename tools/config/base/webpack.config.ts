@@ -11,6 +11,12 @@ export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): C
   return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
 };
 
+export const filterAttr = (mergeConfig: any, filter: string[]) => {
+  const config = {};
+  Object.keys(mergeConfig || {}).filter((key: string) => !filter.includes(key)).forEach((key: string) => config[key] = filter[key]);
+  return config;
+};
+
 export default {
   context: baseDir,
   stats: {

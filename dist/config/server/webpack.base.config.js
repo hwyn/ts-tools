@@ -8,7 +8,7 @@ var _config = _interopRequireDefault(require("../config"));function _interopRequ
 
 const { srcDir, baseDir, buildDir, babellrc } = _config.default;
 const jsRules = (0, _util.jsLoader)({ options: babellrc });
-const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsRules, undefined);var _default =
+const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsRules, undefined) || {};var _default =
 
 () => (0, _webpackMerge.default)(_webpack.default, {
   target: 'node',
@@ -25,9 +25,9 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsR
     modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'] },
 
-  externals: [
-  (0, _webpackNodeExternals.default)()],
-
+  externals: _mergeServerConfig.isNodExternals !== false ? [
+  (0, _webpackNodeExternals.default)()] :
+  [],
   module: {
     rules: [
     jsRules.babel(),
@@ -47,4 +47,4 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsR
     __filename: false,
     __dirname: false } },
 
-_mergeServerConfig);exports.default = _default;
+(0, _webpack.filterAttr)(_mergeServerConfig, ['isNodExternals']));exports.default = _default;
