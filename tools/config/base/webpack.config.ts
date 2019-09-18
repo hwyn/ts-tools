@@ -13,7 +13,7 @@ export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): C
 
 export const filterAttr = (mergeConfig: any, filter: string[]) => {
   const config = {};
-  Object.keys(mergeConfig || {}).filter((key: string) => !filter.includes(key)).forEach((key: string) => config[key] = filter[key]);
+  Object.keys(mergeConfig || {}).filter((key: string) => !filter.includes(key)).forEach((key: string) => config[key] = mergeConfig[key]);
   return config;
 };
 
