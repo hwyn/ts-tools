@@ -69,8 +69,8 @@ function startServer(): Promise<any> {
     _stdion.stdout((data: Buffer) => {
       if (runClient) {
         const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
-        if (match && match[1] && count === 0) {
-          host = match[1];
+        if (match && match[2] && count === 0) {
+          host = match[2];
           _resolve(killCp);
           count ++;
         }
