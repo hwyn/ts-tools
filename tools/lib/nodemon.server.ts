@@ -7,7 +7,7 @@ import { config } from '../config';
 
 const { baseDir, srcDir, buildDir, runClient } = config;
 const webpackConfig = webpackServer() as any;
-const entryFile = webpackConfig.entryFile || 'server/index.ts';
+const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
 const watchFile = webpackConfig.watchFile || [path.join(srcDir, 'server'), path.join(buildDir, 'server')];
 
 let host: number | string = 'localhost:3000';
