@@ -56,7 +56,7 @@ function startServer(): Promise<any> {
   const killCp = (): Promise<any> => {
     _stdion = null;
     return new Promise((resolve, reject) => {
-      kill(cp.pid, (err) => err ? reject(err) : resolve());
+      kill(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve());
     });
   };
   let _stdion: any = stdioPipe(cp, process);
@@ -97,9 +97,10 @@ async function runNodemon(): Promise<any> {
   return async ():Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
 }
 
+process.on('SIGINT', () => process.exit(1));
 process.on('exit', () => clearNodemon());
 
-export default async (app: any) => clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+export default async (app: any) => clearNodemon().then(runNodemon).then((clear: any) => clearNodemon = clear).then(() => {
   if (host) {
     return host;
   }

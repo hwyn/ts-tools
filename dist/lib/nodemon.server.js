@@ -7,7 +7,7 @@ var _config = require("../config");function _interopRequireDefault(obj) {return 
 
 const { baseDir, srcDir, buildDir, runClient } = _config.config;
 const webpackConfig = (0, _config.webpackServer)();
-const entryFile = webpackConfig.entryFile || 'server/index.ts';
+const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
 const watchFile = webpackConfig.watchFile || [_path.default.join(srcDir, 'server'), _path.default.join(buildDir, 'server')];
 
 let host = 'localhost:3000';
@@ -56,7 +56,7 @@ function startServer() {
   const killCp = () => {
     _stdion = null;
     return new Promise((resolve, reject) => {
-      (0, _treeKill.default)(cp.pid, err => err ? reject(err) : resolve());
+      (0, _treeKill.default)(cp.pid, 'SIGKILL', err => err ? reject(err) : resolve());
     });
   };
   let _stdion = stdioPipe(cp, process);
@@ -69,8 +69,8 @@ function startServer() {
     _stdion.stdout(data => {
       if (runClient) {
         const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
-        if (match && match[1] && count === 0) {
-          host = match[1];
+        if (match && match[2] && count === 0) {
+          host = match[2];
           _resolve(killCp);
           count++;
         }
@@ -97,9 +97,10 @@ runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() 
     return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(watchClose).catch(watchClose);}));
   });return _runNodemon.apply(this, arguments);}
 
+process.on('SIGINT', () => process.exit(1));
 process.on('exit', () => clearNodemon());var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
 
-  function* (app) {return clearNodemon().then(() => clearNodemon = runNodemon()).then(() => {
+  function* (app) {return clearNodemon().then(runNodemon).then(clear => clearNodemon = clear).then(() => {
       if (host) {
         return host;
       }
