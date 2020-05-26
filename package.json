@@ -80,6 +80,7 @@
     "rimraf": "^2.6.3",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "ts-node": "^8.10.1",
     "tree-kill": "^1.2.1",
     "ts-loader": "^5.3.3",
     "tslint": "^5.16.0",
@@ -91,7 +92,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "start": "babel-node  --extensions \".ts,.tsx\" tools/util/run.ts start webpackDir=webpack runClient=false",
+    "start": "babel-node --extensions \".ts,.tsx\" tools/util/run.ts start webpackDir=webpack runClient=false",
     "debug": "babel src --out-dir debug --extensions \".ts,.tsx\"",
     "build": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\"",
     "build:stats": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\" --release",
