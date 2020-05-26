@@ -46,7 +46,7 @@ const getSpawnArgs = () => {
     spawnFlags.push('-c');
   }
   // spawnFlags.push(`babel-node ${entryFile} --extensions \".ts,.tsx\"`);
-  spawnFlags.push(`ts-node -r --project ${baseDir}/tsconfig.json ${entryFile}`);
+  spawnFlags.push(`ts-node --project ${baseDir}/tsconfig.json ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
