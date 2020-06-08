@@ -95,7 +95,7 @@ runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() 
         return nodemonExa().then(finallServer).catch(finallServer);
       }));
     }
-    return (/*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(watchClose).catch(watchClose);}));
+    return /*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(watchClose).catch(watchClose);});
   });return _runNodemon.apply(this, arguments);}
 
 process.on('SIGINT', () => process.exit(1));
