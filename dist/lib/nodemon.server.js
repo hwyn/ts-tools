@@ -10,7 +10,7 @@ const webpackConfig = (0, _config.webpackServer)();
 const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
 const watchFile = webpackConfig.watchFile || [_path.default.join(srcDir, 'server'), _path.default.join(buildDir, 'server')];
 
-let host = 'localhost:3000';
+let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
   let _delay = null;
@@ -33,9 +33,7 @@ const getSpawnArgs = () => {
   const spawnArgs = [];
   let spawnFlags = [];
   const spawnOptions = {
-    env: Object.assign({}, process.env, {
-      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }) };
-
+    env: { ...process.env, PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` } };
 
   if (platform === 'win32') {
     spawnArgs.push(process.env.ComSpec || 'cmd.exe');

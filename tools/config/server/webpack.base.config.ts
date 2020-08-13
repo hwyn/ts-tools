@@ -2,6 +2,7 @@ import nodeExtrnals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
 import path from 'path';
+import CopyPlugin from 'copy-webpack-plugin';
 import webpackConfig, { getMergeConfig, filterAttr } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
 import config from '../config';
@@ -9,6 +10,7 @@ import config from '../config';
 const { srcDir, baseDir, buildDir, babellrc } = config;
 const jsRules = jsLoader({ options: babellrc });
 const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
+const copyPlugin = new CopyPlugin([{ from: path.join(baseDir, '.env'), to: path.join(buildDir, '.env') }]);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
@@ -38,7 +40,7 @@ export default (): Configuration => merge(webpackConfig, {
       }),
     ],
   },
-  plugins: [],
+  plugins: [ copyPlugin ],
   node: {
     console: false,
     global: false,

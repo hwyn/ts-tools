@@ -9,7 +9,6 @@ import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = config;
-
 const copyPlugin = new CopyPlugin([{ from: path.join(baseDir, 'public'), to: path.join(buildDir, 'public') }]);
 
 const cssRules = cssLoader({}, isDebug);
@@ -21,9 +20,7 @@ const jsRules = jsLoader({
       }],
       ...(presets || []).slice(1),
     ],
-    plugins: [
-      ...(plugins || []),
-    ],
+    plugins: plugins || []
   }
 });
 

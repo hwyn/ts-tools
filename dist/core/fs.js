@@ -48,6 +48,5 @@ const requireSync = path => {
   if (!(0, _fs.existsSync)(path)) {
     return;
   }
-  const moduleRequire = require(path);
-  return moduleRequire;
+  return require(path);
 };exports.requireSync = requireSync;

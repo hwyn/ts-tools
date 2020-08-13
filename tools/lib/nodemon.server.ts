@@ -10,7 +10,7 @@ const webpackConfig = webpackServer() as any;
 const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
 const watchFile = webpackConfig.watchFile || [path.join(srcDir, 'server'), path.join(buildDir, 'server')];
 
-let host: number | string = 'localhost:3000';
+let host: number | string = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
   let _delay: any = null;
@@ -33,9 +33,7 @@ const getSpawnArgs = () => {
   const spawnArgs = [];
   let spawnFlags = [];
   const spawnOptions: any = {
-    env: Object.assign({}, process.env, {
-      PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}`,
-    }),
+    env: { ...process.env, PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }
   };
   if (platform === 'win32') {
     spawnArgs.push(process.env.ComSpec || 'cmd.exe');
@@ -73,7 +71,7 @@ function startServer(): Promise<any> {
         if (match && match[2] && count === 0) {
           host = match[2];
           _resolve(killCp);
-          count ++;
+          count++;
         }
       }
     });
@@ -89,13 +87,13 @@ async function runNodemon(): Promise<any> {
     nodemonExa = await startServer();
   } catch (e) {
     nodemonExa = e;
-  } finally  {
+  } finally {
     watch.on('change', delay(100, () => {
       console.log(`server reset run......`);
       return nodemonExa().then(finallServer).catch(finallServer);
     }));
   }
-  return async ():Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
+  return async (): Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
 }
 
 process.on('SIGINT', () => process.exit(1));

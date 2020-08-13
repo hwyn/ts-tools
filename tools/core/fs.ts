@@ -48,6 +48,5 @@ export const requireSync = (path: string) => {
   if (!existsSync(path)) {
     return ;
   }
-  const moduleRequire = require(path);
-  return moduleRequire;
+  return require(path);
 };
