@@ -22,7 +22,7 @@ const factoryConcatUse = (defaultUse: any[] | any) => (loader: string[], mergeOp
   return (Array.isArray(defaultUse) ? defaultUse : defaultUse ? [defaultUse] : []).concat(factoryLoaders(loader, mergeOption));
 }
 
-export function jsLoader(config: any) {
+export function jsLoader(config: any): any {
   const { options = {}, exclude = /node_modules/, include } = config;
   const concatBabelUse = factoryConcatUse(factoryUse('babel-loader', options));
   const factory = (regExp: RegExp, loader?: string[], isNoBabelLoader?: boolean) => (_regExp?: any, mergeOption?: any) => {
@@ -40,8 +40,8 @@ export function jsLoader(config: any) {
   return {
     babel: factory(/\.(js|jsx)$/),
     ts: factory(/\.(ts|tsx)$/, ['ts-loader']),
-    ngOptimizerJs: factory(/\.(js)$/, ['@angular-devkit/build-optimizer/webpack-loader'], true),
     ngTs: factory(/(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/, ['@ngtools/webpack'], true),
+    ngOptimizerJs: factory(/\.(js)$/, ['@angular-devkit/build-optimizer/webpack-loader'], true)
   };
 }
 

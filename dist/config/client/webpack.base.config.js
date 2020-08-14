@@ -28,6 +28,7 @@ const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.client.js`, js
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
+  context: baseDir,
   entry: {
     main: _path.default.resolve(srcDir, 'client/main.ts') },
 
