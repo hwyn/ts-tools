@@ -2,7 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
-import AssetsWebpackPlugin from 'assets-webpack-plugin';
+import WebpackAssetsManifest from 'webpack-assets-manifest';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
@@ -56,11 +56,14 @@ export default (): Configuration => merge(webpackConfig, {
       filename: 'styleSheet/[name].[hash:8].css',
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
     }),
-    new AssetsWebpackPlugin({
-      filename: 'dll.json',
-      path: buildDir,
-      prettyPrint: true,
-      update: true,
+    new WebpackAssetsManifest({
+      output: `${buildDir}/dll.json`,
+      writeToDisk: true,
+      publicPath: true,
+      customize: ({ key, value }) => {
+        if (key.toLowerCase().endsWith('.map')) return false;
+        return { key, value };
+      }
     }),
     new webpack.DllPlugin({
       path: path.join(buildDir, "static/dll-manifest.json"),

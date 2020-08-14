@@ -2,7 +2,7 @@
 var _webpack = _interopRequireWildcard(require("webpack"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
-var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
+var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-manifest"));
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
@@ -56,11 +56,14 @@ const _mergeDllConfig = (0, _webpack2.getMergeConfig)(`webpack.dll.js`, jsRules,
     filename: 'styleSheet/[name].[hash:8].css',
     chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
 
-  new _assetsWebpackPlugin.default({
-    filename: 'dll.json',
-    path: buildDir,
-    prettyPrint: true,
-    update: true }),
+  new _webpackAssetsManifest.default({
+    output: `${buildDir}/dll.json`,
+    writeToDisk: true,
+    publicPath: true,
+    customize: ({ key, value }) => {
+      if (key.toLowerCase().endsWith('.map')) return false;
+      return { key, value };
+    } }),
 
   new _webpack.default.DllPlugin({
     path: _path.default.join(buildDir, "static/dll-manifest.json"),

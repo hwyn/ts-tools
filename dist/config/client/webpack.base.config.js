@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
-var _assetsWebpackPlugin = _interopRequireDefault(require("assets-webpack-plugin"));
+var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-manifest"));
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 var _fs = require("fs");
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
@@ -49,12 +49,14 @@ const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.client.js`, js
   plugins: [
   new _webpack.ProgressPlugin(),
   copyPlugin,
-  new _assetsWebpackPlugin.default({
-    filename: 'assets.json',
-    path: buildDir,
-    prettyPrint: true,
-    update: true }),
-
+  new _webpackAssetsManifest.default({
+    output: `${buildDir}/assets.json`,
+    writeToDisk: true,
+    publicPath: true,
+    customize: ({ key, value }) => {
+      if (key.toLowerCase().endsWith('.map')) return false;
+      return { key, value };
+    } }),
   ...((0, _fs.existsSync)(`${buildDir}/static/dll-manifest.json`) ? [
   new _webpack.DllReferencePlugin({
     context: baseDir,

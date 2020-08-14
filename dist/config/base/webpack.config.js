@@ -8,7 +8,7 @@ const webpackDirConfig = webpackDir || 'webpack';
 
 const getMergeConfig = (fileName, jsRules, cssRules) => {
   const mergeClientConfig = (0, _fs.requireSync)(`${baseDir}/${webpackDirConfig}/${fileName}`);
-  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig)(jsRules, cssRules, isDebug);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDebug);
 };exports.getMergeConfig = getMergeConfig;
 
 const filterAttr = (mergeConfig, filter) => {

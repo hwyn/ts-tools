@@ -1,7 +1,7 @@
 import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin, DllReferencePlugin } from 'webpack';
-import AssetsWebpackPlugin from 'assets-webpack-plugin';
+import WebpackAssetsManifest from 'webpack-assets-manifest';
 import CopyPlugin from 'copy-webpack-plugin';
 import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
@@ -49,12 +49,14 @@ export default (): Configuration => merge(webpackConfig, {
   plugins: [
     new ProgressPlugin(),
     copyPlugin,
-    new AssetsWebpackPlugin({
-      filename: 'assets.json',
-      path: buildDir,
-      prettyPrint: true,
-      update: true,
-    }),
+    new WebpackAssetsManifest({
+      output: `${buildDir}/assets.json`,
+      writeToDisk: true,
+      publicPath: true,
+      customize: ({ key, value }) => {
+        if (key.toLowerCase().endsWith('.map')) return false;
+        return { key, value };
+      }}),
     ...existsSync(`${buildDir}/static/dll-manifest.json`) ? [
       new DllReferencePlugin({
         context: baseDir,
