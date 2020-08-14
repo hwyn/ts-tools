@@ -10,13 +10,13 @@ import config from '../config';
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { srcDir, baseDir, buildDir, babellrc } = config;
 const jsRules = jsLoader({ options: babellrc });
-const copyPlugin = new CopyPlugin([{ from: path.join(baseDir, '.env'), to: path.join(buildDir, '.env') }]);
+const copyPlugin = new CopyPlugin({ patterns: [{ from: path.join(baseDir, '.env'), to: path.join(buildDir, '.env') }] });
 const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
   context: baseDir,
-  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig.entry :  {
+  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig.entry : {
     server: path.resolve(srcDir, 'server/index.ts'),
   },
   output: {
@@ -28,7 +28,7 @@ export default (): Configuration => merge(webpackConfig, {
   resolve: {
     modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    plugins: [ new TsconfigPathsPlugin({ }) ]
+    plugins: [new TsconfigPathsPlugin({})]
   },
   externals: _mergeServerConfig.isNodExternals !== false ? [
     nodeExtrnals(),
@@ -43,7 +43,7 @@ export default (): Configuration => merge(webpackConfig, {
       }),
     ],
   },
-  plugins: [ copyPlugin ],
+  plugins: [copyPlugin],
   node: {
     console: false,
     global: false,

@@ -9,7 +9,7 @@ import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = config;
-const copyPlugin = new CopyPlugin([{ from: path.join(baseDir, 'public'), to: path.join(buildDir, 'public') }]);
+const copyPlugin = new CopyPlugin({ patterns: [{ from: path.join(baseDir, 'public'), to: path.join(buildDir, 'public') }] });
 
 const cssRules = cssLoader({}, isDebug);
 const jsRules = jsLoader({
@@ -44,7 +44,7 @@ export default (): Configuration => merge(webpackConfig, {
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   module: {
-    rules: [ ],
+    rules: [],
   },
   plugins: [
     new ProgressPlugin(),

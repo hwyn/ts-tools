@@ -10,7 +10,7 @@ var _config = _interopRequireDefault(require("../config"));function _getRequireW
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { srcDir, baseDir, buildDir, babellrc } = _config.default;
 const jsRules = (0, _util.jsLoader)({ options: babellrc });
-const copyPlugin = new _copyWebpackPlugin.default([{ from: _path.default.join(baseDir, '.env'), to: _path.default.join(buildDir, '.env') }]);
+const copyPlugin = new _copyWebpackPlugin.default({ patterns: [{ from: _path.default.join(baseDir, '.env'), to: _path.default.join(buildDir, '.env') }] });
 const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsRules, undefined) || {};var _default =
 
 () => (0, _webpackMerge.default)(_webpack.default, {
