@@ -101,7 +101,7 @@
     "build": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\" --runClient=false",
     "build:stats": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\" --release",
     "clean": "babel-node tools/util/run.ts clean --extensions \".ts,.tsx\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node .\\bin\\ts-tools.js start --runClient=false",
     "tools-debug": "babel tools --out-dir debug --extensions \".ts,.tsx\"",
     "dist": "babel tools --extensions \".js,.ts,.tsx\" --out-dir dist"
   },
