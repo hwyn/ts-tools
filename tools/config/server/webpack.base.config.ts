@@ -2,23 +2,22 @@ import nodeExtrnals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
 import path from 'path';
-import CopyPlugin from 'copy-webpack-plugin';
-import webpackConfig, { getMergeConfig, filterAttr } from '../base/webpack.config';
+import webpackConfig, { getMergeConfig, filterAttr, copyPlugin } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
 import config from '../config';
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { srcDir, baseDir, buildDir, babellrc } = config;
 const jsRules = jsLoader({ options: babellrc });
-const copyPlugin = new CopyPlugin({ patterns: [{ from: path.join(baseDir, '.env'), to: path.join(buildDir) }] });
 const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
+const { entry = {
+  server: path.resolve(srcDir, 'server/index.ts'),
+}, isNodExternals } = _mergeServerConfig;
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
   context: baseDir,
-  entry: _mergeServerConfig && _mergeServerConfig.entry ? _mergeServerConfig.entry : {
-    server: path.resolve(srcDir, 'server/index.ts'),
-  },
+  entry,
   output: {
     path: buildDir,
     chunkFilename: `[name].check.[hash:8].js`,
@@ -30,9 +29,7 @@ export default (): Configuration => merge(webpackConfig, {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     plugins: [new TsconfigPathsPlugin({})]
   },
-  externals: _mergeServerConfig.isNodExternals !== false ? [
-    nodeExtrnals(),
-  ] : [],
+  externals: isNodExternals !== false ? [nodeExtrnals()] : [],
   module: {
     rules: [
       jsRules.babel(),
@@ -43,7 +40,9 @@ export default (): Configuration => merge(webpackConfig, {
       }),
     ],
   },
-  plugins: [copyPlugin],
+  plugins: [
+    ...copyPlugin(path.join(baseDir, '.env'), path.join(buildDir))
+  ],
   node: {
     console: false,
     global: false,

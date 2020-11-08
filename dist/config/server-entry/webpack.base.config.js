@@ -8,9 +8,7 @@ var _config = _interopRequireDefault(require("../config"));function _getRequireW
 
 const { baseDir, babellrc, isDebug, buildDir } = _config.default;
 const jsRules = (0, _util.jsLoader)({ options: babellrc });
-const cssRules = (0, _util.cssLoader)({}, isDebug);
-
-const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.server.entry.js`, jsRules, cssRules);var _default =
+const cssRules = (0, _util.cssLoader)({}, isDebug);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'node',
@@ -38,4 +36,4 @@ const _mergeClientConfig = (0, _webpack2.getMergeConfig)(`webpack.server.entry.j
   new _webpack.ProgressPlugin()],
 
   node: false },
-_mergeClientConfig);exports.default = _default;
+(0, _webpack2.getMergeConfig)(`webpack.server.entry.js`, jsRules, cssRules));exports.default = _default;

@@ -23,8 +23,7 @@ const jsRules = (0, _util.jsLoader)({
 
 
 
-const cssRules = (0, _util.cssLoader)({}, false);
-const _mergeDllConfig = (0, _webpack2.getMergeConfig)(`webpack.dll.js`, jsRules, undefined);var _default =
+const cssRules = (0, _util.cssLoader)({}, false);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
@@ -70,4 +69,4 @@ const _mergeDllConfig = (0, _webpack2.getMergeConfig)(`webpack.dll.js`, jsRules,
     name: "[name]_[hash:8]" })] },
 
 
-_mergeDllConfig);exports.default = _default;
+(0, _webpack2.getMergeConfig)(`webpack.dll.js`, jsRules, undefined));exports.default = _default;

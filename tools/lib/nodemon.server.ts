@@ -1,7 +1,7 @@
 import path from 'path';
 import kill from 'tree-kill';
 import chokidar from 'chokidar';
-import { spawn } from 'child_process';
+import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
 import { webpackServer } from '../config';
 import { config } from '../config';
 
@@ -32,7 +32,7 @@ const getSpawnArgs = () => {
   const platform = process.platform;
   const spawnArgs = [];
   let spawnFlags = [];
-  const spawnOptions: any = {
+  const spawnOptions: SpawnOptionsWithoutStdio = {
     env: { ...process.env, PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }
   };
   if (platform === 'win32') {

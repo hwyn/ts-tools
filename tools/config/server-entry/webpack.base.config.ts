@@ -10,8 +10,6 @@ const { baseDir, babellrc, isDebug, buildDir } = config;
 const jsRules = jsLoader({ options: babellrc });
 const cssRules = cssLoader({}, isDebug);
 
-const _mergeClientConfig = getMergeConfig(`webpack.server.entry.js`, jsRules, cssRules);
-
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
   entry: {},
@@ -38,4 +36,4 @@ export default (): Configuration => merge(webpackConfig, {
     new ProgressPlugin(),
   ],
   node: false,
-}, _mergeClientConfig);
+}, getMergeConfig(`webpack.server.entry.js`, jsRules, cssRules));

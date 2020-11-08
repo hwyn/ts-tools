@@ -2,14 +2,12 @@ import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin, DllReferencePlugin } from 'webpack';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
-import CopyPlugin from 'copy-webpack-plugin';
 import { existsSync } from 'fs';
-import webpackConfig, { getMergeConfig } from '../base/webpack.config';
+import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import config from '../config';
 
 const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = config;
-const copyPlugin = new CopyPlugin({ patterns: [{ from: path.join(baseDir, 'public'), to: path.join(buildDir, 'public') }] });
 
 const cssRules = cssLoader({}, isDebug);
 const jsRules = jsLoader({
@@ -23,8 +21,6 @@ const jsRules = jsLoader({
     plugins: plugins || []
   }
 });
-
-const _mergeClientConfig = getMergeConfig(`webpack.client.js`, jsRules, cssRules);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
@@ -48,7 +44,7 @@ export default (): Configuration => merge(webpackConfig, {
   },
   plugins: [
     new ProgressPlugin(),
-    copyPlugin,
+    ...copyPlugin(path.join(baseDir, 'public'), path.join(buildDir, 'public')),
     new WebpackAssetsManifest({
       output: `${buildDir}/assets.json`,
       writeToDisk: true,
@@ -56,7 +52,8 @@ export default (): Configuration => merge(webpackConfig, {
       customize: ({ key, value }) => {
         if (key.toLowerCase().endsWith('.map')) return false;
         return { key, value };
-      }}),
+      }
+    }),
     ...existsSync(`${buildDir}/static/dll-manifest.json`) ? [
       new DllReferencePlugin({
         context: baseDir,
@@ -64,4 +61,4 @@ export default (): Configuration => merge(webpackConfig, {
       })
     ] : [],
   ],
-}, _mergeClientConfig);
+}, getMergeConfig(`webpack.client.js`, jsRules, cssRules));

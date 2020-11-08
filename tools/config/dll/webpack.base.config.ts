@@ -24,7 +24,6 @@ const jsRules = jsLoader({
 });
 
 const cssRules = cssLoader({}, false);
-const _mergeDllConfig = getMergeConfig(`webpack.dll.js`, jsRules, undefined);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
@@ -70,4 +69,4 @@ export default (): Configuration => merge(webpackConfig, {
       name: "[name]_[hash:8]"
     }),
   ],
-}, _mergeDllConfig);
+}, getMergeConfig(`webpack.dll.js`, jsRules, undefined));

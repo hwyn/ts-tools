@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs, { existsSync } from 'fs';
 import path from 'path';
 
 export interface Source<T> {
@@ -9,7 +9,11 @@ export interface Source<T> {
 type serialization = () => Source<string>;
 
 function getAssets() {
-  return JSON.parse(fs.readFileSync(path.join(__dirname, '../../build/assets.json'), { encoding: 'utf-8' }));
+  const filePath = path.join(__dirname, '../../build/assets.json');
+  if (!existsSync(filePath)) {
+    return {};
+  }
+  return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' }));
 }
 
 const serializationSource = (source: any) => ['runtime', 'polyfill', 'main'].reduce((o: Source<string>, key): Source<string> => {
