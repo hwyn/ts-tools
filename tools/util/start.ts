@@ -3,28 +3,28 @@ import path from 'path';
 import browserSync from 'browser-sync';
 import { config } from '../config';
 import cleanDir from './clean';
-import serverHotDev from  '../lib/dev.server';
+import serverHotDev from '../lib/dev.server';
 import clientHotDev from '../lib/dev.client';
 import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
 
 const { buildDir, runClient } = config;
 const app = express();
+app.use(express.static(path.join(buildDir, 'public')));
+
 export default async (): Promise<any> => {
-  app.use(express.static(path.join(buildDir, 'public')));
   await cleanDir();
   await dllDev();
-  runClient ? await clientHotDev(app) : null;
-  await serverEntryHotDev(app);
+  await clientHotDev(app);
+  await serverEntryHotDev();
   const host = await serverHotDev(app);
-  if (!runClient) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    browserSync.create().init({
+    runClient ? browserSync.create().init({
       ui: false,
       proxy: {
         target: host,
         middleware: app,
       },
-    }, (error, bs) => error ? reject(error): resolve(bs));
+    }, (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
   });
 }

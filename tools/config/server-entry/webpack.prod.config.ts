@@ -1,12 +1,9 @@
 import webpack, { HashedModuleIdsPlugin, DllReferencePlugin } from 'webpack';
 import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
-import { existsSync } from 'fs';
 import baseConfig from './webpack.base.config';
-import config from '../config';
 
 export default () => merge(baseConfig(), {
-  mode: 'production',
   optimization: {
     noEmitOnErrors: true,
     minimizer: [

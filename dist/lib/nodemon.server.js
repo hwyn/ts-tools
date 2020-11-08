@@ -93,15 +93,15 @@ runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() 
         return nodemonExa().then(finallServer).catch(finallServer);
       }));
     }
-    return /*#__PURE__*/_asyncToGenerator(function* () {return nodemonExa().then(watchClose).catch(watchClose);});
+    return () => nodemonExa().then(watchClose).catch(watchClose);
   });return _runNodemon.apply(this, arguments);}
 
 process.on('SIGINT', () => process.exit(1));
-process.on('exit', () => clearNodemon());var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
+process.on('exit', () => clearNodemon());var _default =
 
-  function* (app) {return clearNodemon().then(runNodemon).then(clear => clearNodemon = clear).then(() => {
-      if (host) {
-        return host;
-      }
-      throw new Error(`server run fail`);
-    });});return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;
+() => clearNodemon().then(runNodemon).then(clear => clearNodemon = clear).then(() => {
+  if (host) {
+    return host;
+  }
+  throw new Error(`server run fail`);
+});exports.default = _default;

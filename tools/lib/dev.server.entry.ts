@@ -1,9 +1,9 @@
 import webpack from 'webpack';
-import { webpackRun, isRun } from '../util/bundle';
+import { isRun } from '../util/bundle';
 import { webpackDevServerEntry } from '../config';
 import { createCompilationPromise } from './compilation';
 
-export default async (app?: any): Promise<any> => {
+export default async (): Promise<any> => {
   const config = webpackDevServerEntry();
   if (!isRun(config)) {
     return Promise.resolve();
@@ -13,6 +13,6 @@ export default async (app?: any): Promise<any> => {
   multiCompiler.watch({
     aggregateTimeout: 300,
   }, () => {});
+
   return promise;
-  // return webpackRun(config, config.stats);
 };

@@ -7,5 +7,5 @@ const { buildDir } = config;
 
 export default async (app: any) => {
   app.use(express.static(path.resolve(buildDir, '/public')));
-  return await nodemon(app);
+  return await nodemon();
 };

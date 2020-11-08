@@ -18,6 +18,7 @@ const filterAttr = (mergeConfig, filter) => {
 };exports.filterAttr = filterAttr;var _default =
 
 {
+  mode: 'production',
   context: baseDir,
   stats: {
     colors: true,

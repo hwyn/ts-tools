@@ -8,7 +8,6 @@ import config from '../config';
 const { isDebug } = config;
 
 export default () => merge(baseConfig(), {
-  mode: 'production',
   optimization: {
     noEmitOnErrors: true,
     runtimeChunk: 'single',

@@ -7,7 +7,6 @@ import config from '../config';
 const { isDebug } = config;
 
 export default (): Configuration => merge(baseConfig(), {
-  mode: 'production',
   optimization: {
     minimizer: [
       new UglifyJSPlugin({

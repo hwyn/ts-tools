@@ -7,5 +7,5 @@ const { buildDir } = _config.config;var _default = /*#__PURE__*/function () {var
 
   function* (app) {
     app.use(_express.default.static(_path.default.resolve(buildDir, '/public')));
-    return yield (0, _nodemon.default)(app);
+    return yield (0, _nodemon.default)();
   });return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;

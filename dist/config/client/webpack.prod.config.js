@@ -8,7 +8,6 @@ var _config = _interopRequireDefault(require("../config"));function _interopRequ
 const { isDebug } = _config.default;var _default =
 
 () => (0, _webpackMerge.default)((0, _webpackBase.default)(), {
-  mode: 'production',
   optimization: {
     noEmitOnErrors: true,
     runtimeChunk: 'single',

@@ -93,13 +93,13 @@ async function runNodemon(): Promise<any> {
       return nodemonExa().then(finallServer).catch(finallServer);
     }));
   }
-  return async (): Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
+  return (): Promise<any> => nodemonExa().then(watchClose).catch(watchClose);
 }
 
 process.on('SIGINT', () => process.exit(1));
 process.on('exit', () => clearNodemon());
 
-export default async (app: any) => clearNodemon().then(runNodemon).then((clear: any) => clearNodemon = clear).then(() => {
+export default () => clearNodemon().then(runNodemon).then((clear: any) => clearNodemon = clear).then(() => {
   if (host) {
     return host;
   }
