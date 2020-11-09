@@ -15,33 +15,33 @@ const argvStr = argv.join(',');
 
 const getArvgConfig = factoryConfig(argvStr);
 
-const webpackDir = getArvgConfig('webpackDir');
-const runClient = getArvgConfig('runClient') === 'false' ? false : true;
 
-const isDebug = !argv.includes('--release');
+export const baseDir: string = process.cwd();
 
-
-const baseDir: string = process.cwd();
 const baseResolve = resolve(baseDir);
 const processPkg = requireSync(`${baseDir}/package.json`);
 const babel = `${baseDir}/.babelrc`;
 const mergePackage = Object.assign({}, {
   babellrc: pkg.babel,
   browserslist: pkg.browserslist,
-}, !processPkg ? { } : {
+}, !processPkg ? {} : {
   ...processPkg,
-}, !existsSync(babel) ? { } : {
+}, !existsSync(babel) ? {} : {
   babellrc: JSON.parse(readFileSync(babel).toString('utf-8')),
 });
 
-export default {
-  runClient,
-  webpackDir,
-  baseDir,
-  isDebug,
-  srcDir: baseResolve('src'),
-  buildDir: baseResolve('build'),
-  distDir: baseResolve('dist'),
-  babellrc: mergePackage.babellrc,
-  browserslist: mergePackage.browserslist,
-};
+export const buildDir = baseResolve('build');
+
+export const srcDir = baseResolve('src');
+
+export const distDir = baseResolve('dist');
+
+export const webpackDir = getArvgConfig('webpackDir');
+
+export const runClient = getArvgConfig('runClient') === 'false' ? false : true;
+
+export const isDebug = !argv.includes('--release');
+
+export const babellrc = mergePackage.babellrc;
+
+export const browserslist = mergePackage.browserslist;

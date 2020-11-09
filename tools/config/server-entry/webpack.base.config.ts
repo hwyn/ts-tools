@@ -4,9 +4,8 @@ import { Configuration, ProgressPlugin } from 'webpack';
 import nodeExtrnals from 'webpack-node-externals';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import config from '../config';
+import { baseDir, babellrc, isDebug, buildDir }  from '../config';
 
-const { baseDir, babellrc, isDebug, buildDir } = config;
 const jsRules = jsLoader({ options: babellrc });
 const cssRules = cssLoader({}, isDebug);
 

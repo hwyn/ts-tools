@@ -6,7 +6,6 @@ import webpackDll from './dll/webpack.prod.config';
 import webpackDevDll from './dll/webpack.dev.config';
 import webpackServerEntry from './server-entry/webpack.prod.config';
 import webpackDevServerEntry from './server-entry/webpack.dev.config';
-import config from './config';
 
 export {
   webpackClient,
@@ -17,5 +16,6 @@ export {
   webpackDevDll,
   webpackServerEntry,
   webpackDevServerEntry,
-  config,
 }
+
+export * from './config';

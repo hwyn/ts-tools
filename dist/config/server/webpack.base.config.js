@@ -4,22 +4,21 @@ var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _path = _interopRequireDefault(require("path"));
 var _webpack = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
-var _config = _interopRequireDefault(require("../config"));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const { srcDir, baseDir, buildDir, babellrc } = _config.default;
-const jsRules = (0, _util.jsLoader)({ options: babellrc });
+const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
 const _mergeServerConfig = (0, _webpack.getMergeConfig)(`webpack.server.js`, jsRules, undefined) || {};
 const { entry = {
-    server: _path.default.resolve(srcDir, 'server/index.ts') },
+    server: _path.default.resolve(_config.srcDir, 'server/index.ts') },
   isNodExternals } = _mergeServerConfig;var _default =
 
 () => (0, _webpackMerge.default)(_webpack.default, {
   target: 'node',
-  context: baseDir,
+  context: _config.baseDir,
   entry,
   output: {
-    path: buildDir,
+    path: _config.buildDir,
     chunkFilename: `[name].check.[hash:8].js`,
     filename: `[name].js`,
     library: 'commonjs2' },
@@ -35,13 +34,13 @@ const { entry = {
     jsRules.babel(),
     jsRules.ts({
       transpileOnly: true,
-      context: baseDir,
+      context: _config.baseDir,
       configFile: 'tsconfig.json' })] },
 
 
 
   plugins: [
-  ...(0, _webpack.copyPlugin)(_path.default.join(baseDir, '.env'), _path.default.join(buildDir))],
+  ...(0, _webpack.copyPlugin)(_path.default.join(_config.baseDir, '.env'), _path.default.join(_config.buildDir))],
 
   node: {
     console: false,

@@ -3,9 +3,7 @@ import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.base.config';
-import config from '../config';
-
-const { isDebug } = config;
+import { isDebug } from '../config';
 
 export default () => merge(baseConfig(), {
   optimization: {

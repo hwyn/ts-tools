@@ -1,8 +1,6 @@
 import webpack, { Configuration, Stats } from 'webpack';
 import { webpackServer, webpackClient, webpackDll, webpackServerEntry } from '../config';
-import { config } from '../config'
-
-const { runClient } = config;
+import { runClient } from '../config'
 
 export const isRun = (webpackconfig: Configuration) => {
   return Array.isArray(webpackconfig.entry) ? !!webpackconfig.entry.length : !!Object.keys(webpackconfig.entry).length;

@@ -5,9 +5,9 @@ import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import config from '../config';
+import { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug } from '../config';
 
-const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = config;
+const { presets, plugins } = babellrc;
 
 const cssRules = cssLoader({}, isDebug);
 const jsRules = jsLoader({

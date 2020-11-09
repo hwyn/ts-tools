@@ -6,9 +6,10 @@ import WebpackAssetsManifest from 'webpack-assets-manifest';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import config from '../config';
+import { baseDir, buildDir, browserslist, babellrc } from '../config';
 
-const { baseDir, buildDir, browserslist, babellrc: { presets, plugins } } = config;
+const { presets, plugins } = babellrc;
+
 const jsRules = jsLoader({
   options: {
     presets: [

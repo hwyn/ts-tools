@@ -2,10 +2,9 @@ import { existsSync } from 'fs';
 import { Configuration, Plugin } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 
-import config from '../config';
+import { baseDir, isDebug, webpackDir }  from '../config';
 import { requireSync } from '../../core/fs';
 
-const { baseDir, isDebug, webpackDir } = config;
 const webpackDirConfig = webpackDir || 'webpack';
 
 export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): Configuration => {

@@ -5,16 +5,16 @@ var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-mani
 var _fs = require("fs");
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
-var _config = _interopRequireDefault(require("../config"));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const { srcDir, baseDir, buildDir, babellrc: { presets, plugins }, browserslist, isDebug } = _config.default;
+const { presets, plugins } = _config.babellrc;
 
-const cssRules = (0, _util.cssLoader)({}, isDebug);
+const cssRules = (0, _util.cssLoader)({}, _config.isDebug);
 const jsRules = (0, _util.jsLoader)({
   options: {
     presets: [
     ["@babel/preset-env", {
-      "targets": browserslist }],
+      "targets": _config.browserslist }],
 
     ...(presets || []).slice(1)],
 
@@ -24,19 +24,19 @@ const jsRules = (0, _util.jsLoader)({
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
-  context: baseDir,
+  context: _config.baseDir,
   entry: {
-    main: _path.default.resolve(srcDir, 'client/main.ts') },
+    main: _path.default.resolve(_config.srcDir, 'client/main.ts') },
 
   output: {
     publicPath: '',
-    path: _path.default.join(buildDir, 'public'),
+    path: _path.default.join(_config.buildDir, 'public'),
     chunkFilename: `check/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js` },
 
   resolve: {
     symlinks: true,
-    modules: [_path.default.resolve(baseDir, 'node_modules'), _path.default.relative(baseDir, 'src')],
+    modules: [_path.default.resolve(_config.baseDir, 'node_modules'), _path.default.relative(_config.baseDir, 'src')],
     extensions: ['.ts', '.tsx', '.mjs', '.js'] },
 
   module: {
@@ -44,9 +44,9 @@ const jsRules = (0, _util.jsLoader)({
 
   plugins: [
   new _webpack.ProgressPlugin(),
-  ...(0, _webpack2.copyPlugin)(_path.default.join(baseDir, 'public'), _path.default.join(buildDir, 'public')),
+  ...(0, _webpack2.copyPlugin)(_path.default.join(_config.baseDir, 'public'), _path.default.join(_config.buildDir, 'public')),
   new _webpackAssetsManifest.default({
-    output: `${buildDir}/assets.json`,
+    output: `${_config.buildDir}/assets.json`,
     writeToDisk: true,
     publicPath: true,
     customize: ({ key, value }) => {
@@ -54,10 +54,10 @@ const jsRules = (0, _util.jsLoader)({
       return { key, value };
     } }),
 
-  ...((0, _fs.existsSync)(`${buildDir}/static/dll-manifest.json`) ? [
+  ...((0, _fs.existsSync)(`${_config.buildDir}/static/dll-manifest.json`) ? [
   new _webpack.DllReferencePlugin({
-    context: baseDir,
-    manifest: require(`${buildDir}/static/dll-manifest.json`) })] :
+    context: _config.baseDir,
+    manifest: require(`${_config.buildDir}/static/dll-manifest.json`) })] :
 
   [])] },
 

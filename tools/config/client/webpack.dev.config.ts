@@ -10,7 +10,7 @@ export default () => {
   const { entry } = config;
   const { output: { filename = '' } = {} } = config;
   delete config.entry;
-  
+
   return happypackMerge(merge(config, {
     mode: 'development',
     entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {

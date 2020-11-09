@@ -96,6 +96,7 @@
     "webpack-node-externals": "^2.5.2"
   },
   "scripts": {
+    "startT": "node ./bin/ts-tools.js start --runClient=false",
     "start": "babel-node --extensions \".ts,.tsx\" tools/util/run.ts start webpackDir=webpack runClient=false",
     "debug": "babel src --out-dir debug --extensions \".ts,.tsx\"",
     "build": "babel-node tools/util/run.ts build --extensions \".ts,.tsx\" --runClient=false",

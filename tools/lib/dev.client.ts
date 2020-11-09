@@ -2,9 +2,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import { createCompilationPromise } from './compilation';
-import { webpackDevClient, config } from '../config';
-
-const { runClient } = config;
+import { webpackDevClient, runClient } from '../config';
 
 export default async (app: any) => {
   if (!runClient) {

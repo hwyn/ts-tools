@@ -3,9 +3,8 @@ import kill from 'tree-kill';
 import chokidar from 'chokidar';
 import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
 import { webpackServer } from '../config';
-import { config } from '../config';
+import { baseDir, srcDir, buildDir, runClient } from '../config';
 
-const { baseDir, srcDir, buildDir, runClient } = config;
 const webpackConfig = webpackServer() as any;
 const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
 const watchFile = webpackConfig.watchFile || [path.join(srcDir, 'server'), path.join(buildDir, 'server')];

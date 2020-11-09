@@ -4,10 +4,9 @@ import { Configuration } from 'webpack';
 import path from 'path';
 import webpackConfig, { getMergeConfig, filterAttr, copyPlugin } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
-import config from '../config';
+import { srcDir, baseDir, buildDir, babellrc } from '../config';
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const { srcDir, baseDir, buildDir, babellrc } = config;
 const jsRules = jsLoader({ options: babellrc });
 const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
 const { entry = {

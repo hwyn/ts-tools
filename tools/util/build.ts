@@ -1,10 +1,10 @@
-import { config } from '../config';
+import { baseDir, buildDir } from '../config';
 import { writeFile, requireSync } from '../core/fs';
 import clean from './clean';
 import bundle from './bundle';
 import run from './run';
 
-const pkg = requireSync(`${config.baseDir}/package.json`);
+const pkg = requireSync(`${baseDir}/package.json`);
 
 export default ((pkg: any, buildDir) => async () => {
   await run(clean);
@@ -16,4 +16,4 @@ export default ((pkg: any, buildDir) => async () => {
     },
     dependencies: pkg.dependencies,
   }));
-})(pkg, config.buildDir);
+})(pkg, buildDir);

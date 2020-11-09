@@ -2,15 +2,14 @@
 
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 
-var _config = _interopRequireDefault(require("../config"));
+var _config = require("../config");
 var _fs2 = require("../../core/fs");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const { baseDir, isDebug, webpackDir } = _config.default;
-const webpackDirConfig = webpackDir || 'webpack';
+const webpackDirConfig = _config.webpackDir || 'webpack';
 
 const getMergeConfig = (fileName, jsRules, cssRules) => {
-  const mergeClientConfig = (0, _fs2.requireSync)(`${baseDir}/${webpackDirConfig}/${fileName}`);
-  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDebug);
+  const mergeClientConfig = (0, _fs2.requireSync)(`${_config.baseDir}/${webpackDirConfig}/${fileName}`);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, _config.isDebug);
 };exports.getMergeConfig = getMergeConfig;
 
 const filterAttr = (mergeConfig, filter) => {
@@ -31,7 +30,7 @@ const copyPlugin = (formFile, toFile) => {
 
 {
   mode: 'production',
-  context: baseDir,
+  context: _config.baseDir,
   stats: {
     colors: true,
     hash: true, // required by custom stat output

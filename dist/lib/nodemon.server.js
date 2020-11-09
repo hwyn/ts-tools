@@ -5,10 +5,9 @@ var _child_process = require("child_process");
 var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
 
 
-const { baseDir, srcDir, buildDir, runClient } = _config.config;
 const webpackConfig = (0, _config.webpackServer)();
 const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
-const watchFile = webpackConfig.watchFile || [_path.default.join(srcDir, 'server'), _path.default.join(buildDir, 'server')];
+const watchFile = webpackConfig.watchFile || [_path.default.join(_config.srcDir, 'server'), _path.default.join(_config.buildDir, 'server')];
 
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
@@ -33,7 +32,7 @@ const getSpawnArgs = () => {
   const spawnArgs = [];
   let spawnFlags = [];
   const spawnOptions = {
-    env: { ...process.env, PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` } };
+    env: { ...process.env, PATH: `${_config.baseDir}/node_modules/.bin:${process.env.PATH}` } };
 
   if (platform === 'win32') {
     spawnArgs.push(process.env.ComSpec || 'cmd.exe');
@@ -44,7 +43,7 @@ const getSpawnArgs = () => {
     spawnFlags.push('-c');
   }
   // spawnFlags.push(`babel-node ${entryFile} --extensions \".ts,.tsx\"`);
-  spawnFlags.push(`ts-node --project ${baseDir}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
+  spawnFlags.push(`ts-node --project ${_config.baseDir}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
@@ -62,11 +61,11 @@ function startServer() {
   return new Promise((_resolve, _reject) => {
     let count = 0;
     _stdion.stderr(() => _reject(killCp));
-    if (!runClient) {
+    if (!_config.runClient) {
       _resolve(killCp);
     }
     _stdion.stdout(data => {
-      if (runClient) {
+      if (_config.runClient) {
         const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
         if (match && match[2] && count === 0) {
           host = match[2];
