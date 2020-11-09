@@ -1,6 +1,6 @@
 import path from 'path';
 import { readFileSync, existsSync } from 'fs';
-import { requireSync, exists } from '../core/fs';
+import { requireSync } from '../core/fs';
 import pkg from '../../package.json';
 
 const factoryConfig = (str: string) => (attr: string) => {

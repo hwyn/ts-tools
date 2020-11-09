@@ -7,7 +7,8 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
 
 () => {
   const config = (0, _webpackBase.default)();
-  const entry = config.entry;
+  const { entry } = config;
+  const { output: { filename = '' } = {} } = config;
   delete config.entry;
 
   return (0, _happypack.happypackMerge)((0, _webpackMerge.default)(config, {
@@ -16,7 +17,7 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
       [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]] }),
     {}),
     output: {
-      filename: config.output.filename.replace('\.[hash:8]', '') },
+      filename: filename.replace('\.[hash:8]', '') },
 
     plugins: [
     new _webpack.default.HotModuleReplacementPlugin(),

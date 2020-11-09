@@ -1,4 +1,4 @@
-import webpack, { Rule, Plugin } from 'webpack';
+import webpack from 'webpack';
 import merge from 'webpack-merge';
 import { happypackMerge } from '../../core/happypack';
 import baseConfig from './webpack.base.config';
@@ -7,7 +7,8 @@ const hotPlug = (key: string) => `webpack-hot-middleware/client?name=${key}&relo
 
 export default () => {
   const config = baseConfig();
-  const entry = config.entry;
+  const { entry } = config;
+  const { output: { filename = '' } = {} } = config;
   delete config.entry;
   
   return happypackMerge(merge(config, {
@@ -16,7 +17,7 @@ export default () => {
       [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
     }), {}),
     output: {
-      filename: config.output.filename.replace('\.[hash:8]', ''),
+      filename: filename.replace('\.[hash:8]', ''),
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
