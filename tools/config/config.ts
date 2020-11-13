@@ -67,7 +67,7 @@ export class ProjectConfig {
   }
 
   static get project(): object {
-    if (!isEmpty(this._project)) {
+    if (isEmpty(this._project)) {
       this._project = new ProjectConfig(this.arvg);
       this._project.loadProjectConfig();
     }
