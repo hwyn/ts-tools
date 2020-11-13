@@ -30,7 +30,7 @@ const jsRules = (0, _util.jsLoader)({
 
   output: {
     publicPath: '',
-    path: _path.default.join(_config.buildDir, 'public'),
+    path: _path.default.join(_config.project.output, 'public'),
     chunkFilename: `check/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js` },
 

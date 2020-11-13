@@ -60,7 +60,7 @@ export interface Project {
 export class ProjectConfig {
   static _project: ProjectConfig;
   static arvg: string[] = [];
-  static load = (arvg: string[]) => ProjectConfig.arvg = argv;
+  static load = (arvg: string[]) => ProjectConfig.arvg = arvg;
 
   protected config: Project;
   constructor(private arvg: string[]) { }

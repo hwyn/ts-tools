@@ -1,7 +1,8 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.browserslist = exports.babellrc = exports.isDebug = exports.runClient = exports.webpackDir = exports.distDir = exports.srcDir = exports.buildDir = exports.baseDir = void 0;var _path2 = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.project = exports.ProjectConfig = exports.baseDir = exports.browserslist = exports.babellrc = exports.isDebug = exports.runClient = exports.webpackDir = exports.distDir = exports.srcDir = exports.buildDir = void 0;var _path2 = _interopRequireDefault(require("path"));
 var _fs = require("fs");
 var _fs2 = require("../core/fs");
-var _package = _interopRequireDefault(require("../../package.json"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _package = _interopRequireDefault(require("../../package.json"));
+var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const factoryConfig = str => attr => {
   if (str.indexOf(attr) === -1) return null;
@@ -15,9 +16,7 @@ const argvStr = argv.join(',');
 
 const getArvgConfig = factoryConfig(argvStr);
 
-
 const baseDir = process.cwd();exports.baseDir = baseDir;
-
 const baseResolve = resolve(baseDir);
 const processPkg = (0, _fs2.requireSync)(`${baseDir}/package.json`);
 const babel = `${baseDir}/.babelrc`;
@@ -45,3 +44,47 @@ const isDebug = !argv.includes('--release');exports.isDebug = isDebug;
 const babellrc = mergePackage.babellrc;exports.babellrc = babellrc;
 
 const browserslist = mergePackage.browserslist;exports.browserslist = browserslist;
+
+
+
+
+
+const projectName = _path2.default.join(baseDir, 'project.config.json');
+
+
+
+
+
+
+
+class ProjectConfig {
+
+  static arvg = [];
+  static load = arvg => ProjectConfig.arvg = arvg;
+
+
+  constructor(arvg) {this.arvg = arvg;}
+
+  parseConfig() {
+    const { output = 'build', development, production } = this.config;
+    this.config.output = baseResolve(output);
+  }
+
+  loadProjectConfig() {
+    if ((0, _fs.existsSync)(projectName)) {
+      this.config = JSON.parse((0, _fs.readFileSync)(projectName, 'utf-8'));
+      this.parseConfig();
+    }
+    return this.config;
+  }
+
+  static get project() {
+    if (this.arvg && (0, _lodash.isEmpty)(this._project)) {
+      this._project = new ProjectConfig(this.arvg);
+      this._project.loadProjectConfig();
+    }
+    return this._project && this._project.config || {};
+  }}exports.ProjectConfig = ProjectConfig;
+
+
+const project = ProjectConfig.project;exports.project = project;
