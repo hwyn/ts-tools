@@ -104,7 +104,7 @@
     "clean": "babel-node tools/util/run.ts clean --extensions \".ts,.tsx\"",
     "test": "node .\\bin\\ts-tools.js start --runClient=false",
     "tools-debug": "babel tools --out-dir debug --extensions \".ts,.tsx\"",
-    "dist": "babel tools --extensions \".js,.ts,.tsx\" --out-dir dist"
+    "dist": "babel tools --extensions \".js,.ts,.tsx\" --out-dir ../node-api/node_modules/ts-tools/dist"
   },
   "babel": {
     "presets": [

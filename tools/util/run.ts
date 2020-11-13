@@ -1,8 +1,10 @@
 import path from 'path';
+import { ProjectConfig } from '../config';
 
 type FN = (options?: object) => Promise<any>;
 const arvg: string[] = process.argv;
 
+ProjectConfig.load(arvg);
 function run<T>(fn: FN | any, options?: object): Promise<T> {
   const task: FN = typeof fn.default === 'undefined' ? fn : fn.default;
   return (task as FN)(options) as Promise<T>;
