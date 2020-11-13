@@ -51,12 +51,16 @@ export {
 
 const projectName = path.join(baseDir, 'project.json');
 
+export interface Project {
+  output: string
+}
+
 export class ProjectConfig {
   static _project: ProjectConfig;
   static arvg: string[] = [];
   static load = (arvg: string[]) => ProjectConfig.arvg = argv;
 
-  protected config: object;
+  protected config: Project;
   constructor(private arvg: string[]) { }
 
   private loadProjectConfig() {
@@ -66,13 +70,13 @@ export class ProjectConfig {
     return this.config;
   }
 
-  static get project(): object {
+  static get project(): Project {
     if (isEmpty(this._project)) {
       this._project = new ProjectConfig(this.arvg);
       this._project.loadProjectConfig();
     }
-    return this._project && this._project.config || {};
+    return this._project && this._project.config || {} as Project;
   }
 }
 
-export const config = ProjectConfig.project;
+export const project = ProjectConfig.project;

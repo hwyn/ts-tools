@@ -5,7 +5,7 @@ import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug } from '../config';
+import { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug, project } from '../config';
 
 const { presets, plugins } = babellrc;
 
