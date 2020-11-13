@@ -49,10 +49,12 @@ export {
   baseDir
 }
 
-const projectName = path.join(baseDir, 'project.json');
+const projectName = path.join(baseDir, 'project.config.json');
 
 export interface Project {
-  output: string
+  output: string;
+  development: object;
+  production: object;
 }
 
 export class ProjectConfig {
@@ -63,15 +65,21 @@ export class ProjectConfig {
   protected config: Project;
   constructor(private arvg: string[]) { }
 
+  parseConfig() {
+    const { output = 'build', development, production } = this.config;
+    this.config.output = baseResolve(output);
+  }
+
   private loadProjectConfig() {
     if (existsSync(projectName)) {
       this.config = JSON.parse(readFileSync(projectName, 'utf-8'));
+      this.parseConfig();
     }
     return this.config;
   }
 
   static get project(): Project {
-    if (isEmpty(this._project)) {
+    if (this.arvg && isEmpty(this._project)) {
       this._project = new ProjectConfig(this.arvg);
       this._project.loadProjectConfig();
     }

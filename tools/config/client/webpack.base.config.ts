@@ -30,7 +30,7 @@ export default (): Configuration => merge(webpackConfig, {
   },
   output: {
     publicPath: '',
-    path: path.join(buildDir, 'public'),
+    path: path.join(project.output, 'public'),
     chunkFilename: `check/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js`,
   },
