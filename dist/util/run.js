@@ -1,10 +1,8 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
-var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 
 const arvg = process.argv;
 
-_config.ProjectConfig.load(arvg);
 function run(fn, options) {
   const task = typeof fn.default === 'undefined' ? fn : fn.default;
   return task(options);

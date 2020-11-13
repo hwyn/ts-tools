@@ -59,8 +59,6 @@ const projectName = _path2.default.join(baseDir, 'project.config.json');
 
 class ProjectConfig {
 
-  static arvg = [];
-  static load = arvg => ProjectConfig.arvg = arvg;
 
 
   constructor(arvg) {this.arvg = arvg;}
@@ -79,10 +77,12 @@ class ProjectConfig {
   }
 
   static get project() {
-    if (this.arvg && (0, _lodash.isEmpty)(this._project)) {
-      this._project = new ProjectConfig(this.arvg);
+    if ((0, _lodash.isEmpty)(this._project)) {
+      this._project = new ProjectConfig(process.argv);
       this._project.loadProjectConfig();
     }
+    console.log('arvg', this.arvg);
+    console.log('---', this._project);
     return this._project && this._project.config || {};
   }}exports.ProjectConfig = ProjectConfig;
 

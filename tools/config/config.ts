@@ -59,8 +59,6 @@ export interface Project {
 
 export class ProjectConfig {
   static _project: ProjectConfig;
-  static arvg: string[] = [];
-  static load = (arvg: string[]) => ProjectConfig.arvg = arvg;
 
   protected config: Project;
   constructor(private arvg: string[]) { }
@@ -79,10 +77,12 @@ export class ProjectConfig {
   }
 
   static get project(): Project {
-    if (this.arvg && isEmpty(this._project)) {
-      this._project = new ProjectConfig(this.arvg);
+    if (isEmpty(this._project)) {
+      this._project = new ProjectConfig(process.argv);
       this._project.loadProjectConfig();
     }
+    console.log('arvg', this.arvg);
+    console.log('---' ,this._project);
     return this._project && this._project.config || {} as Project;
   }
 }
