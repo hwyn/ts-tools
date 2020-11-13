@@ -63,7 +63,7 @@ export class ProjectConfig {
   protected config: Project;
   constructor(private arvg: string[]) { }
 
-  parseConfig() {
+  private parseConfig() {
     const { output = 'build', development, production } = this.config;
     this.config.output = baseResolve(output);
   }
@@ -81,8 +81,6 @@ export class ProjectConfig {
       this._project = new ProjectConfig(process.argv);
       this._project.loadProjectConfig();
     }
-    console.log('arvg', this.arvg);
-    console.log('---' ,this._project);
     return this._project && this._project.config || {} as Project;
   }
 }

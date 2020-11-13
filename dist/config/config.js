@@ -81,8 +81,6 @@ class ProjectConfig {
       this._project = new ProjectConfig(process.argv);
       this._project.loadProjectConfig();
     }
-    console.log('arvg', this.arvg);
-    console.log('---', this._project);
     return this._project && this._project.config || {};
   }}exports.ProjectConfig = ProjectConfig;
 
