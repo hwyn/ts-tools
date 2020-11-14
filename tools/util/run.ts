@@ -1,5 +1,4 @@
 import path from 'path';
-import { project } from '../config';
 
 type FN = (options?: object) => Promise<any>;
 const arvg: string[] = process.argv;

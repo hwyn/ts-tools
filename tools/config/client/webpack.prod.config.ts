@@ -3,7 +3,9 @@ import merge from 'webpack-merge';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.base.config';
-import { isDebug } from '../config';
+import {  platformConfig } from '../config';
+
+const { isDevelopment } = platformConfig();
 
 export default () => merge(baseConfig(), {
   optimization: {
@@ -30,7 +32,7 @@ export default () => merge(baseConfig(), {
     minimizer: [
       new HashedModuleIdsPlugin(),
       new UglifyJSPlugin({
-        sourceMap: isDebug,
+        sourceMap: isDevelopment,
         cache: true,
         parallel: true,
         uglifyOptions: {

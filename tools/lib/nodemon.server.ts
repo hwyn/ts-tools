@@ -1,13 +1,12 @@
-import path from 'path';
 import kill from 'tree-kill';
 import chokidar from 'chokidar';
 import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
-import { webpackServer } from '../config';
-import { baseDir, srcDir, buildDir, runClient } from '../config';
+import { platformConfig } from '../config';
+import { existenceClient } from '../config';
 
-const webpackConfig = webpackServer() as any;
-const entryFile = webpackConfig.entryFile || 'src/server/index.ts';
-const watchFile = webpackConfig.watchFile || [path.join(srcDir, 'server'), path.join(buildDir, 'server')];
+const { main, watchFile, root } = platformConfig('server');
+
+const entryFile = main;
 
 let host: number | string = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon: any = () => Promise.resolve();
@@ -32,7 +31,7 @@ const getSpawnArgs = () => {
   const spawnArgs = [];
   let spawnFlags = [];
   const spawnOptions: SpawnOptionsWithoutStdio = {
-    env: { ...process.env, PATH: `${baseDir}/node_modules/.bin:${process.env.PATH}` }
+    env: { ...process.env, PATH: `${root}/node_modules/.bin:${process.env.PATH}` }
   };
   if (platform === 'win32') {
     spawnArgs.push(process.env.ComSpec || 'cmd.exe');
@@ -42,8 +41,7 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
-  // spawnFlags.push(`babel-node ${entryFile} --extensions \".ts,.tsx\"`);
-  spawnFlags.push(`ts-node --project ${baseDir}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
+  spawnFlags.push(`ts-node --project ${root}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
@@ -61,11 +59,11 @@ function startServer(): Promise<any> {
   return new Promise((_resolve, _reject) => {
     let count = 0;
     _stdion.stderr(() => _reject(killCp));
-    if (!runClient) {
+    if (!existenceClient) {
       _resolve(killCp);
     }
     _stdion.stdout((data: Buffer) => {
-      if (runClient) {
+      if (existenceClient) {
         const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
         if (match && match[2] && count === 0) {
           host = match[2];

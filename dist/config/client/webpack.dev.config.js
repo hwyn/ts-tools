@@ -1,9 +1,12 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _webpack = _interopRequireDefault(require("webpack"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
+var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));
 var _happypack = require("../../core/happypack");
-var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;var _default =
+const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;
+
+const { sourceMap } = (0, _config.platformConfig)('client');var _default =
 
 () => {
   const config = (0, _webpackBase.default)();
@@ -17,7 +20,7 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
       [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]] }),
     {}),
     output: {
-      filename: filename.replace('\.[hash:8]', '') },
+      filename: typeof filename === 'string' ? filename.replace('\.[hash:8]', '') : filename },
 
     plugins: [
     new _webpack.default.HotModuleReplacementPlugin(),
@@ -26,6 +29,6 @@ const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;v
       'process.env.NODE_ENV': "'development'" })],
 
 
-    devtool: 'source-map' }));
+    devtool: sourceMap }));
 
 };exports.default = _default;

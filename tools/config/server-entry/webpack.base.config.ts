@@ -1,31 +1,31 @@
-import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
 import nodeExtrnals from 'webpack-node-externals';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import { baseDir, babellrc, isDebug, buildDir }  from '../config';
+import {  babellrc,  platformConfig, PlatformEnum }  from '../config';
 
+const { main, builder, isDevelopment, output, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 const jsRules = jsLoader({ options: babellrc });
-const cssRules = cssLoader({}, isDebug);
+const cssRules = cssLoader({}, isDevelopment);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
-  entry: {},
+  entry: main && { main } || {},
   output: {
     publicPath: '',
-    path: path.join(buildDir, 'server'),
+    path: output,
     chunkFilename: `check/[name].js`,
     filename: `[name].js`,
     libraryTarget: 'commonjs',
   },
   resolve: {
     symlinks: true,
-    modules: [path.resolve(baseDir, 'node_modules'), path.relative(baseDir, 'src')],
+    modules: [nodeModules, sourceRoot],
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   externals: [
-    '../build/assets.json',
+    `${output}/assets.json`,
     nodeExtrnals(),
   ],
   module: {
@@ -35,4 +35,4 @@ export default (): Configuration => merge(webpackConfig, {
     new ProgressPlugin(),
   ],
   node: false,
-}, getMergeConfig(`webpack.server.entry.js`, jsRules, cssRules));
+}, getMergeConfig(builder, jsRules, cssRules));

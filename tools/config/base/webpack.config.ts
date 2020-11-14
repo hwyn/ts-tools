@@ -2,14 +2,14 @@ import { existsSync } from 'fs';
 import { Configuration, Plugin } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 
-import { baseDir, isDebug, webpackDir }  from '../config';
+import { baseDir, platformConfig }  from '../config';
 import { requireSync } from '../../core/fs';
 
-const webpackDirConfig = webpackDir || 'webpack';
+const { isDevelopment } = platformConfig();
 
-export const getMergeConfig = (fileName: string, jsRules: any, cssRules: any): Configuration => {
-  const mergeClientConfig = requireSync(`${baseDir}/${webpackDirConfig}/${fileName}`);
-  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDebug);
+export const getMergeConfig = (filePath: string, jsRules?: any, cssRules?: any): Configuration => {
+  const mergeClientConfig = requireSync(filePath);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
 };
 
 export const filterAttr = (mergeConfig: any, filter: string[]) => {

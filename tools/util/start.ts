@@ -1,7 +1,6 @@
 import express from 'express';
-import path from 'path';
 import browserSync from 'browser-sync';
-import { buildDir, runClient } from '../config';
+import { existenceClient } from '../config';
 import cleanDir from './clean';
 import serverHotDev from '../lib/dev.server';
 import clientHotDev from '../lib/dev.client';
@@ -9,7 +8,6 @@ import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
 
 const app = express();
-app.use(express.static(path.join(buildDir, 'public')));
 
 export default async (): Promise<any> => {
   await cleanDir();
@@ -18,7 +16,7 @@ export default async (): Promise<any> => {
   await serverEntryHotDev();
   const host = await serverHotDev(app);
   return new Promise((resolve, reject) => {
-    runClient ? browserSync.create().init({
+    existenceClient ? browserSync.create().init({
       ui: false,
       proxy: {
         target: host,

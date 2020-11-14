@@ -1,21 +1,35 @@
-import path from 'path';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin, DllReferencePlugin } from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import { srcDir, baseDir, buildDir, babellrc, browserslist, isDebug, project } from '../config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
+import { isEmpty } from 'lodash';
 
 const { presets, plugins } = babellrc;
+const {
+  root,
+  output,
+  sourceRoot,
+  nodeModules,
+  index,
+  main,
+  styles,
+  assets,
+  assetsPath,
+  tsConfig,
+  isDevelopment,
+  builder,
+  browserTarget = []
+} = platformConfig(PlatformEnum.client);
 
-const cssRules = cssLoader({}, isDebug);
+const cssRules = cssLoader({}, isDevelopment);
 const jsRules = jsLoader({
   options: {
     presets: [
-      ["@babel/preset-env", {
-        "targets": browserslist,
-      }],
+      ["@babel/preset-env", { "targets": browserTarget }],
       ...(presets || []).slice(1),
     ],
     plugins: plugins || []
@@ -24,29 +38,42 @@ const jsRules = jsLoader({
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
-  context: baseDir,
+  context: root,
   entry: {
-    main: path.resolve(srcDir, 'client/main.ts'),
+    ...(!isEmpty(main) && { main } || {}),
+    ...(!isEmpty(styles) && { styles } || {}),
   },
   output: {
     publicPath: '',
-    path: path.join(project.output, 'public'),
-    chunkFilename: `check/[name].[chunkhash:8].js`,
+    path: assetsPath,
+    chunkFilename: `javascript/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js`,
   },
   resolve: {
     symlinks: true,
-    modules: [path.resolve(baseDir, 'node_modules'), path.relative(baseDir, 'src')],
+    modules: [nodeModules, sourceRoot],
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   module: {
-    rules: [],
+    rules: [
+      jsRules.babel(),
+      jsRules.ts({
+        happyPackMode: true,
+        transpileOnly: true,
+        configFile: tsConfig,
+        exclude: nodeModules,
+        context: root
+      }),
+      cssRules.css(),
+      cssRules.less(),
+      cssRules.sass(),
+    ],
   },
   plugins: [
     new ProgressPlugin(),
-    ...copyPlugin(path.join(baseDir, 'public'), path.join(buildDir, 'public')),
+    ...copyPlugin(assets, assetsPath),
     new WebpackAssetsManifest({
-      output: `${buildDir}/assets.json`,
+      output: `${output}/static/assets.json`,
       writeToDisk: true,
       publicPath: true,
       customize: ({ key, value }) => {
@@ -54,11 +81,14 @@ export default (): Configuration => merge(webpackConfig, {
         return { key, value };
       }
     }),
-    ...existsSync(`${buildDir}/static/dll-manifest.json`) ? [
+    ...existsSync(`${output}/static/dll-manifest.json`) ? [
       new DllReferencePlugin({
-        context: baseDir,
-        manifest: require(`${buildDir}/static/dll-manifest.json`),
+        context: root,
+        manifest: require(`${output}/static/dll-manifest.json`)
       })
     ] : [],
+    new HtmlWebpackPlugin({
+      template: index
+    })
   ],
-}, getMergeConfig(`webpack.client.js`, jsRules, cssRules));
+}, getMergeConfig(builder, jsRules, cssRules));

@@ -1,25 +1,33 @@
 import nodeExtrnals from 'webpack-node-externals';
 import merge from 'webpack-merge';
 import { Configuration } from 'webpack';
-import path from 'path';
-import webpackConfig, { getMergeConfig, filterAttr, copyPlugin } from '../base/webpack.config';
+import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
-import { srcDir, baseDir, buildDir, babellrc } from '../config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const jsRules = jsLoader({ options: babellrc });
-const _mergeServerConfig: any = getMergeConfig(`webpack.server.js`, jsRules, undefined) || {};
-const { entry = {
-  server: path.resolve(srcDir, 'server/index.ts'),
-}, isNodExternals } = _mergeServerConfig;
+
+const {
+  root,
+  output,
+  main,
+  assets,
+  assetsPath,
+  nodeExternals,
+  tsConfig,
+  builder
+} = platformConfig(PlatformEnum.server);
+
+const _mergeServerConfig: any = getMergeConfig(builder, jsRules) || {};
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
-  context: baseDir,
-  entry,
+  context: root,
+  entry: main && { server: main } || {},
   output: {
-    path: buildDir,
-    chunkFilename: `[name].check.[hash:8].js`,
+    path: output,
+    chunkFilename: `[name].[chunkhash:8].js`,
     filename: `[name].js`,
     library: 'commonjs2',
   },
@@ -28,19 +36,19 @@ export default (): Configuration => merge(webpackConfig, {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     plugins: [new TsconfigPathsPlugin({})]
   },
-  externals: isNodExternals !== false ? [nodeExtrnals()] : [],
+  externals: nodeExternals !== false ? [nodeExtrnals()] : [],
   module: {
     rules: [
       jsRules.babel(),
       jsRules.ts({
         transpileOnly: true,
-        context: baseDir,
-        configFile: 'tsconfig.json',
+        context: root,
+        configFile: tsConfig,
       }),
     ],
   },
   plugins: [
-    ...copyPlugin(path.join(baseDir, '.env'), path.join(buildDir))
+    ...copyPlugin(assets, assetsPath),
   ],
   node: {
     console: false,
@@ -50,4 +58,4 @@ export default (): Configuration => merge(webpackConfig, {
     __filename: false,
     __dirname: false,
   },
-}, filterAttr(_mergeServerConfig, ['isNodExternals']));
+}, _mergeServerConfig);

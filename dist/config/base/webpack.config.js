@@ -5,11 +5,11 @@ var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 var _config = require("../config");
 var _fs2 = require("../../core/fs");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const webpackDirConfig = _config.webpackDir || 'webpack';
+const { isDevelopment } = (0, _config.platformConfig)();
 
-const getMergeConfig = (fileName, jsRules, cssRules) => {
-  const mergeClientConfig = (0, _fs2.requireSync)(`${_config.baseDir}/${webpackDirConfig}/${fileName}`);
-  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, _config.isDebug);
+const getMergeConfig = (filePath, jsRules, cssRules) => {
+  const mergeClientConfig = (0, _fs2.requireSync)(filePath);
+  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
 };exports.getMergeConfig = getMergeConfig;
 
 const filterAttr = (mergeConfig, filter) => {

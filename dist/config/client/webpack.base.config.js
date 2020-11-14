@@ -1,21 +1,35 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
-var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = require("webpack");
+var _htmlWebpackPlugin = _interopRequireDefault(require("html-webpack-plugin"));
 var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-manifest"));
 var _fs = require("fs");
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
-var _config = require("../config");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");
+var _lodash = require("lodash");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const { presets, plugins } = _config.babellrc;
+const {
+  root,
+  output,
+  sourceRoot,
+  nodeModules,
+  index,
+  main,
+  styles,
+  assets,
+  assetsPath,
+  tsConfig,
+  isDevelopment,
+  builder,
+  browserTarget = [] } =
+(0, _config.platformConfig)(_config.PlatformEnum.client);
 
-const cssRules = (0, _util.cssLoader)({}, _config.isDebug);
+const cssRules = (0, _util.cssLoader)({}, isDevelopment);
 const jsRules = (0, _util.jsLoader)({
   options: {
     presets: [
-    ["@babel/preset-env", {
-      "targets": _config.browserslist }],
-
+    ["@babel/preset-env", { "targets": browserTarget }],
     ...(presets || []).slice(1)],
 
     plugins: plugins || [] } });var _default =
@@ -24,29 +38,42 @@ const jsRules = (0, _util.jsLoader)({
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
-  context: _config.baseDir,
+  context: root,
   entry: {
-    main: _path.default.resolve(_config.srcDir, 'client/main.ts') },
+    ...(!(0, _lodash.isEmpty)(main) && { main } || {}),
+    ...(!(0, _lodash.isEmpty)(styles) && { styles } || {}) },
 
   output: {
     publicPath: '',
-    path: _path.default.join(_config.project.output, 'public'),
-    chunkFilename: `check/[name].[chunkhash:8].js`,
+    path: assetsPath,
+    chunkFilename: `javascript/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js` },
 
   resolve: {
     symlinks: true,
-    modules: [_path.default.resolve(_config.baseDir, 'node_modules'), _path.default.relative(_config.baseDir, 'src')],
+    modules: [nodeModules, sourceRoot],
     extensions: ['.ts', '.tsx', '.mjs', '.js'] },
 
   module: {
-    rules: [] },
+    rules: [
+    jsRules.babel(),
+    jsRules.ts({
+      happyPackMode: true,
+      transpileOnly: true,
+      configFile: tsConfig,
+      exclude: nodeModules,
+      context: root }),
+
+    cssRules.css(),
+    cssRules.less(),
+    cssRules.sass()] },
+
 
   plugins: [
   new _webpack.ProgressPlugin(),
-  ...(0, _webpack2.copyPlugin)(_path.default.join(_config.baseDir, 'public'), _path.default.join(_config.buildDir, 'public')),
+  ...(0, _webpack2.copyPlugin)(assets, assetsPath),
   new _webpackAssetsManifest.default({
-    output: `${_config.buildDir}/assets.json`,
+    output: `${output}/static/assets.json`,
     writeToDisk: true,
     publicPath: true,
     customize: ({ key, value }) => {
@@ -54,11 +81,14 @@ const jsRules = (0, _util.jsLoader)({
       return { key, value };
     } }),
 
-  ...((0, _fs.existsSync)(`${_config.buildDir}/static/dll-manifest.json`) ? [
+  ...((0, _fs.existsSync)(`${output}/static/dll-manifest.json`) ? [
   new _webpack.DllReferencePlugin({
-    context: _config.baseDir,
-    manifest: require(`${_config.buildDir}/static/dll-manifest.json`) })] :
+    context: root,
+    manifest: require(`${output}/static/dll-manifest.json`) })] :
 
-  [])] },
+  []),
+  new _htmlWebpackPlugin.default({
+    template: index })] },
 
-(0, _webpack2.getMergeConfig)(`webpack.client.js`, jsRules, cssRules));exports.default = _default;
+
+(0, _webpack2.getMergeConfig)(builder, jsRules, cssRules));exports.default = _default;

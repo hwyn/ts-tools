@@ -1,9 +1,12 @@
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import merge from 'webpack-merge';
-import { happypackMerge } from '../../core/happypack';
 import baseConfig from './webpack.base.config';
+import { happypackMerge } from '../../core/happypack';
+import { platformConfig } from '../config';
 
 const hotPlug = (key: string) => `webpack-hot-middleware/client?name=${key}&reload=true`;
+
+const { sourceMap } = platformConfig('client');
 
 export default () => {
   const config = baseConfig();
@@ -17,7 +20,7 @@ export default () => {
       [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
     }), {}),
     output: {
-      filename: filename.replace('\.[hash:8]', ''),
+      filename: typeof filename === 'string' ?  filename.replace('\.[hash:8]', '') : filename,
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
@@ -26,6 +29,6 @@ export default () => {
         'process.env.NODE_ENV': "'development'"
       }),
     ],
-    devtool: 'source-map',
-  }));
+    devtool: sourceMap,
+  } as Configuration));
 }

@@ -8,8 +8,8 @@
  */
 
 /* eslint-disable global-require */
-const { config } = require('../config');
-const { browserslist } = config;
+const { platformConfig, PlatformEnum } = require('../config');
+const { browserTarget } = platformConfig(PlatformEnum.client);
 
 module.exports = () => ({
   // The list of plugins for PostCSS
@@ -60,7 +60,7 @@ module.exports = () => ({
     // Add vendor prefixes to CSS rules using values from caniuse.com
     // https://github.com/postcss/autoprefixer
     require('autoprefixer')({
-      overrideBrowserslist: browserslist,
+      overrideBrowserslist: browserTarget,
       flexbox: 'no-2009',
     }),
   ],

@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 var _webpack = _interopRequireWildcard(require("webpack"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
@@ -6,16 +6,23 @@ var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-mani
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
-var _config = require("../config");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
 
 const { presets, plugins } = _config.babellrc;
+const {
+  root,
+  output,
+  builder,
+  main,
+  assetsPath,
+  tsConfig,
+  browserTarget } =
+(0, _config.platformConfig)(_config.PlatformEnum.dll);
 
 const jsRules = (0, _util.jsLoader)({
   options: {
     presets: [
-    ["@babel/preset-env", {
-      "targets": _config.browserslist }],
-
+    ["@babel/preset-env", { "targets": browserTarget }],
     ...(presets || []).slice(1)],
 
     plugins: [
@@ -28,11 +35,11 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
-  entry: {},
+  entry: main && { common: main } || {},
   output: {
-    path: _path.default.join(_config.buildDir, 'public'),
+    path: assetsPath,
     filename: 'javascript/[name].dll.js',
-    chunkFilename: `check/[name].[chunkhash:8].js`,
+    chunkFilename: `javascript/[name].[chunkhash:8].js`,
     library: "[name]_[hash:8]" },
 
   module: {
@@ -41,8 +48,8 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
     jsRules.ts({
       happyPackMode: true,
       transpileOnly: true,
-      context: _config.baseDir,
-      configFile: 'ts.client.json' }),
+      context: root,
+      configFile: tsConfig }),
 
     cssRules.less({
       javascriptEnabled: true }),
@@ -57,7 +64,7 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
     chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
 
   new _webpackAssetsManifest.default({
-    output: `${_config.buildDir}/dll.json`,
+    output: `${output}/static/dll.json`,
     writeToDisk: true,
     publicPath: true,
     customize: ({ key, value }) => {
@@ -66,8 +73,9 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
     } }),
 
   new _webpack.default.DllPlugin({
-    path: _path.default.join(_config.buildDir, "static/dll-manifest.json"),
+    context: root,
+    path: `${output}/static/dll-manifest.json`,
     name: "[name]_[hash:8]" })] },
 
 
-(0, _webpack2.getMergeConfig)(`webpack.dll.js`, jsRules, undefined));exports.default = _default;
+(0, _webpack2.getMergeConfig)(builder, jsRules));exports.default = _default;

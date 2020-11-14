@@ -1,7 +1,6 @@
 import { cleanDir } from '../core/fs';
-import { buildDir } from '../config';
+import { project } from '../config';
 
 export default async () => {
-  await cleanDir(buildDir);
-  // await cleanDir(distDir);
+  await cleanDir(project.output);
 };

@@ -1,9 +1,10 @@
+import { isEmpty } from 'lodash';
 import webpack, { Configuration, Stats } from 'webpack';
 import { webpackServer, webpackClient, webpackDll, webpackServerEntry } from '../config';
-import { runClient } from '../config'
+import { existenceClient } from '../config'
 
 export const isRun = (webpackconfig: Configuration) => {
-  return Array.isArray(webpackconfig.entry) ? !!webpackconfig.entry.length : !!Object.keys(webpackconfig.entry).length;
+  return !isEmpty(webpackconfig.entry);
 }
 
 export function webpackRun(webpackconfig: Configuration | Configuration[], _stast?: any): Promise<any> {
@@ -28,7 +29,7 @@ export function webpackRun(webpackconfig: Configuration | Configuration[], _stas
 export default async (): Promise<any> => {
   return webpackRun(webpackDll()).then(() => webpackRun([
     webpackServerEntry(),
-    ...runClient ? [ webpackClient() ]: [],
+    ...existenceClient ? [ webpackClient() ]: [],
   ])).then(() => webpackRun(webpackServer()));
 };
 

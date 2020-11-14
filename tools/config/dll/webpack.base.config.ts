@@ -6,16 +6,23 @@ import WebpackAssetsManifest from 'webpack-assets-manifest';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
-import { baseDir, buildDir, browserslist, babellrc } from '../config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
 
 const { presets, plugins } = babellrc;
+const {
+  root,
+  output,
+  builder,
+  main,
+  assetsPath,
+  tsConfig,
+  browserTarget
+} = platformConfig(PlatformEnum.dll);
 
 const jsRules = jsLoader({
   options: {
     presets: [
-      ["@babel/preset-env", {
-        "targets": browserslist,
-      }],
+      ["@babel/preset-env", { "targets": browserTarget }],
       ...(presets || []).slice(1),
     ],
     plugins: [
@@ -28,11 +35,11 @@ const cssRules = cssLoader({}, false);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
-  entry: {},
+  entry: main && { common: main } || {},
   output: {
-    path: path.join(buildDir, 'public'),
+    path: assetsPath,
     filename: 'javascript/[name].dll.js',
-    chunkFilename: `check/[name].[chunkhash:8].js`,
+    chunkFilename: `javascript/[name].[chunkhash:8].js`,
     library: "[name]_[hash:8]",
   },
   module: {
@@ -41,8 +48,8 @@ export default (): Configuration => merge(webpackConfig, {
       jsRules.ts({
         happyPackMode: true,
         transpileOnly: true,
-        context: baseDir,
-        configFile: 'ts.client.json',
+        context: root,
+        configFile: tsConfig,
       }),
       cssRules.less({
         javascriptEnabled: true,
@@ -57,7 +64,7 @@ export default (): Configuration => merge(webpackConfig, {
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
     }),
     new WebpackAssetsManifest({
-      output: `${buildDir}/dll.json`,
+      output: `${output}/static/dll.json`,
       writeToDisk: true,
       publicPath: true,
       customize: ({ key, value }) => {
@@ -66,8 +73,9 @@ export default (): Configuration => merge(webpackConfig, {
       }
     }),
     new webpack.DllPlugin({
-      path: path.join(buildDir, "static/dll-manifest.json"),
+      context: root,
+      path: `${output}/static/dll-manifest.json`,
       name: "[name]_[hash:8]"
     }),
   ],
-}, getMergeConfig(`webpack.dll.js`, jsRules, undefined));
+}, getMergeConfig(builder, jsRules));
