@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.happypackMerge = void 0;var _happypack = _interopRequireDefault(require("happypack"));
 var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
-var _os = _interopRequireDefault(require("os"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _os = _interopRequireDefault(require("os"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 
 const happyThreadPool = _happypack.default.ThreadPool({ size: _os.default.cpus().length });
@@ -8,7 +8,7 @@ class HappyPackUtil {
 
 
 
-  constructor(threads, rule) {
+  constructor(threads, rule) {_defineProperty(this, "rule", void 0);_defineProperty(this, "id", void 0);_defineProperty(this, "threads", void 0);
     this.rule = rule;
     this.threads = threads + 1;
     this.id = `happypack${this.threads}`;

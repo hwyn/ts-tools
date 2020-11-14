@@ -2,7 +2,7 @@ import path from 'path';
 import { readFileSync, existsSync } from 'fs';
 import { requireSync } from '../core/fs';
 import pkg from '../../package.json';
-import { isEmpty } from 'lodash';
+import { isEmpty, merge } from 'lodash';
 
 const factoryConfig = (str: string) => (attr: string) => {
   if (str.indexOf(attr) === -1) return null;
@@ -51,27 +51,41 @@ export {
 
 const projectName = path.join(baseDir, 'project.config.json');
 
-export interface Project {
+interface Project {
   output: string;
-  development: object;
-  production: object;
+  environmental?: object | undefined;
+  development?: object;
+  production?: object;
 }
 
-export class ProjectConfig {
+const defaultProject: Project = {
+  output: 'build',
+};
+
+class ProjectConfig {
   static _project: ProjectConfig;
 
+  private environmental: string;
+  private arvg: string = ``;
+  private getArvgConfig = factoryConfig(this.arvg);
   protected config: Project;
-  constructor(private arvg: string[]) { }
+  constructor(arvg: string[] = []) {
+    this.arvg = argv.join(` `);
+  }
 
-  private parseConfig() {
-    const { output = 'build', development, production } = this.config;
+  private parseArvg() {
+    this.environmental = this.getArvgConfig('--environmental');
+  }
+
+  private parseConfig(config: Project) {
+    this.config = merge(defaultProject, config);
+    const { output , development, production } = this.config;
     this.config.output = baseResolve(output);
   }
 
-  private loadProjectConfig() {
+  private loadProjectConfig(): Project {
     if (existsSync(projectName)) {
-      this.config = JSON.parse(readFileSync(projectName, 'utf-8'));
-      this.parseConfig();
+      this.parseConfig(JSON.parse(readFileSync(projectName, 'utf-8')));
     }
     return this.config;
   }

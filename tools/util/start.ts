@@ -1,16 +1,15 @@
 import express from 'express';
 import path from 'path';
 import browserSync from 'browser-sync';
-import { buildDir, runClient, project } from '../config';
+import { buildDir, runClient } from '../config';
 import cleanDir from './clean';
 import serverHotDev from '../lib/dev.server';
 import clientHotDev from '../lib/dev.client';
 import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
+
 const app = express();
 app.use(express.static(path.join(buildDir, 'public')));
-
-console.log(project);
 
 export default async (): Promise<any> => {
   await cleanDir();

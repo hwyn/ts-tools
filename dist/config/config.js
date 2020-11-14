@@ -1,8 +1,8 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.project = exports.ProjectConfig = exports.baseDir = exports.browserslist = exports.babellrc = exports.isDebug = exports.runClient = exports.webpackDir = exports.distDir = exports.srcDir = exports.buildDir = void 0;var _path2 = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.project = exports.baseDir = exports.browserslist = exports.babellrc = exports.isDebug = exports.runClient = exports.webpackDir = exports.distDir = exports.srcDir = exports.buildDir = void 0;var _path2 = _interopRequireDefault(require("path"));
 var _fs = require("fs");
 var _fs2 = require("../core/fs");
 var _package = _interopRequireDefault(require("../../package.json"));
-var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 const factoryConfig = str => attr => {
   if (str.indexOf(attr) === -1) return null;
@@ -57,21 +57,35 @@ const projectName = _path2.default.join(baseDir, 'project.config.json');
 
 
 
+
+const defaultProject = {
+  output: 'build' };
+
+
 class ProjectConfig {
 
 
 
-  constructor(arvg) {this.arvg = arvg;}
 
-  parseConfig() {
-    const { output = 'build', development, production } = this.config;
+
+
+  constructor(arvg = []) {_defineProperty(this, "environmental", void 0);_defineProperty(this, "arvg", ``);_defineProperty(this, "getArvgConfig", factoryConfig(this.arvg));_defineProperty(this, "config", void 0);
+    this.arvg = argv.join(` `);
+  }
+
+  parseArvg() {
+    this.environmental = this.getArvgConfig('--environmental');
+  }
+
+  parseConfig(config) {
+    this.config = (0, _lodash.merge)(defaultProject, config);
+    const { output, development, production } = this.config;
     this.config.output = baseResolve(output);
   }
 
   loadProjectConfig() {
     if ((0, _fs.existsSync)(projectName)) {
-      this.config = JSON.parse((0, _fs.readFileSync)(projectName, 'utf-8'));
-      this.parseConfig();
+      this.parseConfig(JSON.parse((0, _fs.readFileSync)(projectName, 'utf-8')));
     }
     return this.config;
   }
@@ -82,7 +96,7 @@ class ProjectConfig {
       this._project.loadProjectConfig();
     }
     return this._project && this._project.config || {};
-  }}exports.ProjectConfig = ProjectConfig;
+  }}_defineProperty(ProjectConfig, "_project", void 0);
 
 
 const project = ProjectConfig.project;exports.project = project;
