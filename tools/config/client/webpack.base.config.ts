@@ -25,7 +25,7 @@ const {
   browserTarget = []
 } = platformConfig(PlatformEnum.client);
 
-const cssRules = cssLoader({}, isDevelopment);
+const cssRules = cssLoader({}, !isDevelopment);
 const jsRules = jsLoader({
   options: {
     presets: [
@@ -64,8 +64,6 @@ export default (): Configuration => merge(webpackConfig, {
         exclude: nodeModules,
         context: root
       }),
-      cssRules.css(),
-      cssRules.less(),
       cssRules.sass(),
     ],
   },

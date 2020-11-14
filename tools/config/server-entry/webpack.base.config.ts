@@ -7,7 +7,7 @@ import {  babellrc,  platformConfig, PlatformEnum }  from '../config';
 
 const { main, builder, isDevelopment, output, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 const jsRules = jsLoader({ options: babellrc });
-const cssRules = cssLoader({}, isDevelopment);
+const cssRules = cssLoader({}, !isDevelopment);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
