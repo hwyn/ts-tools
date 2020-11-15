@@ -7,7 +7,7 @@ var _config = require("../config");function _getRequireWildcardCache() {if (type
 
 const { main, builder, isDevelopment, output, nodeModules, sourceRoot } = (0, _config.platformConfig)(_config.PlatformEnum.serverEntry);
 const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
-const cssRules = (0, _util.cssLoader)({}, isDevelopment);var _default =
+const cssRules = (0, _util.cssLoader)({}, !isDevelopment);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'node',

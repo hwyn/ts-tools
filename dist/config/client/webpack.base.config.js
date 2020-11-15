@@ -25,7 +25,7 @@ const {
   browserTarget = [] } =
 (0, _config.platformConfig)(_config.PlatformEnum.client);
 
-const cssRules = (0, _util.cssLoader)({}, isDevelopment);
+const cssRules = (0, _util.cssLoader)({}, !isDevelopment);
 const jsRules = (0, _util.jsLoader)({
   options: {
     presets: [
@@ -64,8 +64,6 @@ const jsRules = (0, _util.jsLoader)({
       exclude: nodeModules,
       context: root }),
 
-    cssRules.css(),
-    cssRules.less(),
     cssRules.sass()] },
 
 
