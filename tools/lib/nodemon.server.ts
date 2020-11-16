@@ -4,7 +4,7 @@ import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
 import { platformConfig } from '../config';
 import { existenceClient } from '../config';
 
-const { main, watchFile, root } = platformConfig('server');
+const { main, watchFile, root, tsConfig } = platformConfig('server');
 
 const entryFile = main;
 
@@ -41,7 +41,8 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
-  spawnFlags.push(`ts-node --project ${root}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
+
+  spawnFlags.push(`ts-node --project ${tsConfig} -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
