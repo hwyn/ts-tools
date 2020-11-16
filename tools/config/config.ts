@@ -35,6 +35,7 @@ interface buildOptions {
 interface Configurations {
   browserTarget?: [],
   nodeExternals?: boolean;
+  sourceMap?: boolean;
   watchFile?: string[];
 }
 
@@ -182,7 +183,7 @@ export const platformConfig = (key?: string) => {
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, assetsPath, tsConfig } = options || {};
-  const { nodeExternals, browserTarget, watchFile } = configurations || {};
+  const { nodeExternals, browserTarget, watchFile,sourceMap: hasSourceMap } = configurations || {};
   return {
     root,
     output,
@@ -199,6 +200,7 @@ export const platformConfig = (key?: string) => {
     nodeModules,
     watchFile,
     sourceMap,
+    hasSourceMap,
     isDevelopment
   };
 }

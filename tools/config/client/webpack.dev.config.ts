@@ -6,7 +6,7 @@ import { platformConfig } from '../config';
 
 const hotPlug = (key: string) => `webpack-hot-middleware/client?name=${key}&reload=true`;
 
-const { sourceMap } = platformConfig('client');
+const { sourceMap, hasSourceMap } = platformConfig('client');
 
 export default () => {
   const config = baseConfig();
@@ -20,7 +20,7 @@ export default () => {
       [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
     }), {}),
     output: {
-      filename: typeof filename === 'string' ?  filename.replace('\.[hash:8]', '') : filename,
+      filename: typeof filename === 'string' ? filename.replace('\.[hash:8]', '') : filename,
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
@@ -29,6 +29,6 @@ export default () => {
         'process.env.NODE_ENV': "'development'"
       }),
     ],
-    devtool: sourceMap,
+    ...hasSourceMap ? { devtool: sourceMap } : {},
   } as Configuration));
 }

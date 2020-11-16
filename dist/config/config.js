@@ -64,6 +64,7 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
 const defaultProject = {
   root: '.',
   output: 'dist',
@@ -182,7 +183,7 @@ const platformConfig = key => {
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, assetsPath, tsConfig } = options || {};
-  const { nodeExternals, browserTarget, watchFile } = configurations || {};
+  const { nodeExternals, browserTarget, watchFile, sourceMap: hasSourceMap } = configurations || {};
   return {
     root,
     output,
@@ -199,6 +200,7 @@ const platformConfig = key => {
     nodeModules,
     watchFile,
     sourceMap,
+    hasSourceMap,
     isDevelopment };
 
 };exports.platformConfig = platformConfig;
