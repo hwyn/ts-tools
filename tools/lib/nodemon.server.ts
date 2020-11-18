@@ -7,8 +7,6 @@ import { existenceClient } from '../config';
 const { main, watchFile, root, tsConfig } = platformConfig('server');
 const entryFile = main;
 
-process.env.TS_NODE_PROJECT = tsConfig;
-
 let host: number | string = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon: any = () => Promise.resolve();
 const delay = (timer: number, callback: any): any => {
@@ -46,6 +44,7 @@ const getSpawnArgs = () => {
   spawnFlags.push(`ts-node --project ${tsConfig} -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
+  process.env.TS_NODE_PROJECT = tsConfig;
   return spawnArgs;
 };
 

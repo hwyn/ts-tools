@@ -7,8 +7,6 @@ var _config = require("../config");function _interopRequireDefault(obj) {return 
 const { main, watchFile, root, tsConfig } = (0, _config.platformConfig)('server');
 const entryFile = main;
 
-process.env.TS_NODE_PROJECT = tsConfig;
-
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -46,6 +44,7 @@ const getSpawnArgs = () => {
   spawnFlags.push(`ts-node --project ${tsConfig} -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
+  process.env.TS_NODE_PROJECT = tsConfig;
   return spawnArgs;
 };
 
