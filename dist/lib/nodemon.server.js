@@ -5,6 +5,10 @@ var _config = require("../config");function _interopRequireDefault(obj) {return 
 
 
 const { main, watchFile, root, tsConfig } = (0, _config.platformConfig)('server');
+<<<<<<< HEAD
+=======
+
+>>>>>>> efd201d502720b674a250deb3513045f015ce728
 const entryFile = main;
 
 process.env.TS_NODE_PROJECT = tsConfig;
@@ -42,6 +46,10 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> efd201d502720b674a250deb3513045f015ce728
   spawnFlags.push(`ts-node --project ${tsConfig} -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);

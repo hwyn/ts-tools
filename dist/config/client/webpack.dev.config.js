@@ -6,7 +6,7 @@ var _config = require("../config");function _interopRequireDefault(obj) {return 
 
 const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;
 
-const { sourceMap } = (0, _config.platformConfig)('client');var _default =
+const { sourceMap, hasSourceMap } = (0, _config.platformConfig)('client');var _default =
 
 () => {
   const config = (0, _webpackBase.default)();
@@ -29,6 +29,6 @@ const { sourceMap } = (0, _config.platformConfig)('client');var _default =
       'process.env.NODE_ENV': "'development'" })],
 
 
-    devtool: sourceMap }));
+    ...(hasSourceMap ? { devtool: sourceMap } : {}) }));
 
 };exports.default = _default;
