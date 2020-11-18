@@ -4,9 +4,10 @@ var _child_process = require("child_process");
 var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
 
 
-const { main, watchFile, root } = (0, _config.platformConfig)('server');
-
+const { main, watchFile, root, tsConfig } = (0, _config.platformConfig)('server');
 const entryFile = main;
+
+process.env.TS_NODE_PROJECT = tsConfig;
 
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
@@ -41,7 +42,7 @@ const getSpawnArgs = () => {
     spawnArgs.push('sh');
     spawnFlags.push('-c');
   }
-  spawnFlags.push(`ts-node --project ${root}/tsconfig.json -r tsconfig-paths/register ${entryFile}`);
+  spawnFlags.push(`ts-node --project ${tsConfig} -r tsconfig-paths/register ${entryFile}`);
   spawnArgs.push(spawnFlags);
   spawnArgs.push(spawnOptions);
   return spawnArgs;
