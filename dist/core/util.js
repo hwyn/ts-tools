@@ -51,7 +51,7 @@ function cssLoader(config, isNotExtract) {
   const { options, exclude = /node_modules/, include } = config;
   const preUse = factoryUse(isNotExtract ? 'style-loader' : _miniCssExtractPlugin.default.loader, {});
   const concatUse = factoryConcatUse([
-  factoryUse('css-loader', { ...publicOptions, ...options }),
+  factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
   factoryUse('postcss-loader', Object.assign({
     config: { path: _path.default.join(__dirname, 'postcss.config.js') } },
   !isNotExtract ? {} : { sourceMap: 'inline' }))]);
