@@ -11,10 +11,9 @@ var _config = require("../config");function _interopRequireDefault(obj) {return 
 const { presets, plugins } = _config.babellrc;
 const {
   root,
-  output,
   builder,
   main,
-  assetsPath,
+  outputPath,
   tsConfig,
   browserTarget } =
 (0, _config.platformConfig)(_config.PlatformEnum.dll);
@@ -37,7 +36,7 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
   target: 'web',
   entry: main && { common: main } || {},
   output: {
-    path: assetsPath,
+    path: outputPath,
     filename: 'javascript/[name].dll.js',
     chunkFilename: `javascript/[name].[chunkhash:8].js`,
     library: "[name]_[hash:8]" },
@@ -64,7 +63,7 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
     chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
 
   new _webpackAssetsManifest.default({
-    output: `${output}/static/dll.json`,
+    output: `${outputPath}/../static/dll.json`,
     writeToDisk: true,
     publicPath: true,
     customize: ({ key, value }) => {
@@ -74,7 +73,7 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
 
   new _webpack.default.DllPlugin({
     context: root,
-    path: `${output}/static/dll-manifest.json`,
+    path: `${outputPath}/../static/dll-manifest.json`,
     name: "[name]_[hash:8]" })] },
 
 

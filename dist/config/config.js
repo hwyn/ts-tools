@@ -7,7 +7,7 @@ const factoryConfig = str => attr => {
   return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^ \]+\)\[\\s\\S\]*`, 'g'), '$1');
 };
 
-const resolve = base => _path => _path2.default.resolve(base, _path);
+const resolve = base => (..._path) => _path2.default.resolve(...[base, ..._path]);
 const toArray = obj => Array.isArray(obj) ? obj : obj && [obj] || [];
 
 const baseDir = process.cwd();exports.baseDir = baseDir;
@@ -65,9 +65,9 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
 const defaultProject = {
   root: '.',
-  output: 'dist',
   sourceRoot: "src",
   nodeModules: baseResolve('node_modules'),
   isDevelopment: false,
@@ -75,7 +75,7 @@ const defaultProject = {
     build: {
       platform: {},
       options: {
-        assetsPath: 'dist/public',
+        outputPath: 'dist/assets',
         assets: [],
         styles: [] } } } };
 
@@ -109,7 +109,6 @@ class ProjectConfig {
     this.config = (0, _lodash.merge)({}, defaultProject, config);
     const {
       root,
-      output,
       sourceRoot,
       architect } =
     this.config;
@@ -118,13 +117,12 @@ class ProjectConfig {
 
     this.rootResolve = resolve(this.baseResolve(root));
     this.config.isDevelopment = this.isDevelopment;
-    this.config.root = this.baseResolve(root);
-    this.config.output = this.rootResolve(output);
     this.config.sourceRoot = this.rootResolve(sourceRoot);
-    architect.build = this.parseBuild(environmentalBuild);
+    this.config.root = this.baseResolve(root);
+    architect.build = this.parseBuild(sourceRoot, environmentalBuild);
   }
 
-  parseBuild(build) {
+  parseBuild(sourceRoot, build) {
     const { platform, options, configurations } = build;
     build.platform = Object.keys(platform).reduce((obj, p) => {
       const current = platform[p];
@@ -132,13 +130,16 @@ class ProjectConfig {
       current.configurations = (0, _lodash.merge)({}, configurations, current.configurations);
 
       const { options: pOptions, configurations: pConfigurations, builder } = current;
-      const { main, styles, index, assetsPath, assets, tsConfig } = pOptions;
+      const { main, styles, index, outputPath, assets, tsConfig, sourceClient, sourceServer } = pOptions;
       const { watchFile } = current.configurations;
 
       !!builder && (current.builder = this.rootResolve(current.builder));
       !!index && (pOptions.index = this.rootResolve(index));
       !!tsConfig && (pOptions.tsConfig = this.rootResolve(tsConfig));
-      !!assetsPath && (pOptions.assetsPath = this.rootResolve(assetsPath));
+      !!outputPath && (pOptions.outputPath = this.rootResolve(outputPath));
+      !!sourceClient && (pOptions.sourceClient = this.rootResolve(sourceRoot, sourceClient));
+      !!sourceServer && (pOptions.sourceServer = this.rootResolve(sourceRoot, sourceServer));
+
       if (p !== PlatformEnum.dll) {
         pOptions.main = toArray(main).map(f => this.rootResolve(f));
       }
@@ -147,7 +148,7 @@ class ProjectConfig {
       pConfigurations.watchFile = toArray(watchFile).map(f => this.rootResolve(f));
       return { ...obj, [p]: current };
     }, {});
-    !!options.assetsPath && (options.assetsPath = this.rootResolve(options.assetsPath));
+    !!options.outputPath && (options.outputPath = this.rootResolve(options.outputPath));
     return build;
   }
 
@@ -179,24 +180,26 @@ const existenceClient = ProjectConfig.existenceClient;exports.existenceClient = 
 const babellrc = (0, _fs.existsSync)(babel) && JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) || {};exports.babellrc = babellrc;
 
 const platformConfig = key => {
-  const { root, output, isDevelopment, sourceRoot, nodeModules } = project;
+  const { root, isDevelopment, sourceRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
-  const { index, main, styles, assets, sourceMap, assetsPath, tsConfig } = options || {};
+  const { index, main, styles, assets, sourceMap, outputPath, tsConfig, sourceClient, sourceServer } = options || {};
   const { nodeExternals, browserTarget, watchFile, sourceMap: hasSourceMap } = configurations || {};
+
   return {
     root,
-    output,
     index,
     main,
     styles,
     assets,
     builder,
     tsConfig,
-    assetsPath,
+    outputPath,
     browserTarget,
     nodeExternals,
     sourceRoot,
+    sourceClient,
+    sourceServer,
     nodeModules,
     watchFile,
     sourceMap,

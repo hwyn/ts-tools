@@ -6,7 +6,7 @@ var _config = require("../config");
 var _fs2 = require("../../core/fs");
 var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const { isDevelopment } = (0, _config.platformConfig)();
+const { isDevelopment, sourceRoot } = (0, _config.platformConfig)();
 
 const getMergeConfig = (filePath, jsRules, cssRules) => {
   const mergeClientConfig = (0, _fs2.requireSync)(filePath);
@@ -19,10 +19,10 @@ const filterAttr = (mergeConfig, filter) => {
   return config;
 };exports.filterAttr = filterAttr;
 
-const copyPlugin = (formFile, toFile) => {
+const copyPlugin = (formFile, toFile, sourceClient = sourceRoot) => {
   const files = (Array.isArray(formFile) ? formFile : [formFile]).reduce((copyArr, filePath) => {
     if ((0, _fs.existsSync)(filePath)) {
-      copyArr.push({ from: filePath, to: toFile, noErrorOnMissing: false, globOptions: { ignore: ['.*'] } });
+      copyArr.push({ from: filePath, to: filePath.replace(sourceClient, toFile), noErrorOnMissing: false, globOptions: { ignore: ['.*'] } });
     }
     return copyArr;
   }, []);

@@ -10,10 +10,10 @@ const jsRules = jsLoader({ options: babellrc });
 
 const {
   root,
-  output,
   main,
   assets,
-  assetsPath,
+  sourceServer,
+  outputPath,
   nodeExternals,
   tsConfig,
   builder
@@ -26,7 +26,7 @@ export default (): Configuration => merge(webpackConfig, {
   context: root,
   entry: main && { server: main } || {},
   output: {
-    path: output,
+    path: outputPath,
     chunkFilename: `[name].[chunkhash:8].js`,
     filename: `[name].js`,
     library: 'commonjs2',
@@ -48,7 +48,7 @@ export default (): Configuration => merge(webpackConfig, {
     ],
   },
   plugins: [
-    ...copyPlugin(assets, assetsPath),
+    ...copyPlugin(assets, outputPath, sourceServer),
   ],
   node: {
     console: false,

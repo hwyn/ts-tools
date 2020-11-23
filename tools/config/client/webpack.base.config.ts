@@ -11,14 +11,14 @@ import { isEmpty } from 'lodash';
 const { presets, plugins } = babellrc;
 const {
   root,
-  output,
   sourceRoot,
+  sourceClient,
   nodeModules,
   index,
   main,
   styles,
   assets,
-  assetsPath,
+  outputPath,
   tsConfig,
   isDevelopment,
   builder,
@@ -45,7 +45,7 @@ export default (): Configuration => merge(webpackConfig, {
   },
   output: {
     publicPath: '',
-    path: assetsPath,
+    path: outputPath,
     chunkFilename: `javascript/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js`,
   },
@@ -59,7 +59,7 @@ export default (): Configuration => merge(webpackConfig, {
       jsRules.babel(),
       jsRules.ts({
         happyPackMode: true,
-        transpileOnly: true,
+        transpileOnly: !isDevelopment,
         configFile: tsConfig,
         exclude: nodeModules,
         context: root
@@ -69,9 +69,9 @@ export default (): Configuration => merge(webpackConfig, {
   },
   plugins: [
     new ProgressPlugin(),
-    ...copyPlugin(assets, assetsPath),
+    ...copyPlugin(assets, outputPath, sourceClient),
     new WebpackAssetsManifest({
-      output: `${output}/static/assets.json`,
+      output: `${outputPath}/../static/assets.json`,
       writeToDisk: true,
       publicPath: true,
       customize: ({ key, value }) => {
@@ -79,10 +79,10 @@ export default (): Configuration => merge(webpackConfig, {
         return { key, value };
       }
     }),
-    ...existsSync(`${output}/static/dll-manifest.json`) ? [
+    ...existsSync(`${outputPath}/../static/dll-manifest.json`) ? [
       new DllReferencePlugin({
         context: root,
-        manifest: require(`${output}/static/dll-manifest.json`)
+        manifest: require(`${outputPath}/../static/dll-manifest.json`)
       })
     ] : [],
     new HtmlWebpackPlugin({

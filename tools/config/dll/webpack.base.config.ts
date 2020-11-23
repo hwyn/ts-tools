@@ -11,10 +11,9 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 const { presets, plugins } = babellrc;
 const {
   root,
-  output,
   builder,
   main,
-  assetsPath,
+  outputPath,
   tsConfig,
   browserTarget
 } = platformConfig(PlatformEnum.dll);
@@ -37,7 +36,7 @@ export default (): Configuration => merge(webpackConfig, {
   target: 'web',
   entry: main && { common: main } || {},
   output: {
-    path: assetsPath,
+    path: outputPath,
     filename: 'javascript/[name].dll.js',
     chunkFilename: `javascript/[name].[chunkhash:8].js`,
     library: "[name]_[hash:8]",
@@ -64,7 +63,7 @@ export default (): Configuration => merge(webpackConfig, {
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
     }),
     new WebpackAssetsManifest({
-      output: `${output}/static/dll.json`,
+      output: `${outputPath}/../static/dll.json`,
       writeToDisk: true,
       publicPath: true,
       customize: ({ key, value }) => {
@@ -74,7 +73,7 @@ export default (): Configuration => merge(webpackConfig, {
     }),
     new webpack.DllPlugin({
       context: root,
-      path: `${output}/static/dll-manifest.json`,
+      path: `${outputPath}/../static/dll-manifest.json`,
       name: "[name]_[hash:8]"
     }),
   ],

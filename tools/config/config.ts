@@ -7,7 +7,7 @@ const factoryConfig = (str: string) => (attr: string) => {
   return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^ \]+\)\[\\s\\S\]*`, 'g'), '$1');
 };
 
-const resolve = (base: string) => (_path: string) => path.resolve(base, _path);
+const resolve = (base: string) => (..._path: string[]) => path.resolve(...[base, ..._path]);
 const toArray = (obj: any) => Array.isArray(obj) ? obj : obj && [obj] || [];
 
 const baseDir: string = process.cwd();
@@ -29,7 +29,9 @@ interface buildOptions {
   assets?: string[];
   styles: string[];
   tsConfig?: string;
-  assetsPath: string;
+  outputPath: string;
+  sourceClient?: string;
+  sourceServer?: string;
 }
 
 interface Configurations {
@@ -55,7 +57,6 @@ interface Build {
 
 interface Project {
   root: string;
-  output: string;
   sourceRoot: string;
   nodeModules: string;
   isDevelopment: boolean;
@@ -67,7 +68,6 @@ interface Project {
 
 const defaultProject: Project = {
   root: '.',
-  output: 'dist',
   sourceRoot: "src",
   nodeModules: baseResolve('node_modules'),
   isDevelopment: false,
@@ -75,7 +75,7 @@ const defaultProject: Project = {
     build: {
       platform: {},
       options: {
-        assetsPath: 'dist/public',
+        outputPath: 'dist/assets',
         assets: [],
         styles: []
       },
@@ -91,7 +91,7 @@ class ProjectConfig {
   private arvg: string = ``;
   private getArvgConfig = factoryConfig(this.arvg);
   private baseResolve = resolve(process.cwd());
-  private rootResolve: (path: string) => string;
+  private rootResolve: (...path: string[]) => string;
   protected config: Project;
   constructor(arvg: string[] = []) {
     const [command] = arvg.slice(2);
@@ -109,7 +109,6 @@ class ProjectConfig {
     this.config = merge({}, defaultProject, config);
     const {
       root,
-      output,
       sourceRoot,
       architect
     } = this.config;
@@ -118,13 +117,12 @@ class ProjectConfig {
 
     this.rootResolve = resolve(this.baseResolve(root));
     this.config.isDevelopment = this.isDevelopment;
-    this.config.root = this.baseResolve(root);
-    this.config.output = this.rootResolve(output);
     this.config.sourceRoot = this.rootResolve(sourceRoot);
-    architect.build = this.parseBuild(environmentalBuild);
+    this.config.root = this.baseResolve(root);
+    architect.build = this.parseBuild(sourceRoot, environmentalBuild);
   }
 
-  private parseBuild(build: Build): Build {
+  private parseBuild(sourceRoot: string, build: Build): Build {
     const { platform, options, configurations } = build;
     build.platform = Object.keys(platform).reduce((obj, p) => {
       const current = platform[p];
@@ -132,13 +130,16 @@ class ProjectConfig {
       current.configurations = merge({}, configurations, current.configurations);
 
       const { options: pOptions, configurations: pConfigurations, builder } = current;
-      const { main, styles, index, assetsPath, assets, tsConfig } = pOptions;
+      const { main, styles, index, outputPath, assets, tsConfig, sourceClient, sourceServer } = pOptions;
       const { watchFile } = current.configurations;
 
       !!builder && (current.builder = this.rootResolve(current.builder));
       !!index && (pOptions.index = this.rootResolve(index));
       !!tsConfig && (pOptions.tsConfig = this.rootResolve(tsConfig));
-      !!assetsPath && (pOptions.assetsPath = this.rootResolve(assetsPath));
+      !!outputPath && (pOptions.outputPath = this.rootResolve(outputPath));
+      !!sourceClient && (pOptions.sourceClient = this.rootResolve(sourceRoot, sourceClient));
+      !!sourceServer && (pOptions.sourceServer = this.rootResolve(sourceRoot, sourceServer));
+
       if (p !== PlatformEnum.dll) {
         pOptions.main = toArray(main).map((f) => this.rootResolve(f));
       }
@@ -147,7 +148,7 @@ class ProjectConfig {
       pConfigurations.watchFile = toArray(watchFile).map((f) => this.rootResolve(f));
       return { ...obj, [p]: current };
     }, {});
-    !!options.assetsPath && (options.assetsPath = this.rootResolve(options.assetsPath));
+    !!options.outputPath && (options.outputPath = this.rootResolve(options.outputPath));
     return build;
   }
 
@@ -179,24 +180,26 @@ export const existenceClient = ProjectConfig.existenceClient;
 export const babellrc = existsSync(babel) && JSON.parse(readFileSync(babel).toString('utf-8')) || {};
 
 export const platformConfig = (key?: string) => {
-  const { root, output, isDevelopment, sourceRoot, nodeModules } = project;
+  const { root, isDevelopment, sourceRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
-  const { index, main, styles, assets, sourceMap, assetsPath, tsConfig } = options || {};
+  const { index, main, styles, assets, sourceMap, outputPath, tsConfig, sourceClient, sourceServer } = options || {};
   const { nodeExternals, browserTarget, watchFile,sourceMap: hasSourceMap } = configurations || {};
+
   return {
     root,
-    output,
     index,
     main,
     styles,
     assets,
     builder,
     tsConfig,
-    assetsPath,
+    outputPath,
     browserTarget,
     nodeExternals,
     sourceRoot,
+    sourceClient,
+    sourceServer,
     nodeModules,
     watchFile,
     sourceMap,

@@ -11,14 +11,14 @@ var _lodash = require("lodash");function _getRequireWildcardCache() {if (typeof 
 const { presets, plugins } = _config.babellrc;
 const {
   root,
-  output,
   sourceRoot,
+  sourceClient,
   nodeModules,
   index,
   main,
   styles,
   assets,
-  assetsPath,
+  outputPath,
   tsConfig,
   isDevelopment,
   builder,
@@ -45,7 +45,7 @@ const jsRules = (0, _util.jsLoader)({
 
   output: {
     publicPath: '',
-    path: assetsPath,
+    path: outputPath,
     chunkFilename: `javascript/[name].[chunkhash:8].js`,
     filename: `javascript/[name].[hash:8].js` },
 
@@ -59,7 +59,7 @@ const jsRules = (0, _util.jsLoader)({
     jsRules.babel(),
     jsRules.ts({
       happyPackMode: true,
-      transpileOnly: true,
+      transpileOnly: !isDevelopment,
       configFile: tsConfig,
       exclude: nodeModules,
       context: root }),
@@ -69,9 +69,9 @@ const jsRules = (0, _util.jsLoader)({
 
   plugins: [
   new _webpack.ProgressPlugin(),
-  ...(0, _webpack2.copyPlugin)(assets, assetsPath),
+  ...(0, _webpack2.copyPlugin)(assets, outputPath, sourceClient),
   new _webpackAssetsManifest.default({
-    output: `${output}/static/assets.json`,
+    output: `${outputPath}/../static/assets.json`,
     writeToDisk: true,
     publicPath: true,
     customize: ({ key, value }) => {
@@ -79,10 +79,10 @@ const jsRules = (0, _util.jsLoader)({
       return { key, value };
     } }),
 
-  ...((0, _fs.existsSync)(`${output}/static/dll-manifest.json`) ? [
+  ...((0, _fs.existsSync)(`${outputPath}/../static/dll-manifest.json`) ? [
   new _webpack.DllReferencePlugin({
     context: root,
-    manifest: require(`${output}/static/dll-manifest.json`) })] :
+    manifest: require(`${outputPath}/../static/dll-manifest.json`) })] :
 
   []),
   new _htmlWebpackPlugin.default({

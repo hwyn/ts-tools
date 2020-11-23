@@ -2,11 +2,11 @@ import { existsSync, mkdirSync } from 'fs';
 import { Configuration, Plugin } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 
-import { baseDir, platformConfig }  from '../config';
+import { baseDir, platformConfig } from '../config';
 import { requireSync } from '../../core/fs';
 import { isEmpty } from 'lodash';
 
-const { isDevelopment } = platformConfig();
+const { isDevelopment, sourceRoot } = platformConfig();
 
 export const getMergeConfig = (filePath: string, jsRules?: any, cssRules?: any): Configuration => {
   const mergeClientConfig = requireSync(filePath);
@@ -19,10 +19,10 @@ export const filterAttr = (mergeConfig: any, filter: string[]) => {
   return config;
 };
 
-export const copyPlugin = (formFile: string | string[], toFile: string): Plugin[] => {
+export const copyPlugin = (formFile: string | string[], toFile: string, sourceClient: string = sourceRoot): Plugin[] => {
   const files = (Array.isArray(formFile) ? formFile : [formFile]).reduce((copyArr, filePath: string) => {
     if (existsSync(filePath)) {
-      copyArr.push({ from: filePath, to: toFile , noErrorOnMissing: false,  globOptions: { ignore: ['.*'] }});
+      copyArr.push({ from: filePath, to: filePath.replace(sourceClient, toFile), noErrorOnMissing: false, globOptions: { ignore: ['.*'] } });
     }
     return copyArr;
   }, []);

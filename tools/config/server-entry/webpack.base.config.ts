@@ -5,7 +5,7 @@ import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import {  babellrc,  platformConfig, PlatformEnum }  from '../config';
 
-const { main, builder, isDevelopment, output, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
+const { main, builder, isDevelopment, outputPath, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 const jsRules = jsLoader({ options: babellrc });
 const cssRules = cssLoader({}, !isDevelopment);
 
@@ -14,7 +14,7 @@ export default (): Configuration => merge(webpackConfig, {
   entry: main && { main } || {},
   output: {
     publicPath: '',
-    path: output,
+    path: outputPath,
     chunkFilename: `check/[name].js`,
     filename: `[name].js`,
     libraryTarget: 'commonjs',
@@ -25,7 +25,7 @@ export default (): Configuration => merge(webpackConfig, {
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
   },
   externals: [
-    `${output}/assets.json`,
+    `${outputPath}/assets.json`,
     nodeExtrnals(),
   ],
   module: {

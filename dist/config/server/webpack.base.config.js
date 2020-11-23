@@ -10,10 +10,10 @@ const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
 
 const {
   root,
-  output,
   main,
   assets,
-  assetsPath,
+  sourceServer,
+  outputPath,
   nodeExternals,
   tsConfig,
   builder } =
@@ -26,7 +26,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
   context: root,
   entry: main && { server: main } || {},
   output: {
-    path: output,
+    path: outputPath,
     chunkFilename: `[name].[chunkhash:8].js`,
     filename: `[name].js`,
     library: 'commonjs2' },
@@ -48,7 +48,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
 
 
   plugins: [
-  ...(0, _webpack.copyPlugin)(assets, assetsPath)],
+  ...(0, _webpack.copyPlugin)(assets, outputPath, sourceServer)],
 
   node: {
     console: false,
