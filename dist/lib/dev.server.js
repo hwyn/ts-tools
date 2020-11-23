@@ -6,6 +6,6 @@ const { architect: { build: { platform } } } = _config.project;
 const { options } = platform.server || {};var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
 
   function* (app) {
-    app.use(_express.default.static(options.assetsPath));
+    app.use(_express.default.static(options.outputPath));
     return yield (0, _nodemon.default)();
   });return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;

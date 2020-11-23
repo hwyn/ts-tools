@@ -17,7 +17,7 @@ const { options } = platform.client || {};var _default = /*#__PURE__*/function (
     const multiCompiler = (0, _webpack.default)(client);
     const promise = (0, _compilation.createCompilationPromise)('client', multiCompiler, client);
 
-    app.use(_express.default.static(options.assetsPath));
+    app.use(_express.default.static(options.outputPath));
     app.use((0, _webpackDevMiddleware.default)(multiCompiler, {
       publicPath: client.output.publicPath,
       logLevel: 'silent' }));

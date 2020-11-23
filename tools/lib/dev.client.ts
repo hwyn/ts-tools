@@ -17,7 +17,7 @@ export default async (app: any) => {
   const multiCompiler = webpack(client);
   const promise = createCompilationPromise('client', multiCompiler, client);
 
-  app.use(express.static(options.assetsPath));
+  app.use(express.static(options.outputPath));
   app.use(webpackDevMiddleware(multiCompiler, {
     publicPath: client.output.publicPath,
     logLevel: 'silent',

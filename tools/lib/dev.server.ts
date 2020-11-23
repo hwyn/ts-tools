@@ -6,6 +6,6 @@ const { architect: { build: { platform } } } = project;
 const { options } = platform.server || {};
 
 export default async (app: any) => {
-  app.use(express.static(options.assetsPath));
+  app.use(express.static(options.outputPath));
   return await nodemon();
 };
