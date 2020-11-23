@@ -48,7 +48,7 @@ export default (): Configuration => merge(webpackConfig, {
     ],
   },
   plugins: [
-    ...copyPlugin(assets, outputPath, sourceServer),
+    ...copyPlugin(assets, outputPath, root),
   ],
   node: {
     console: false,

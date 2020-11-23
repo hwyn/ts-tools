@@ -48,7 +48,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
 
 
   plugins: [
-  ...(0, _webpack.copyPlugin)(assets, outputPath, sourceServer)],
+  ...(0, _webpack.copyPlugin)(assets, outputPath, root)],
 
   node: {
     console: false,
