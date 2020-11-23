@@ -4,7 +4,8 @@ var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 
 var _config = require("../config");
 var _fs2 = require("../../core/fs");
-var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _lodash = require("lodash");
+var _path = _interopRequireDefault(require("path"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const { isDevelopment, sourceRoot } = (0, _config.platformConfig)();
 
@@ -22,7 +23,14 @@ const filterAttr = (mergeConfig, filter) => {
 const copyPlugin = (formFile, toFile, sourceClient = sourceRoot) => {
   const files = (Array.isArray(formFile) ? formFile : [formFile]).reduce((copyArr, filePath) => {
     if ((0, _fs.existsSync)(filePath)) {
-      copyArr.push({ from: filePath, to: filePath.replace(sourceClient, toFile), noErrorOnMissing: false, globOptions: { ignore: ['.*'] } });
+      const toFilePath = filePath.replace(sourceClient, toFile);
+      const toFileInfo = _path.default.parse(toFilePath);
+      copyArr.push({
+        from: filePath,
+        to: toFileInfo.ext === '' && toFileInfo.name === '.env' ? toFileInfo.dir : toFilePath,
+        noErrorOnMissing: false,
+        globOptions: { ignore: ['.*'] } });
+
     }
     return copyArr;
   }, []);

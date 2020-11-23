@@ -5,6 +5,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import { baseDir, platformConfig } from '../config';
 import { requireSync } from '../../core/fs';
 import { isEmpty } from 'lodash';
+import path from 'path';
 
 const { isDevelopment, sourceRoot } = platformConfig();
 
@@ -22,7 +23,14 @@ export const filterAttr = (mergeConfig: any, filter: string[]) => {
 export const copyPlugin = (formFile: string | string[], toFile: string, sourceClient: string = sourceRoot): Plugin[] => {
   const files = (Array.isArray(formFile) ? formFile : [formFile]).reduce((copyArr, filePath: string) => {
     if (existsSync(filePath)) {
-      copyArr.push({ from: filePath, to: filePath.replace(sourceClient, toFile), noErrorOnMissing: false, globOptions: { ignore: ['.*'] } });
+      const toFilePath = filePath.replace(sourceClient, toFile);
+      const toFileInfo = path.parse(toFilePath);
+      copyArr.push({
+        from: filePath,
+        to: toFileInfo.ext === '' && toFileInfo.name ==='.env' ? toFileInfo.dir :  toFilePath,
+        noErrorOnMissing: false,
+        globOptions: { ignore: ['.*'] }
+      });
     }
     return copyArr;
   }, []);

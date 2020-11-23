@@ -184,7 +184,7 @@ export const platformConfig = (key?: string) => {
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, outputPath, tsConfig, sourceClient, sourceServer } = options || {};
-  const { nodeExternals, browserTarget, watchFile,sourceMap: hasSourceMap } = configurations || {};
+  const { nodeExternals, browserTarget, watchFile, sourceMap: hasSourceMap } = configurations || {};
 
   return {
     root,
