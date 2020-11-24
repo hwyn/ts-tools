@@ -1,6 +1,8 @@
 import { cleanDir } from '../core/fs';
-import { project } from '../config';
+import { platformConfig, PlatformEnum } from '../config';
+
+const outputPath = platformConfig(PlatformEnum.server).outputPath || platformConfig(PlatformEnum.client).outputPath;
 
 export default async () => {
-  await cleanDir(project.output);
+  await cleanDir(outputPath);
 };
