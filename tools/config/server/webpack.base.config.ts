@@ -12,7 +12,6 @@ const {
   root,
   main,
   assets,
-  sourceServer,
   outputPath,
   nodeExternals,
   tsConfig,

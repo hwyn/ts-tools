@@ -66,9 +66,11 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
 const defaultProject = {
   root: '.',
-  sourceRoot: "src",
+  sourceRoot: 'src',
+  outputRoot: 'dist',
   nodeModules: baseResolve('node_modules'),
   isDevelopment: false,
   architect: {
@@ -110,6 +112,7 @@ class ProjectConfig {
     const {
       root,
       sourceRoot,
+      outputRoot,
       architect } =
     this.config;
 
@@ -118,6 +121,7 @@ class ProjectConfig {
     this.rootResolve = resolve(this.baseResolve(root));
     this.config.isDevelopment = this.isDevelopment;
     this.config.sourceRoot = this.rootResolve(sourceRoot);
+    this.config.outputRoot = this.rootResolve(outputRoot),
     this.config.root = this.baseResolve(root);
     architect.build = this.parseBuild(sourceRoot, environmentalBuild);
   }
@@ -180,7 +184,7 @@ const existenceClient = ProjectConfig.existenceClient;exports.existenceClient = 
 const babellrc = (0, _fs.existsSync)(babel) && JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) || {};exports.babellrc = babellrc;
 
 const platformConfig = key => {
-  const { root, isDevelopment, sourceRoot, nodeModules } = project;
+  const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, outputPath, tsConfig, sourceClient, sourceServer } = options || {};
@@ -198,6 +202,7 @@ const platformConfig = key => {
     browserTarget,
     nodeExternals,
     sourceRoot,
+    outputRoot,
     sourceClient,
     sourceServer,
     nodeModules,
