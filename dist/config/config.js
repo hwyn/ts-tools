@@ -67,6 +67,7 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
 const defaultProject = {
   root: '.',
   sourceRoot: 'src',
@@ -77,7 +78,6 @@ const defaultProject = {
     build: {
       platform: {},
       options: {
-        outputPath: 'dist/assets',
         assets: [],
         styles: [] } } } };
 
@@ -133,17 +133,17 @@ class ProjectConfig {
       current.options = (0, _lodash.merge)({}, options, current.options);
       current.configurations = (0, _lodash.merge)({}, configurations, current.configurations);
 
-      const { options: pOptions, configurations: pConfigurations, builder } = current;
-      const { main, styles, index, outputPath, assets, tsConfig, sourceClient, sourceServer } = pOptions;
+      const { options: pOptions, configurations: pConfigurations, builder, outputPath, sourceClient, sourceServer } = current;
+      const { main, styles, index, assets, tsConfig, themeVariable } = pOptions;
       const { watchFile } = current.configurations;
 
       !!builder && (current.builder = this.rootResolve(current.builder));
       !!index && (pOptions.index = this.rootResolve(index));
       !!tsConfig && (pOptions.tsConfig = this.rootResolve(tsConfig));
-      !!outputPath && (pOptions.outputPath = this.rootResolve(outputPath));
-      !!sourceClient && (pOptions.sourceClient = this.rootResolve(sourceRoot, sourceClient));
-      !!sourceServer && (pOptions.sourceServer = this.rootResolve(sourceRoot, sourceServer));
-
+      !!themeVariable && (pOptions.themeVariable = this.rootResolve(themeVariable));
+      !!outputPath && (current.outputPath = this.rootResolve(outputPath));
+      !!sourceClient && (current.sourceClient = this.rootResolve(sourceRoot, sourceClient));
+      !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
       if (p !== PlatformEnum.dll) {
         pOptions.main = toArray(main).map(f => this.rootResolve(f));
       }
@@ -152,7 +152,6 @@ class ProjectConfig {
       pConfigurations.watchFile = toArray(watchFile).map(f => this.rootResolve(f));
       return { ...obj, [p]: current };
     }, {});
-    !!options.outputPath && (options.outputPath = this.rootResolve(options.outputPath));
     return build;
   }
 
@@ -186,14 +185,15 @@ const babellrc = (0, _fs.existsSync)(babel) && JSON.parse((0, _fs.readFileSync)(
 const platformConfig = key => {
   const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
-  const { options, configurations, builder } = platform[key] || {};
-  const { index, main, styles, assets, sourceMap, outputPath, tsConfig, sourceClient, sourceServer } = options || {};
+  const { options, configurations, builder, outputPath, sourceClient, sourceServer } = platform[key] || {};
+  const { index, main, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
   const { nodeExternals, browserTarget, watchFile, sourceMap: hasSourceMap } = configurations || {};
 
   return {
     root,
     index,
     main,
+    themeVariable,
     styles,
     assets,
     builder,

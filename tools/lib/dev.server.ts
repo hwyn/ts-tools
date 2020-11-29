@@ -3,9 +3,9 @@ import { project } from '../config';
 import nodemon from './nodemon.server';
 
 const { architect: { build: { platform } } } = project;
-const { options } = platform.server || {};
+const { outputPath } = platform.server || {};
 
 export default async (app: any) => {
-  app.use(express.static(options.outputPath));
+  app.use(express.static(outputPath));
   return await nodemon();
 };

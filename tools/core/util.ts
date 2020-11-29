@@ -1,5 +1,6 @@
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { isEmpty } from 'lodash';
 
 const factoryUse = (loader: string, options: any, mergeOption?: any): any => ({
   loader,
@@ -8,15 +9,15 @@ const factoryUse = (loader: string, options: any, mergeOption?: any): any => ({
 
 const factoryRules = (regExp: RegExp, options: any = {}) => (use: any[]) => Object.keys(options).reduce((o: object, key: string) => Object.assign(o, options[key] ? {
   [key]: options[key],
-}: { }), {
+} : {}), {
   test: regExp,
   use,
 });
 
-const factoryLoaders = (loader: any, mergeOption?: any): any[] => (loader || []).map((loader: string) => ({
-  loader: `${loader}`,
-  options: mergeOption,
-}));
+const factoryLoaders = (loader: any, mergeOption?: any): any[] => (loader || []).map((loader: string | string[]) => {
+  const [l, options = {}] = Array.isArray(loader) ? loader : [loader];
+  return factoryUse(l, options, mergeOption);
+});
 
 const factoryConcatUse = (defaultUse: any[] | any) => (loader: string[], mergeOption?: any): any[] => {
   return (Array.isArray(defaultUse) ? defaultUse : defaultUse ? [defaultUse] : []).concat(factoryLoaders(loader, mergeOption));
@@ -48,19 +49,25 @@ export function jsLoader(config: any): any {
 
 export function cssLoader(config: any, isNotExtract?: boolean) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
-  const { options, exclude = /node_modules/, include } = config;
+  const { options, exclude = /node_modules/, include, resources } = config;
   const preUse = factoryUse(isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {});
   const concatUse = factoryConcatUse([
     factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
     factoryUse('postcss-loader', Object.assign({
       config: { path: path.join(__dirname, 'postcss.config.js') },
-    }, !isNotExtract ? {} : { sourceMap: 'inline'})),
+    }, !isNotExtract ? {} : { sourceMap: 'inline' })),
   ]);
 
-  const factory = (regExp: RegExp, loader?: string[], defaultOptions?: object) => (mergeOption?: any, preLoader?: string) => {
+  const factory = (regExp: RegExp, loader?: any[], defaultOptions?: object) => (mergeOption?: any, preLoader?: string) => {
     const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
     const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
-    const use = concatUse(loader || [], { ...defaultOptions, ...publicOptions, ...loaderOption });
+    let oneLoader;
+    if (!isEmpty(loader)) {
+      oneLoader = Array.isArray(loader[0]) ? loader[0] : [loader[0]];;
+      oneLoader[1] = { ...defaultOptions, ...publicOptions, ...loaderOption };
+      loader[0] = oneLoader;
+    }
+    const use = concatUse(loader || [], {});
     use.unshift(preLoader ? factoryUse(preLoader, {}) : preUse);
     return factory(use);
   }
@@ -68,7 +75,9 @@ export function cssLoader(config: any, isNotExtract?: boolean) {
   return {
     css: factory(/\.(css)$/),
     less: factory(/\.(less)$/, ['less-loader']),
-    sass: factory(/\.(sass|scss)$/, ['sass-loader']),
+    sass: factory(/\.(sass|scss)$/, ['sass-loader', ['sass-resources-loader', {
+      resources
+    }]]),
     more: function (types: string[], options?: any, preLoader?: string) {
       return types.map((type: string) => this[type](options, preLoader));
     },

@@ -16,6 +16,7 @@ const {
   nodeModules,
   index,
   main,
+  themeVariable,
   styles,
   assets,
   outputPath,
@@ -25,7 +26,9 @@ const {
   browserTarget = []
 } = platformConfig(PlatformEnum.client);
 
-const cssRules = cssLoader({}, !isDevelopment);
+const cssRules = cssLoader({
+  ...(themeVariable ? { resources: themeVariable } : {})
+}, !isDevelopment);
 const jsRules = jsLoader({
   options: {
     presets: [
