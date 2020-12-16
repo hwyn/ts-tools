@@ -3,7 +3,8 @@ var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 
 var _webpack = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
-var _config = require("../config");function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _config = require("../config");
+var _circularDependencyPlugin = _interopRequireDefault(require("circular-dependency-plugin"));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function () {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
@@ -47,7 +48,13 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
 
 
   plugins: [
-  ...(0, _webpack.copyPlugin)(assets, outputPath, root)],
+  ...(0, _webpack.copyPlugin)(assets, outputPath, root),
+  new _circularDependencyPlugin.default({
+    exclude: /node_modules/,
+    failOnError: true,
+    allowAsyncCycles: false,
+    cwd: root })],
+
 
   node: {
     console: false,

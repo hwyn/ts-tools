@@ -4,6 +4,7 @@ import { Configuration } from 'webpack';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
+import CircularDependencyPlugin from 'circular-dependency-plugin';
 
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const jsRules = jsLoader({ options: babellrc });
@@ -48,6 +49,12 @@ export default (): Configuration => merge(webpackConfig, {
   },
   plugins: [
     ...copyPlugin(assets, outputPath, root),
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+      failOnError: true,
+      allowAsyncCycles: false,
+      cwd: root
+    }),
   ],
   node: {
     console: false,

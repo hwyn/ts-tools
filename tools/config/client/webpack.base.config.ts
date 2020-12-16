@@ -6,6 +6,7 @@ import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
+import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
 
 const { presets, plugins } = babellrc;
@@ -73,6 +74,12 @@ export default (): Configuration => merge(webpackConfig, {
   plugins: [
     new ProgressPlugin(),
     ...copyPlugin(assets, outputPath, sourceClient),
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+      failOnError: true,
+      allowAsyncCycles: false,
+      cwd: root
+    }),
     new WebpackAssetsManifest({
       output: `${outputPath}/../static/assets.json`,
       writeToDisk: true,
