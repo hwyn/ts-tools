@@ -50,7 +50,8 @@ export function jsLoader(config: any): any {
 export function cssLoader(config: any, isNotExtract?: boolean) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include, resources } = config;
-  const preUse = factoryUse(isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {});
+
+  const preUse = factoryUse(!isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {});
   const concatUse = factoryConcatUse([
     factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
     factoryUse('postcss-loader', Object.assign({
@@ -82,4 +83,20 @@ export function cssLoader(config: any, isNotExtract?: boolean) {
       return types.map((type: string) => this[type](options, preLoader));
     },
   }
+}
+
+export function fileLoader(config?: any) {
+  const { options, exclude = /node_modules/, include, outputPath } = config || {};
+  const factory = (regExp: RegExp, loader?: any[]) => (mergeOptions?: any) => {
+    const [loadRex, options] = Array.isArray(loader) ? loader : [loader];
+    const { exclude: lExclude = exclude, include: lInclude = include, ...loaderOption } = mergeOptions || {};
+    const factory = factoryRules(regExp, { exclude: lExclude, include: lInclude });
+    const use = factoryUse(loadRex, { outputPath, ...options, ...loaderOption });
+    return factory(use);
+  }
+
+  return {
+    image: factory(/\.(png|jpe?g|gif)$/i, ['file-loader', {}]),
+    font: factory(/\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/, ['file-loader', {}])
+  };
 }

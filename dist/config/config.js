@@ -95,16 +95,17 @@ class ProjectConfig {
 
 
 
-  constructor(arvg = []) {_defineProperty(this, "isDevelopment", false);_defineProperty(this, "environmental", void 0);_defineProperty(this, "arvg", ``);_defineProperty(this, "getArvgConfig", factoryConfig(this.arvg));_defineProperty(this, "baseResolve", resolve(process.cwd()));_defineProperty(this, "rootResolve", void 0);_defineProperty(this, "config", void 0);
+  constructor(arvg = []) {_defineProperty(this, "isDevelopment", false);_defineProperty(this, "environmental", void 0);_defineProperty(this, "getArvgConfig", void 0);_defineProperty(this, "arvg", ``);_defineProperty(this, "baseResolve", resolve(process.cwd()));_defineProperty(this, "rootResolve", void 0);_defineProperty(this, "config", void 0);
     const [command] = arvg.slice(2);
     this.arvg = arvg.join(` `);
+    this.getArvgConfig = factoryConfig(this.arvg);
     this.environmental = command === 'start' ? 'development' : 'build';
     this.parseArvg();
   }
 
   parseArvg() {
     this.environmental = this.getArvgConfig('--environmental') || this.environmental;
-    this.isDevelopment = !!this.getArvgConfig('--prod');
+    this.isDevelopment = !this.getArvgConfig('--prod');
   }
 
   parseConfig(config) {

@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.jsLoader = jsLoader;exports.cssLoader = cssLoader;var _path = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.jsLoader = jsLoader;exports.cssLoader = cssLoader;exports.fileLoader = fileLoader;var _path = _interopRequireDefault(require("path"));
 var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
 var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
@@ -50,7 +50,8 @@ function jsLoader(config) {
 function cssLoader(config, isNotExtract) {
   const publicOptions = !isNotExtract ? {} : { sourceMap: true };
   const { options, exclude = /node_modules/, include, resources } = config;
-  const preUse = factoryUse(isNotExtract ? 'style-loader' : _miniCssExtractPlugin.default.loader, {});
+
+  const preUse = factoryUse(!isNotExtract ? 'style-loader' : _miniCssExtractPlugin.default.loader, {});
   const concatUse = factoryConcatUse([
   factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
   factoryUse('postcss-loader', Object.assign({
@@ -81,5 +82,21 @@ function cssLoader(config, isNotExtract) {
     more: function (types, options, preLoader) {
       return types.map(type => this[type](options, preLoader));
     } };
+
+}
+
+function fileLoader(config) {
+  const { options, exclude = /node_modules/, include, outputPath } = config || {};
+  const factory = (regExp, loader) => mergeOptions => {
+    const [loadRex, options] = Array.isArray(loader) ? loader : [loader];
+    const { exclude: lExclude = exclude, include: lInclude = include, ...loaderOption } = mergeOptions || {};
+    const factory = factoryRules(regExp, { exclude: lExclude, include: lInclude });
+    const use = factoryUse(loadRex, { outputPath, ...options, ...loaderOption });
+    return factory(use);
+  };
+
+  return {
+    image: factory(/\.(png|jpe?g|gif)$/i, ['file-loader', {}]),
+    font: factory(/\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/, ['file-loader', {}]) };
 
 }

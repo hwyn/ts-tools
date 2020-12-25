@@ -4,7 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
-import { jsLoader, cssLoader } from '../../core/util';
+import { jsLoader, cssLoader, fileLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
@@ -39,6 +39,7 @@ const jsRules = jsLoader({
     plugins: plugins || []
   }
 });
+const fileRules = fileLoader();
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'web',
@@ -69,6 +70,8 @@ export default (): Configuration => merge(webpackConfig, {
         context: root
       }),
       cssRules.sass(),
+      fileRules.image({ publicPath: '/', name: 'images/[name][hash:4].[ext]' }),
+      fileRules.font({ publicPath: '/',name: 'fonts/[name][hash:4].[ext]' })
     ],
   },
   plugins: [

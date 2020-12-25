@@ -90,21 +90,22 @@ class ProjectConfig {
 
   private isDevelopment: boolean = false;
   private environmental: string;
+  private getArvgConfig;
   private arvg: string = ``;
-  private getArvgConfig = factoryConfig(this.arvg);
   private baseResolve = resolve(process.cwd());
   private rootResolve: (...path: string[]) => string;
   protected config: Project;
   constructor(arvg: string[] = []) {
     const [command] = arvg.slice(2);
     this.arvg = arvg.join(` `);
+    this.getArvgConfig = factoryConfig(this.arvg);
     this.environmental = command === 'start' ? 'development' : 'build';
     this.parseArvg();
   }
 
   private parseArvg() {
     this.environmental = this.getArvgConfig('--environmental') || this.environmental;
-    this.isDevelopment = !!this.getArvgConfig('--prod');
+    this.isDevelopment = !this.getArvgConfig('--prod');
   }
 
   private parseConfig(config: Project) {

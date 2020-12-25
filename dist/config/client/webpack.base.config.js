@@ -36,9 +36,10 @@ const jsRules = (0, _util.jsLoader)({
     ["@babel/preset-env", { "targets": browserTarget }],
     ...(presets || []).slice(1)],
 
-    plugins: plugins || [] } });var _default =
+    plugins: plugins || [] } });
 
 
+const fileRules = (0, _util.fileLoader)();var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
@@ -68,7 +69,9 @@ const jsRules = (0, _util.jsLoader)({
       exclude: nodeModules,
       context: root }),
 
-    cssRules.sass()] },
+    cssRules.sass(),
+    fileRules.image({ publicPath: '/', name: 'images/[name][hash:4].[ext]' }),
+    fileRules.font({ publicPath: '/', name: 'fonts/[name][hash:4].[ext]' })] },
 
 
   plugins: [
