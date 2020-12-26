@@ -1,4 +1,3 @@
-import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
 import { Configuration, ProgressPlugin } from 'webpack';
@@ -7,6 +6,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
+import path from 'path';
 
 const { presets, plugins } = babellrc;
 const {
@@ -43,17 +43,17 @@ export default (): Configuration => merge(webpackConfig, {
   },
   module: {
     rules: [
-      jsRules.babel({}),
+      jsRules.babel(),
       jsRules.ts({
-        happyPackMode: true,
         transpileOnly: true,
         context: root,
         configFile: tsConfig,
       }),
+      cssRules.css(),
       cssRules.less({
         javascriptEnabled: true,
       }),
-      cssRules.css({}),
+      cssRules.sass(),
     ]
   },
   plugins: [
@@ -63,7 +63,7 @@ export default (): Configuration => merge(webpackConfig, {
       chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
     }),
     new WebpackAssetsManifest({
-      output: `${outputPath}/../static/dll.json`,
+      output: path.join(outputPath, '../static/dll.json'),
       writeToDisk: true,
       publicPath: true,
       customize: ({ key, value }) => {
@@ -73,7 +73,7 @@ export default (): Configuration => merge(webpackConfig, {
     }),
     new webpack.DllPlugin({
       context: root,
-      path: `${outputPath}/../static/dll-manifest.json`,
+      path: path.join(outputPath, '../static/dll-manifest.json'),
       name: "[name]_[hash:8]"
     }),
   ],

@@ -13,15 +13,16 @@ export function webpackRun(webpackconfig: Configuration | Configuration[], _stas
   }
   return new Promise((resolve, reject) => {
     if (!isRun(webpackconfig)) {
-      return resolve();
+      return resolve(null);
     }
     const multiCompiler =  webpack(webpackconfig as Configuration);
     multiCompiler.run((err, stats: Stats) => {
       if (err) {
+        console.log('-------------', err);
         return reject();
       }
       console.info(stats.toString(webpackconfig.stats || _stast));
-      resolve();
+      resolve(null);
     });
   })
 }
