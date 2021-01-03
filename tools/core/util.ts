@@ -52,6 +52,7 @@ export function cssLoader(config: any, isNotExtract?: boolean) {
   const { options, exclude = /node_modules/, include, resources } = config;
 
   const preUse = factoryUse(!isNotExtract ? 'style-loader' : MiniCssExtractPlugin.loader, {});
+
   const concatUse = factoryConcatUse([
     factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
     factoryUse('postcss-loader', Object.assign({

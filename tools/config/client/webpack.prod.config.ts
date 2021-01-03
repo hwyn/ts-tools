@@ -58,8 +58,8 @@ export default () => {
         'process.env.NODE_ENV': "'production'"
       }),
       new MiniCssExtractPlugin({
-        filename: 'styleSheet/[name].[hash:8].css',
-        chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
+        filename: 'styleSheet/[name].[hash:4].css',
+        chunkFilename: 'styleSheet/[name].[chunkhash:4].css',
       }),
     ]
   })

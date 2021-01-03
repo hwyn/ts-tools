@@ -28,7 +28,12 @@ const {
 (0, _config.platformConfig)(_config.PlatformEnum.client);
 
 const cssRules = (0, _util.cssLoader)({
-  ...(themeVariable ? { resources: themeVariable } : {}) },
+  ...(themeVariable ? { resources: themeVariable } : {}),
+  options: {
+    modules: {
+      localIdentName: `[hash:base64:5]` } } },
+
+
 !isDevelopment);
 const jsRules = (0, _util.jsLoader)({
   options: {

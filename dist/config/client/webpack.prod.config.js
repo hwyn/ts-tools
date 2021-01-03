@@ -58,8 +58,8 @@ const { isDevelopment, tsConfig } = (0, _config.platformConfig)();var _default =
       'process.env.NODE_ENV': "'production'" }),
 
     new _miniCssExtractPlugin.default({
-      filename: 'styleSheet/[name].[hash:8].css',
-      chunkFilename: 'styleSheet/[name].[chunkhash:8].css' })] });
+      filename: 'styleSheet/[name].[hash:4].css',
+      chunkFilename: 'styleSheet/[name].[chunkhash:4].css' })] });
 
 
 

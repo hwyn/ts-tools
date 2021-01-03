@@ -5,9 +5,16 @@ import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import {  babellrc,  platformConfig, PlatformEnum }  from '../config';
 
-const { main, builder, isDevelopment, outputPath, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
+const { main, builder, isDevelopment, outputPath, themeVariable, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 const jsRules = jsLoader({ options: babellrc });
-const cssRules = cssLoader({}, !isDevelopment);
+const cssRules = cssLoader({
+  ...(themeVariable ? { resources: themeVariable } : {}),
+  options: {
+    modules: {
+      localIdentName: `[hash:base64:5]`
+    }
+  }
+}, !isDevelopment);
 
 export default (): Configuration => merge(webpackConfig, {
   target: 'node',
