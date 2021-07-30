@@ -16,8 +16,8 @@ const delay = (timer, callback) => {
 };
 
 const stdioPipe = (cp, pro) => {
-  const stdio = fnName => (callback) =>
-  cp[fnName].on('data', data => pro[fnName].write(callback ? callback(data) || data : data));
+  const stdio = (fnName) => (callback) =>
+  cp[fnName].on('data', (data) => pro[fnName].write(callback ? callback(data) || data : data));
 
   return {
     stdout: stdio('stdout'),
@@ -53,7 +53,7 @@ function startServer() {
   const killCp = () => {
     _stdion = null;
     return new Promise((resolve, reject) => {
-      (0, _treeKill.default)(cp.pid, 'SIGKILL', err => err ? reject(err) : resolve());
+      (0, _treeKill.default)(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve());
     });
   };
   let _stdion = stdioPipe(cp, process);
@@ -63,7 +63,7 @@ function startServer() {
     if (!_config.existenceClient) {
       _resolve(killCp);
     }
-    _stdion.stdout(data => {
+    _stdion.stdout((data) => {
       if (_config.existenceClient) {
         const match = data.toString('utf-8').match(/(http|tcp|udp):\/\/(.*?)\//);
         if (match && match[2] && count === 0) {
@@ -79,7 +79,7 @@ function startServer() {
 runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() {_runNodemon = _asyncToGenerator(function* () {
     let nodemonExa;
     const watch = _chokidar.default.watch(Array.isArray(watchFile) ? watchFile : [watchFile], {});
-    const finallServer = () => startServer().then(exa => exa && (nodemonExa = exa)).catch(exa => exa && (nodemonExa = exa));
+    const finallServer = () => startServer().then((exa) => exa && (nodemonExa = exa)).catch((exa) => exa && (nodemonExa = exa));
     const watchClose = () => watch.close();
     try {
       nodemonExa = yield startServer();
@@ -97,7 +97,7 @@ runNodemon() {return _runNodemon.apply(this, arguments);}function _runNodemon() 
 process.on('SIGINT', () => process.exit(1));
 process.on('exit', () => clearNodemon());var _default =
 
-() => clearNodemon().then(runNodemon).then(clear => clearNodemon = clear).then(() => {
+() => clearNodemon().then(runNodemon).then((clear) => clearNodemon = clear).then(() => {
   if (host) {
     return host;
   }

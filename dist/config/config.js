@@ -2,13 +2,13 @@
 var _fs = require("fs");
 var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
-const factoryConfig = str => attr => {
+const factoryConfig = (str) => (attr) => {
   if (str.indexOf(attr) === -1) return null;
   return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^ \]+\)\[\\s\\S\]*`, 'g'), '$1');
 };
 
-const resolve = base => (..._path) => _path2.default.resolve(...[base, ..._path]);
-const toArray = obj => Array.isArray(obj) ? obj : obj && [obj] || [];
+const resolve = (base) => (..._path) => _path2.default.resolve(...[base, ..._path]);
+const toArray = (obj) => Array.isArray(obj) ? obj : obj && [obj] || [];
 
 const baseDir = process.cwd();exports.baseDir = baseDir;
 const baseResolve = resolve(baseDir);
@@ -146,11 +146,11 @@ class ProjectConfig {
       !!sourceClient && (current.sourceClient = this.rootResolve(sourceRoot, sourceClient));
       !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
       if (p !== PlatformEnum.dll) {
-        pOptions.main = toArray(main).map(f => this.rootResolve(f));
+        pOptions.main = toArray(main).map((f) => this.rootResolve(f));
       }
-      pOptions.assets = toArray(assets).map(f => this.rootResolve(f));
-      pOptions.styles = toArray(styles).map(f => this.rootResolve(f));
-      pConfigurations.watchFile = toArray(watchFile).map(f => this.rootResolve(f));
+      pOptions.assets = toArray(assets).map((f) => this.rootResolve(f));
+      pOptions.styles = toArray(styles).map((f) => this.rootResolve(f));
+      pConfigurations.watchFile = toArray(watchFile).map((f) => this.rootResolve(f));
       return { ...obj, [p]: current };
     }, {});
     return build;
@@ -183,7 +183,7 @@ const existenceClient = ProjectConfig.existenceClient;exports.existenceClient = 
 
 const babellrc = (0, _fs.existsSync)(babel) && JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) || {};exports.babellrc = babellrc;
 
-const platformConfig = key => {
+const platformConfig = (key) => {
   const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder, outputPath, sourceClient, sourceServer } = platform[key] || {};

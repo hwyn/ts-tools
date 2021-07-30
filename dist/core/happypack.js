@@ -21,7 +21,7 @@ class HappyPackUtil {
       return false;
     }
     return !(loader && exclude.includes(loader) ||
-    use.filter(item => item.loader && exclude.includes(item.loader)).length);
+    use.filter((item) => item.loader && exclude.includes(item.loader)).length);
   }
 
   getHappyPackRule() {
@@ -57,7 +57,7 @@ class HappyPackUtil {
 
 
 
-const happypackMerge = config => {
+const happypackMerge = (config) => {
   const happyPackConfig = config.module.rules.reduce((o, rule, index) => {
     const happyPackUtil = new HappyPackUtil(index, rule);
     happyPackUtil.addRulePulugins(o.module.rules, o.plugins);

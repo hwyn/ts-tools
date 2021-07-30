@@ -4,7 +4,7 @@ var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));
 var _happypack = require("../../core/happypack");
 var _config = require("../config");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const hotPlug = key => `webpack-hot-middleware/client?name=${key}&reload=true`;
+const hotPlug = (key) => `webpack-hot-middleware/client?name=${key}&reload=true`;
 
 const { sourceMap, hasSourceMap } = (0, _config.platformConfig)('client');var _default =
 

@@ -7,19 +7,19 @@ const factoryUse = (loader, options, mergeOption) => ({
   options: Object.assign({}, options, mergeOption || {}) });
 
 
-const factoryRules = (regExp, options = {}) => use => Object.keys(options).reduce((o, key) => Object.assign(o, options[key] ? {
+const factoryRules = (regExp, options = {}) => (use) => Object.keys(options).reduce((o, key) => Object.assign(o, options[key] ? {
   [key]: options[key] } :
 {}), {
   test: regExp,
   use });
 
 
-const factoryLoaders = (loader, mergeOption) => (loader || []).map(loader => {
+const factoryLoaders = (loader, mergeOption) => (loader || []).map((loader) => {
   const [l, options = {}] = Array.isArray(loader) ? loader : [loader];
   return factoryUse(l, options, mergeOption);
 });
 
-const factoryConcatUse = defaultUse => (loader, mergeOption) => {
+const factoryConcatUse = (defaultUse) => (loader, mergeOption) => {
   return (Array.isArray(defaultUse) ? defaultUse : defaultUse ? [defaultUse] : []).concat(factoryLoaders(loader, mergeOption));
 };
 
@@ -81,14 +81,14 @@ function cssLoader(config, isNotExtract) {
       resources }]]),
 
     more: function (types, options, preLoader) {
-      return types.map(type => this[type](options, preLoader));
+      return types.map((type) => this[type](options, preLoader));
     } };
 
 }
 
 function fileLoader(config) {
   const { options, exclude = /node_modules/, include, outputPath } = config || {};
-  const factory = (regExp, loader) => mergeOptions => {
+  const factory = (regExp, loader) => (mergeOptions) => {
     const [loadRex, options] = Array.isArray(loader) ? loader : [loader];
     const { exclude: lExclude = exclude, include: lInclude = include, ...loaderOption } = mergeOptions || {};
     const factory = factoryRules(regExp, { exclude: lExclude, include: lInclude });
