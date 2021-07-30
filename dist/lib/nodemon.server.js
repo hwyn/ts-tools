@@ -53,7 +53,7 @@ function startServer() {
   const killCp = () => {
     _stdion = null;
     return new Promise((resolve, reject) => {
-      (0, _treeKill.default)(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve());
+      (0, _treeKill.default)(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve(null));
     });
   };
   let _stdion = stdioPipe(cp, process);

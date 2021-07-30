@@ -53,7 +53,7 @@ function startServer(): Promise<any> {
   const killCp = (): Promise<any> => {
     _stdion = null;
     return new Promise((resolve, reject) => {
-      kill(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve());
+      kill(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve(null));
     });
   };
   let _stdion: any = stdioPipe(cp, process);
