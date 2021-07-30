@@ -20,10 +20,11 @@ export const filterAttr = (mergeConfig: any, filter: string[]) => {
   return config;
 };
 
-export const copyPlugin = (formFile: string | string[], toFile: string, sourceClient: string = sourceRoot): Plugin[] => {
-  const files = (Array.isArray(formFile) ? formFile : [formFile]).reduce((copyArr, filePath: string) => {
+export const copyPlugin = (formFile: string[][], toFile: string, sourcePath: string = sourceRoot): Plugin[] => {
+  const files = formFile.reduce((copyArr: any[], filePaths: string | string[]) => {
+    const [ filePath, _filePath ] = filePaths;
     if (existsSync(filePath)) {
-      const toFilePath = filePath.replace(sourceClient, toFile);
+      const toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
       const toFileInfo = path.parse(toFilePath);
       copyArr.push({
         from: filePath,

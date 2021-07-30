@@ -148,7 +148,7 @@ class ProjectConfig {
       if (p !== PlatformEnum.dll) {
         pOptions.main = toArray(main).map((f) => this.rootResolve(f));
       }
-      pOptions.assets = toArray(assets).map((f) => this.rootResolve(f));
+      pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.rootResolve(_f)));
       pOptions.styles = toArray(styles).map((f) => this.rootResolve(f));
       pConfigurations.watchFile = toArray(watchFile).map((f) => this.rootResolve(f));
       return { ...obj, [p]: current };
