@@ -31,7 +31,7 @@ const hotServer = /*#__PURE__*/function () {var _ref = _asyncToGenerator(functio
         try {
           if (!stats.hasErrors()) {
             const code = fileSystem.readFileSync(_path.default.join(outputPath, 'server.js'), 'utf-8');
-            const context = (0, _lodash.merge)({ require, process, console, global }, hotVmContext);
+            const context = (0, _lodash.merge)({ ...global, require, process, console, global }, hotVmContext);
             vmContext = _vm.default.createContext(context);
             _vm.default.runInContext(code, vmContext);
           }

@@ -31,7 +31,7 @@ export const hotServer = async () => {
       try {
         if (!stats.hasErrors()) {
           const code = fileSystem.readFileSync(path.join(outputPath, 'server.js'), 'utf-8');
-          const context = merge({ require, process, console, global }, hotVmContext);
+          const context = merge({ ...global, require, process, console, global }, hotVmContext);
           vmContext = vm.createContext(context);
           vm.runInContext(code, vmContext);
         }
