@@ -40,9 +40,7 @@ function jsLoader(config) {
 
   return {
     babel: factory(/\.(js|jsx)$/),
-    ts: factory(/\.(ts|tsx)$/, ['ts-loader']),
-    ngTs: factory(/(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/, ['@ngtools/webpack'], true),
-    ngOptimizerJs: factory(/\.(js)$/, ['@angular-devkit/build-optimizer/webpack-loader'], true) };
+    ts: factory(/\.(ts|tsx)$/, ['ts-loader']) };
 
 }
 

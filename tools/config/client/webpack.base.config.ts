@@ -9,7 +9,7 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
 
-const { presets, plugins } = babellrc;
+const { presets, plugins, ...babellrcOthers } = babellrc;
 const {
   root,
   sourceRoot,
@@ -41,7 +41,8 @@ const jsRules = jsLoader({
       ["@babel/preset-env", { "targets": browserTarget }],
       ...(presets || []).slice(1),
     ],
-    plugins: plugins || []
+    plugins: plugins || [],
+    ...babellrcOthers
   }
 });
 const fileRules = fileLoader();
