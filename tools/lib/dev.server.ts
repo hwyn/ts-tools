@@ -1,11 +1,11 @@
 import express from 'express';
 import { project } from '../config';
-import nodemon from './nodemon.server';
+import { hotServer } from './hot.server';
 
 const { architect: { build: { platform } } } = project;
 const { outputPath } = platform.server || {};
 
 export default async (app: any) => {
   app.use(express.static(outputPath));
-  return await nodemon();
+  return await hotServer(); // await nodemon();
 };

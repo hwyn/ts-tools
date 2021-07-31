@@ -7,13 +7,13 @@ export const exists = (path: string): Promise<boolean> => {
 
 export const cleanDir = async (path: string, options?: any): Promise<undefined> => new Promise((resolve, reject) => {
   if (!existsSync(path)) {
-    return resolve();
+    return resolve(null);
   }
   rimraf(path, { glob: options, }, (err) => {
     if (err) {
       return reject(err);
     }
-    resolve();
+    resolve(null);
   });
 });
 
@@ -23,7 +23,7 @@ export const mkdir = async (path: string, options?: any): Promise<any> => cleanD
       if (err) {
         return reject(err);
       }
-      resolve();
+      resolve(null);
     });
   });
 });

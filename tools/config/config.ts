@@ -37,6 +37,7 @@ interface Configurations {
   nodeExternals?: boolean;
   sourceMap?: boolean;
   watchFile?: string[];
+  hotContext?: string;
 }
 
 interface Platform {
@@ -136,7 +137,7 @@ class ProjectConfig {
 
       const { options: pOptions, configurations: pConfigurations, builder, outputPath, sourceClient, sourceServer } = current;
       const { main, styles, index, assets, tsConfig, themeVariable } = pOptions;
-      const { watchFile } = current.configurations;
+      const { watchFile, hotContext } = current.configurations;
 
       !!builder && (current.builder = this.rootResolve(current.builder));
       !!index && (pOptions.index = this.rootResolve(index));
@@ -150,7 +151,9 @@ class ProjectConfig {
       }
       pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.rootResolve(_f)));
       pOptions.styles = toArray(styles).map((f) =>  this.rootResolve(f));
+      !!hotContext && (pConfigurations.hotContext  = this.rootResolve(hotContext));
       pConfigurations.watchFile = toArray(watchFile).map((f) => this.rootResolve(f));
+      
       return { ...obj, [p]: current };
     }, {});
     return build;
@@ -186,9 +189,9 @@ export const babellrc = existsSync(babel) && JSON.parse(readFileSync(babel).toSt
 export const platformConfig = (key?: string) => {
   const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
-  const { options, configurations, builder, outputPath, sourceClient, sourceServer } = platform[key] || {};
+  const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
-  const { nodeExternals, browserTarget, watchFile, sourceMap: hasSourceMap } = configurations || {};
+  const { nodeExternals, browserTarget, watchFile, hotContext, sourceMap: hasSourceMap } = configurations || {};
 
   return {
     root,
@@ -208,6 +211,7 @@ export const platformConfig = (key?: string) => {
     sourceServer,
     nodeModules,
     watchFile,
+    hotContext,
     sourceMap,
     hasSourceMap,
     isDevelopment

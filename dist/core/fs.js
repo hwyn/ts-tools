@@ -7,13 +7,13 @@ const exists = (path) => {
 
 const cleanDir = /*#__PURE__*/function () {var _ref = _asyncToGenerator(function* (path, options) {return new Promise((resolve, reject) => {
       if (!(0, _fs.existsSync)(path)) {
-        return resolve();
+        return resolve(null);
       }
       (0, _rimraf.default)(path, { glob: options }, (err) => {
         if (err) {
           return reject(err);
         }
-        resolve();
+        resolve(null);
       });
     });});return function cleanDir(_x, _x2) {return _ref.apply(this, arguments);};}();exports.cleanDir = cleanDir;
 
@@ -23,7 +23,7 @@ const mkdir = /*#__PURE__*/function () {var _ref2 = _asyncToGenerator(function* 
           if (err) {
             return reject(err);
           }
-          resolve();
+          resolve(null);
         });
       });
     });});return function mkdir(_x3, _x4) {return _ref2.apply(this, arguments);};}();exports.mkdir = mkdir;
