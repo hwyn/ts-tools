@@ -51,7 +51,7 @@ const copyPlugin = (formFile, toFile, sourcePath = sourceRoot) => {
     reasons: false,
     warnings: true,
     errors: true,
-    assets: true, // required by custom stat output
+    assets: false, // required by custom stat output
     version: false,
     errorDetails: false,
     moduleTrace: false } };exports.default = _default;

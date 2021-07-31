@@ -51,7 +51,7 @@ export default {
     reasons: false,
     warnings: true,
     errors: true,
-    assets: true, // required by custom stat output
+    assets: false, // required by custom stat output
     version: false,
     errorDetails: false,
     moduleTrace: false,
