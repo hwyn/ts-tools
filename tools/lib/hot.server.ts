@@ -10,7 +10,7 @@ import { isFunction, merge } from 'lodash';
 const serverPlatform = platformConfig('server');
 const { hotContext, outputPath } = serverPlatform;
 
-export const hotServer = async () => {
+export const hotServer = async (): Promise<string> => {
   let vmContext: any;
   const contextSync = requireSync(hotContext);
   const hotVmContext = isFunction(contextSync) ? contextSync(serverPlatform) : contextSync;
@@ -44,5 +44,5 @@ export const hotServer = async () => {
   });
   await createCompilationPromise('server', multiCompiler, serverConfig);
 
-  return promise;
+  return promise as Promise<string>;
 };
