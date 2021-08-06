@@ -8,6 +8,8 @@ import { jsLoader, cssLoader, fileLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const { presets, plugins, ...babellrcOthers } = babellrc;
 const {
@@ -23,6 +25,7 @@ const {
   outputPath,
   tsConfig,
   isDevelopment,
+  analyzerStatus,
   builder,
   browserTarget = []
 } = platformConfig(PlatformEnum.client);
@@ -64,6 +67,7 @@ export default (): Configuration => merge(webpackConfig, {
     symlinks: true,
     modules: [nodeModules, sourceRoot],
     extensions: ['.ts', '.tsx', '.mjs', '.js'],
+    plugins: [new TsconfigPathsPlugin({ configFile: tsConfig })]
   },
   module: {
     rules: [
@@ -98,6 +102,13 @@ export default (): Configuration => merge(webpackConfig, {
         return { key, value };
       }
     }),
+    ...analyzerStatus ? [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'disabled',
+        generateStatsFile: true,
+        statsFilename: 'stats.json'
+      }) as any
+    ]: [],
     ...existsSync(`${outputPath}/../static/dll-manifest.json`) ? [
       new DllReferencePlugin({
         context: root,

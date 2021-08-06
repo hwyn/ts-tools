@@ -69,12 +69,14 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
 const defaultProject = {
   root: '.',
   sourceRoot: 'src',
   outputRoot: 'dist',
   nodeModules: baseResolve('node_modules'),
   isDevelopment: false,
+  analyzerStatus: false,
   architect: {
     build: {
       platform: {},
@@ -96,7 +98,8 @@ class ProjectConfig {
 
 
 
-  constructor(arvg = []) {_defineProperty(this, "isDevelopment", false);_defineProperty(this, "environmental", void 0);_defineProperty(this, "getArvgConfig", void 0);_defineProperty(this, "arvg", ``);_defineProperty(this, "baseResolve", resolve(process.cwd()));_defineProperty(this, "rootResolve", void 0);_defineProperty(this, "config", void 0);
+
+  constructor(arvg = []) {_defineProperty(this, "isDevelopment", false);_defineProperty(this, "environmental", void 0);_defineProperty(this, "getArvgConfig", void 0);_defineProperty(this, "arvg", ``);_defineProperty(this, "analyzerStatus", false);_defineProperty(this, "baseResolve", resolve(process.cwd()));_defineProperty(this, "rootResolve", void 0);_defineProperty(this, "config", void 0);
     const [command] = arvg.slice(2);
     this.arvg = arvg.join(` `);
     this.getArvgConfig = factoryConfig(this.arvg);
@@ -107,6 +110,7 @@ class ProjectConfig {
   parseArvg() {
     this.environmental = this.getArvgConfig('--environmental') || this.environmental;
     this.isDevelopment = !this.getArvgConfig('--prod');
+    this.analyzerStatus = !!this.getArvgConfig('--stats-json');
   }
 
   parseConfig(config) {
@@ -122,6 +126,7 @@ class ProjectConfig {
 
     this.rootResolve = resolve(this.baseResolve(root));
     this.config.isDevelopment = this.isDevelopment;
+    this.config.analyzerStatus = this.analyzerStatus;
     this.config.sourceRoot = this.rootResolve(sourceRoot);
     this.config.outputRoot = this.rootResolve(outputRoot),
     this.config.root = this.baseResolve(root);
@@ -187,7 +192,7 @@ const existenceClient = ProjectConfig.existenceClient;exports.existenceClient = 
 const babellrc = (0, _fs.existsSync)(babel) && JSON.parse((0, _fs.readFileSync)(babel).toString('utf-8')) || {};exports.babellrc = babellrc;
 
 const platformConfig = (key) => {
-  const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
+  const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
@@ -214,6 +219,7 @@ const platformConfig = (key) => {
     hotContext,
     sourceMap,
     hasSourceMap,
-    isDevelopment };
+    isDevelopment,
+    analyzerStatus };
 
 };exports.platformConfig = platformConfig;

@@ -4,9 +4,9 @@ var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
 var _webpack = _interopRequireWildcard(require("../base/webpack.config"));
 var _util = require("../../core/util");
 var _config = require("../config");
-var _circularDependencyPlugin = _interopRequireDefault(require("circular-dependency-plugin"));function _getRequireWildcardCache(nodeInterop) {if (typeof WeakMap !== "function") return null;var cacheBabelInterop = new WeakMap();var cacheNodeInterop = new WeakMap();return (_getRequireWildcardCache = function (nodeInterop) {return nodeInterop ? cacheNodeInterop : cacheBabelInterop;})(nodeInterop);}function _interopRequireWildcard(obj, nodeInterop) {if (!nodeInterop && obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache(nodeInterop);if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _circularDependencyPlugin = _interopRequireDefault(require("circular-dependency-plugin"));
+var _tsconfigPathsWebpackPlugin = _interopRequireDefault(require("tsconfig-paths-webpack-plugin"));function _getRequireWildcardCache(nodeInterop) {if (typeof WeakMap !== "function") return null;var cacheBabelInterop = new WeakMap();var cacheNodeInterop = new WeakMap();return (_getRequireWildcardCache = function (nodeInterop) {return nodeInterop ? cacheNodeInterop : cacheBabelInterop;})(nodeInterop);}function _interopRequireWildcard(obj, nodeInterop) {if (!nodeInterop && obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache(nodeInterop);if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
 
 const {
@@ -34,7 +34,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
   resolve: {
     modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    plugins: [new TsconfigPathsPlugin({})] },
+    plugins: [new _tsconfigPathsWebpackPlugin.default({ configFile: tsConfig })] },
 
   externals: nodeExternals !== false ? [(0, _webpackNodeExternals.default)()] : [],
   module: {

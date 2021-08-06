@@ -63,6 +63,7 @@ interface Project {
   outputRoot: string;
   nodeModules: string;
   isDevelopment: boolean;
+  analyzerStatus: boolean;
   architect: {
     build: Build;
     [key: string]: Build;
@@ -75,6 +76,7 @@ const defaultProject: Project = {
   outputRoot: 'dist',
   nodeModules: baseResolve('node_modules'),
   isDevelopment: false,
+  analyzerStatus: false,
   architect: {
     build: {
       platform: {},
@@ -93,6 +95,7 @@ class ProjectConfig {
   private environmental: string;
   private getArvgConfig;
   private arvg: string = ``;
+  private analyzerStatus: boolean = false;
   private baseResolve = resolve(process.cwd());
   private rootResolve: (...path: string[]) => string;
   protected config: Project;
@@ -107,6 +110,7 @@ class ProjectConfig {
   private parseArvg() {
     this.environmental = this.getArvgConfig('--environmental') || this.environmental;
     this.isDevelopment = !this.getArvgConfig('--prod');
+    this.analyzerStatus = !!this.getArvgConfig('--stats-json');
   }
 
   private parseConfig(config: Project) {
@@ -122,6 +126,7 @@ class ProjectConfig {
 
     this.rootResolve = resolve(this.baseResolve(root));
     this.config.isDevelopment = this.isDevelopment;
+    this.config.analyzerStatus = this.analyzerStatus;
     this.config.sourceRoot = this.rootResolve(sourceRoot);
     this.config.outputRoot = this.rootResolve(outputRoot),
       this.config.root = this.baseResolve(root);
@@ -187,7 +192,7 @@ export const existenceClient = ProjectConfig.existenceClient;
 export const babellrc = existsSync(babel) && JSON.parse(readFileSync(babel).toString('utf-8')) || {};
 
 export const platformConfig = (key?: string) => {
-  const { root, isDevelopment, sourceRoot, outputRoot, nodeModules } = project;
+  const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = project;
   const { architect: { build: { platform } } } = project;
   const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
   const { index, main, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
@@ -214,7 +219,8 @@ export const platformConfig = (key?: string) => {
     hotContext,
     sourceMap,
     hasSourceMap,
-    isDevelopment
+    isDevelopment,
+    analyzerStatus
   };
 }
 

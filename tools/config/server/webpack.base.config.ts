@@ -5,8 +5,8 @@ import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.confi
 import { jsLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const jsRules = jsLoader({ options: babellrc });
 
 const {
@@ -34,7 +34,7 @@ export default (): Configuration => merge(webpackConfig, {
   resolve: {
     modules: ['node_modules', 'src'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    plugins: [new TsconfigPathsPlugin({})]
+    plugins: [new TsconfigPathsPlugin({ configFile: tsConfig })]
   },
   externals: nodeExternals !== false ? [nodeExtrnals()] : [],
   module: {

@@ -7,6 +7,7 @@ import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import path from 'path';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const { presets, plugins } = babellrc;
 const {
@@ -15,7 +16,8 @@ const {
   main,
   outputPath,
   tsConfig,
-  browserTarget
+  browserTarget,
+  analyzerStatus
 } = platformConfig(PlatformEnum.dll);
 
 const jsRules = jsLoader({
@@ -76,5 +78,12 @@ export default (): Configuration => merge(webpackConfig, {
       path: path.join(outputPath, '../static/dll-manifest.json'),
       name: "[name]_[hash:8]"
     }),
+    ...analyzerStatus ? [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'disabled',
+        generateStatsFile: true,
+        statsFilename: 'dll-stats.json'
+      }) as any
+    ]: [],
   ],
 }, getMergeConfig(builder, jsRules));
