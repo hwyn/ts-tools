@@ -157,7 +157,7 @@ class ProjectConfig {
       !!outputPath && (current.outputPath = this.rootResolve(outputPath));
       !!sourceClient && (current.sourceClient = this.rootResolve(sourceRoot, sourceClient));
       !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
-      pOptions.main = this.parseEntry(p, main);
+      p !== PlatformEnum.dll && (pOptions.main = this.parseEntry(p, main));
       pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.rootResolve(_f)));
       pOptions.styles = toArray(styles).map((f) => this.rootResolve(f));
       !!hotContext && (pConfigurations.hotContext = this.rootResolve(hotContext));
