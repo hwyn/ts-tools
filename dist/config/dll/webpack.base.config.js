@@ -13,7 +13,7 @@ const { presets, plugins } = _config.babellrc;
 const {
   root,
   builder,
-  main,
+  entry,
   outputPath,
   tsConfig,
   browserTarget,
@@ -36,7 +36,7 @@ const cssRules = (0, _util.cssLoader)({}, false);var _default =
 
 () => (0, _webpackMerge.default)(_webpack2.default, {
   target: 'web',
-  entry: main && { common: main } || {},
+  entry,
   output: {
     path: outputPath,
     filename: 'javascript/[name].dll.js',

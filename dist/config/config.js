@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceClient = exports.project = exports.PlatformEnum = void 0;var _path2 = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;var _path2 = _interopRequireDefault(require("path"));
 var _fs = require("fs");
 var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
@@ -21,6 +21,12 @@ PlatformEnum;exports.PlatformEnum = PlatformEnum;(function (PlatformEnum) {Platf
 
 
 
+
+const platformDefaultEntry = {
+  [PlatformEnum.client]: 'main',
+  [PlatformEnum.server]: 'server',
+  [PlatformEnum.dll]: 'common',
+  [PlatformEnum.serverEntry]: 'main' };exports.platformDefaultEntry = platformDefaultEntry;
 
 
 
@@ -151,9 +157,7 @@ class ProjectConfig {
       !!outputPath && (current.outputPath = this.rootResolve(outputPath));
       !!sourceClient && (current.sourceClient = this.rootResolve(sourceRoot, sourceClient));
       !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
-      if (p !== PlatformEnum.dll) {
-        pOptions.main = toArray(main).map((f) => this.rootResolve(f));
-      }
+      pOptions.main = this.parseEntry(p, main);
       pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.rootResolve(_f)));
       pOptions.styles = toArray(styles).map((f) => this.rootResolve(f));
       !!hotContext && (pConfigurations.hotContext = this.rootResolve(hotContext));
@@ -169,6 +173,19 @@ class ProjectConfig {
       this.parseConfig(JSON.parse((0, _fs.readFileSync)(projectPath, 'utf-8')));
     }
     return this.config;
+  }
+
+  parseEntry(p, entry) {
+    let entryMain = {};
+    if (Object.prototype.toString.apply(entry).replace(/\[object ([\S]*)\]/, '$1') === 'Object') {
+      entryMain = Object.keys(entry).reduce((main, key) => ({
+        ...main,
+        [key]: toArray(entry[key]).map((f) => this.rootResolve(f)) }),
+      {});
+    } else if (!!entry) {
+      entryMain = { [platformDefaultEntry[p]]: toArray(entry).map((f) => this.rootResolve(f)) };
+    }
+    return entryMain;
   }
 
   static get existenceClient() {
@@ -201,7 +218,7 @@ const platformConfig = (key) => {
   return {
     root,
     index,
-    main,
+    entry: main,
     themeVariable,
     styles,
     assets,

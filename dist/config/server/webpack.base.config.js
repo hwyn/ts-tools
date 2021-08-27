@@ -11,7 +11,7 @@ const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
 
 const {
   root,
-  main,
+  entry,
   assets,
   outputPath,
   nodeExternals,
@@ -24,7 +24,7 @@ const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};
 () => (0, _webpackMerge.default)(_webpack.default, {
   target: 'node',
   context: root,
-  entry: main && { server: main } || {},
+  entry,
   output: {
     path: outputPath,
     chunkFilename: `[name].[chunkhash:8].js`,

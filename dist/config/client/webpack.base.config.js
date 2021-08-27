@@ -18,7 +18,7 @@ const {
   sourceClient,
   nodeModules,
   index,
-  main,
+  entry,
   themeVariable,
   styles,
   assets,
@@ -54,7 +54,7 @@ const fileRules = (0, _util.fileLoader)();var _default =
   target: 'web',
   context: root,
   entry: {
-    ...(!(0, _lodash.isEmpty)(main) && { main } || {}),
+    ...entry,
     ...(!(0, _lodash.isEmpty)(styles) && { styles } || {}) },
 
   output: {
