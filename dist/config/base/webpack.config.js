@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;var _fs = require("fs");
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.getMergeConfig = exports.filterAttr = exports.default = exports.copyPlugin = void 0;var _fs = require("fs");
 
 var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
 

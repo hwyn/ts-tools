@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;var _path2 = _interopRequireDefault(require("path"));
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.project = exports.platformDefaultEntry = exports.platformConfig = exports.existenceClient = exports.baseDir = exports.babellrc = exports.PlatformEnum = void 0;var _path2 = _interopRequireDefault(require("path"));
 var _fs = require("fs");
 var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 

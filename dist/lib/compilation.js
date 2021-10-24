@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.format = format;exports.createCompilationPromise = createCompilationPromise;
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.createCompilationPromise = createCompilationPromise;exports.format = format;
 
 function format(time) {
   return time.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
