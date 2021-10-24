@@ -1,21 +1,21 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _exportNames = { webpackClient: true, webpackDevClient: true, webpackServer: true, webpackDevServer: true, webpackDll: true, webpackDevDll: true, webpackServerEntry: true, webpackDevServerEntry: true };Object.defineProperty(exports, "webpackClient", { enumerable: true, get: function () {return _webpackProd.default;} });Object.defineProperty(exports, "webpackDevClient", { enumerable: true, get: function () {return _webpackDev.default;} });Object.defineProperty(exports, "webpackDevDll", { enumerable: true, get: function () {return _webpackDev3.default;} });Object.defineProperty(exports, "webpackDevServer", { enumerable: true, get: function () {return _webpackDev2.default;} });Object.defineProperty(exports, "webpackDevServerEntry", { enumerable: true, get: function () {return _webpackDev4.default;} });Object.defineProperty(exports, "webpackDll", { enumerable: true, get: function () {return _webpackProd3.default;} });Object.defineProperty(exports, "webpackServer", { enumerable: true, get: function () {return _webpackProd2.default;} });Object.defineProperty(exports, "webpackServerEntry", { enumerable: true, get: function () {return _webpackProd4.default;} });var _webpackProd = _interopRequireDefault(require("./client/webpack.prod.config"));
-var _webpackDev = _interopRequireDefault(require("./client/webpack.dev.config"));
-var _webpackProd2 = _interopRequireDefault(require("./server/webpack.prod.config"));
-var _webpackDev2 = _interopRequireDefault(require("./server/webpack.dev.config"));
-var _webpackProd3 = _interopRequireDefault(require("./dll/webpack.prod.config"));
-var _webpackDev3 = _interopRequireDefault(require("./dll/webpack.dev.config"));
-var _webpackProd4 = _interopRequireDefault(require("./server-entry/webpack.prod.config"));
-var _webpackDev4 = _interopRequireDefault(require("./server-entry/webpack.dev.config"));
-
-
-
-
-
-
-
-
-
-
-
-
-var _config = require("./config");Object.keys(_config).forEach(function (key) {if (key === "default" || key === "__esModule") return;if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;if (key in exports && exports[key] === _config[key]) return;Object.defineProperty(exports, key, { enumerable: true, get: function () {return _config[key];} });});function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.webpackDevServerEntry = exports.webpackServerEntry = exports.webpackDevDll = exports.webpackDll = exports.webpackDevServer = exports.webpackServer = exports.webpackDevClient = exports.webpackClient = void 0;
+const tslib_1 = require("tslib");
+const webpack_prod_config_1 = (0, tslib_1.__importDefault)(require("./client/webpack.prod.config"));
+exports.webpackClient = webpack_prod_config_1.default;
+const webpack_dev_config_1 = (0, tslib_1.__importDefault)(require("./client/webpack.dev.config"));
+exports.webpackDevClient = webpack_dev_config_1.default;
+const webpack_prod_config_2 = (0, tslib_1.__importDefault)(require("./server/webpack.prod.config"));
+exports.webpackServer = webpack_prod_config_2.default;
+const webpack_dev_config_2 = (0, tslib_1.__importDefault)(require("./server/webpack.dev.config"));
+exports.webpackDevServer = webpack_dev_config_2.default;
+const webpack_prod_config_3 = (0, tslib_1.__importDefault)(require("./dll/webpack.prod.config"));
+exports.webpackDll = webpack_prod_config_3.default;
+const webpack_dev_config_3 = (0, tslib_1.__importDefault)(require("./dll/webpack.dev.config"));
+exports.webpackDevDll = webpack_dev_config_3.default;
+const webpack_prod_config_4 = (0, tslib_1.__importDefault)(require("./server-entry/webpack.prod.config"));
+exports.webpackServerEntry = webpack_prod_config_4.default;
+const webpack_dev_config_4 = (0, tslib_1.__importDefault)(require("./server-entry/webpack.dev.config"));
+exports.webpackDevServerEntry = webpack_dev_config_4.default;
+(0, tslib_1.__exportStar)(require("./config"), exports);

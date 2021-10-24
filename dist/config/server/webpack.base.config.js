@@ -1,67 +1,57 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _webpackNodeExternals = _interopRequireDefault(require("webpack-node-externals"));
-var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
-
-var _webpack = _interopRequireWildcard(require("../base/webpack.config"));
-var _util = require("../../core/util");
-var _config = require("../config");
-var _circularDependencyPlugin = _interopRequireDefault(require("circular-dependency-plugin"));
-var _tsconfigPathsWebpackPlugin = _interopRequireDefault(require("tsconfig-paths-webpack-plugin"));function _getRequireWildcardCache(nodeInterop) {if (typeof WeakMap !== "function") return null;var cacheBabelInterop = new WeakMap();var cacheNodeInterop = new WeakMap();return (_getRequireWildcardCache = function (nodeInterop) {return nodeInterop ? cacheNodeInterop : cacheBabelInterop;})(nodeInterop);}function _interopRequireWildcard(obj, nodeInterop) {if (!nodeInterop && obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache(nodeInterop);if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-const jsRules = (0, _util.jsLoader)({ options: _config.babellrc });
-
-const {
-  root,
-  entry,
-  assets,
-  outputPath,
-  nodeExternals,
-  tsConfig,
-  builder } =
-(0, _config.platformConfig)(_config.PlatformEnum.server);
-
-const _mergeServerConfig = (0, _webpack.getMergeConfig)(builder, jsRules) || {};var _default =
-
-() => (0, _webpackMerge.default)(_webpack.default, {
-  target: 'node',
-  context: root,
-  entry,
-  output: {
-    path: outputPath,
-    chunkFilename: `[name].[chunkhash:8].js`,
-    filename: `[name].js`,
-    library: 'commonjs2' },
-
-  resolve: {
-    modules: ['node_modules', 'src'],
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-    plugins: [new _tsconfigPathsWebpackPlugin.default({ configFile: tsConfig })] },
-
-  externals: nodeExternals !== false ? [(0, _webpackNodeExternals.default)()] : [],
-  module: {
-    rules: [
-    jsRules.babel(),
-    jsRules.ts({
-      transpileOnly: true,
-      context: root,
-      configFile: tsConfig })] },
-
-
-
-  plugins: [
-  ...(0, _webpack.copyPlugin)(assets, outputPath, root),
-  new _circularDependencyPlugin.default({
-    exclude: /node_modules/,
-    failOnError: true,
-    allowAsyncCycles: false,
-    cwd: root })],
-
-
-  node: {
-    console: false,
-    global: false,
-    process: false,
-    Buffer: false,
-    __filename: false,
-    __dirname: false } },
-
-_mergeServerConfig);exports.default = _default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const webpack_node_externals_1 = (0, tslib_1.__importDefault)(require("webpack-node-externals"));
+const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
+const webpack_config_1 = (0, tslib_1.__importStar)(require("../base/webpack.config"));
+const util_1 = require("../../core/util");
+const config_1 = require("../config");
+const circular_dependency_plugin_1 = (0, tslib_1.__importDefault)(require("circular-dependency-plugin"));
+const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
+const jsRules = (0, util_1.jsLoader)({ options: config_1.babellrc });
+const { root, entry, assets, outputPath, nodeExternals, tsConfig, builder } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
+const _mergeServerConfig = (0, webpack_config_1.getMergeConfig)(builder, jsRules) || {};
+exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
+    target: 'node',
+    context: root,
+    entry,
+    output: {
+        path: outputPath,
+        chunkFilename: `[name].[chunkhash:8].js`,
+        filename: `[name].js`,
+        library: 'commonjs2',
+    },
+    resolve: {
+        modules: ['node_modules', 'src'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        plugins: [new tsconfig_paths_webpack_plugin_1.default({ configFile: tsConfig })]
+    },
+    externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : [],
+    module: {
+        rules: [
+            jsRules.babel(),
+            jsRules.ts({
+                transpileOnly: true,
+                context: root,
+                configFile: tsConfig,
+            }),
+        ],
+    },
+    plugins: [
+        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, root),
+        new circular_dependency_plugin_1.default({
+            exclude: /node_modules/,
+            failOnError: true,
+            allowAsyncCycles: false,
+            cwd: root
+        }),
+    ],
+    node: {
+        console: false,
+        global: false,
+        process: false,
+        Buffer: false,
+        __filename: false,
+        __dirname: false,
+    },
+}, _mergeServerConfig);

@@ -1,13 +1,14 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
-var _happypack = require("../../core/happypack");
-var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
-
-() => {
-  const config = (0, _webpackBase.default)();
-  return (0, _happypack.happypackMerge)((0, _webpackMerge.default)(config, {
-    mode: 'development',
-    watch: true,
-    devtool: false }));
-
-};exports.default = _default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
+const happypack_1 = require("../../core/happypack");
+const webpack_base_config_1 = (0, tslib_1.__importDefault)(require("./webpack.base.config"));
+exports.default = () => {
+    const config = (0, webpack_base_config_1.default)();
+    return (0, happypack_1.happypackMerge)((0, webpack_merge_1.default)(config, {
+        mode: 'development',
+        watch: true,
+        devtool: false,
+    }));
+};

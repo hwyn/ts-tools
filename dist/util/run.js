@@ -1,17 +1,15 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _path = _interopRequireDefault(require("path"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const path_1 = (0, tslib_1.__importDefault)(require("path"));
 const arvg = process.argv;
-
 function run(fn, options) {
-  const task = typeof fn.default === 'undefined' ? fn : fn.default;
-  return task(options);
+    const task = typeof fn.default === 'undefined' ? fn : fn.default;
+    return task(options);
 }
-
 if (require.main === module || require.main === module.parent && arvg.length > 2) {
-  delete require.cache[__filename];
-  const { default: exports } = require(`${_path.default.join(__dirname, arvg.slice(2)[0])}`);
-  run(exports);
-}var _default =
-
-run;exports.default = _default;
+    delete require.cache[__filename];
+    const { default: exports } = require(`${path_1.default.join(__dirname, arvg.slice(2)[0])}`);
+    run(exports);
+}
+exports.default = run;

@@ -1,27 +1,28 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _express = _interopRequireDefault(require("express"));
-var _browserSync = _interopRequireDefault(require("browser-sync"));
-var _config = require("../config");
-var _clean = _interopRequireDefault(require("./clean"));
-var _dev = _interopRequireDefault(require("../lib/dev.server"));
-var _dev2 = _interopRequireDefault(require("../lib/dev.client"));
-var _devServer = _interopRequireDefault(require("../lib/dev.server.entry"));
-var _dev3 = _interopRequireDefault(require("../lib/dev.dll"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
-
-const app = (0, _express.default)();var _default = /*#__PURE__*/_asyncToGenerator(
-
-function* () {
-  yield (0, _clean.default)();
-  yield (0, _dev3.default)();
-  yield (0, _dev2.default)(app);
-  yield (0, _devServer.default)();
-  const host = yield (0, _dev.default)(app);
-  return new Promise((resolve, reject) => {
-    _config.existenceClient ? _browserSync.default.create().init({
-      ui: false,
-      proxy: {
-        target: host,
-        middleware: app } },
-
-    (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
-  });
-});exports.default = _default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const express_1 = (0, tslib_1.__importDefault)(require("express"));
+const browser_sync_1 = (0, tslib_1.__importDefault)(require("browser-sync"));
+const config_1 = require("../config");
+const clean_1 = (0, tslib_1.__importDefault)(require("./clean"));
+const dev_server_1 = (0, tslib_1.__importDefault)(require("../lib/dev.server"));
+const dev_client_1 = (0, tslib_1.__importDefault)(require("../lib/dev.client"));
+const dev_server_entry_1 = (0, tslib_1.__importDefault)(require("../lib/dev.server.entry"));
+const dev_dll_1 = (0, tslib_1.__importDefault)(require("../lib/dev.dll"));
+const app = (0, express_1.default)();
+exports.default = async () => {
+    await (0, clean_1.default)();
+    await (0, dev_dll_1.default)();
+    await (0, dev_client_1.default)(app);
+    await (0, dev_server_entry_1.default)();
+    const host = await (0, dev_server_1.default)(app);
+    return new Promise((resolve, reject) => {
+        config_1.existenceClient ? browser_sync_1.default.create().init({
+            ui: false,
+            proxy: {
+                target: host,
+                middleware: app,
+            },
+        }, (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
+    });
+};

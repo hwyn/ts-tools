@@ -1,11 +1,11 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
-var _config = require("../config");
-var _webpackBase = _interopRequireDefault(require("./webpack.base.config"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-const { tsConfig } = (0, _config.platformConfig)(_config.PlatformEnum.server);var _default =
-
-() => {
-  process.env.TS_NODE_PROJECT = tsConfig;
-  return (0, _webpackMerge.default)((0, _webpackBase.default)(), {});
-};exports.default = _default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
+const config_1 = require("../config");
+const webpack_base_config_1 = (0, tslib_1.__importDefault)(require("./webpack.base.config"));
+const { tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
+exports.default = () => {
+    process.env.TS_NODE_PROJECT = tsConfig;
+    return (0, webpack_merge_1.default)((0, webpack_base_config_1.default)(), {});
+};

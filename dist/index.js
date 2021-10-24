@@ -1,1 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });var _util = require("./core/util");Object.keys(_util).forEach(function (key) {if (key === "default" || key === "__esModule") return;if (key in exports && exports[key] === _util[key]) return;Object.defineProperty(exports, key, { enumerable: true, get: function () {return _util[key];} });});
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+(0, tslib_1.__exportStar)(require("./core/util"), exports);

@@ -1,11 +1,12 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _express = _interopRequireDefault(require("express"));
-var _config = require("../config");
-var _hot = require("./hot.server");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}
-
-const { architect: { build: { platform } } } = _config.project;
-const { outputPath } = platform.server || {};var _default = /*#__PURE__*/function () {var _ref = _asyncToGenerator(
-
-  function* (app) {
-    app.use(_express.default.static(outputPath));
-    return yield (0, _hot.hotServer)(); // await nodemon();
-  });return function (_x) {return _ref.apply(this, arguments);};}();exports.default = _default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const express_1 = (0, tslib_1.__importDefault)(require("express"));
+const config_1 = require("../config");
+const hot_server_1 = require("./hot.server");
+const { architect: { build: { platform } } } = config_1.project;
+const { outputPath } = platform.server || {};
+exports.default = async (app) => {
+    app.use(express_1.default.static(outputPath));
+    return await (0, hot_server_1.hotServer)(); // await nodemon();
+};

@@ -1,90 +1,82 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _webpack = _interopRequireWildcard(require("webpack"));
-var _webpackMerge = _interopRequireDefault(require("webpack-merge"));
-
-var _webpackAssetsManifest = _interopRequireDefault(require("webpack-assets-manifest"));
-var _miniCssExtractPlugin = _interopRequireDefault(require("mini-css-extract-plugin"));
-var _webpack2 = _interopRequireWildcard(require("../base/webpack.config"));
-var _util = require("../../core/util");
-var _config = require("../config");
-var _path = _interopRequireDefault(require("path"));
-var _webpackBundleAnalyzer = require("webpack-bundle-analyzer");
-var _lodash = require("lodash");function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _getRequireWildcardCache(nodeInterop) {if (typeof WeakMap !== "function") return null;var cacheBabelInterop = new WeakMap();var cacheNodeInterop = new WeakMap();return (_getRequireWildcardCache = function (nodeInterop) {return nodeInterop ? cacheNodeInterop : cacheBabelInterop;})(nodeInterop);}function _interopRequireWildcard(obj, nodeInterop) {if (!nodeInterop && obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache(nodeInterop);if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
-
-const { presets, plugins } = _config.babellrc;
-const {
-  root,
-  builder,
-  entry,
-  outputPath,
-  tsConfig,
-  browserTarget,
-  analyzerStatus } =
-(0, _config.platformConfig)(_config.PlatformEnum.dll);
-
-const jsRules = (0, _util.jsLoader)({
-  options: {
-    presets: [
-    ["@babel/preset-env", { "targets": browserTarget }],
-    ...(presets || []).slice(1)],
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const webpack_1 = (0, tslib_1.__importDefault)(require("webpack"));
+const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
+const webpack_2 = require("webpack");
+const webpack_assets_manifest_1 = (0, tslib_1.__importDefault)(require("webpack-assets-manifest"));
+const mini_css_extract_plugin_1 = (0, tslib_1.__importDefault)(require("mini-css-extract-plugin"));
+const webpack_config_1 = (0, tslib_1.__importStar)(require("../base/webpack.config"));
+const util_1 = require("../../core/util");
+const config_1 = require("../config");
+const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
+const lodash_1 = require("lodash");
+const { presets, plugins } = config_1.babellrc;
+const { root, builder, entry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
+const jsRules = (0, util_1.jsLoader)({
+    options: {
+        presets: [
+            ["@babel/preset-env", { "targets": browserTarget }],
+            ...(presets || []).slice(1),
+        ],
+        plugins: [
+            ...(plugins || []),
+        ],
+    }
+});
+const cssRules = (0, util_1.cssLoader)({}, false);
+exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
+    target: 'web',
+    entry: !(0, lodash_1.isEmpty)(entry) ? { [config_1.platformDefaultEntry[config_1.PlatformEnum.dll]]: entry } : entry || {},
+    output: {
+        path: outputPath,
+        filename: 'javascript/[name].dll.js',
+        chunkFilename: `javascript/[name].[chunkhash:8].js`,
+        library: "[name]_[hash:8]",
+    },
+    module: {
+        rules: [
+            jsRules.babel(),
+            jsRules.ts({
+                transpileOnly: true,
+                context: root,
+                configFile: tsConfig,
+            }),
+            cssRules.css(),
+            cssRules.less({
+                javascriptEnabled: true,
+            }),
+            cssRules.sass(),
+        ]
+    },
     plugins: [
-    ...(plugins || [])] } });
-
-
-
-
-const cssRules = (0, _util.cssLoader)({}, false);var _default =
-
-() => (0, _webpackMerge.default)(_webpack2.default, {
-  target: 'web',
-  entry: !(0, _lodash.isEmpty)(entry) ? { [_config.platformDefaultEntry[_config.PlatformEnum.dll]]: entry } : entry || {},
-  output: {
-    path: outputPath,
-    filename: 'javascript/[name].dll.js',
-    chunkFilename: `javascript/[name].[chunkhash:8].js`,
-    library: "[name]_[hash:8]" },
-
-  module: {
-    rules: [
-    jsRules.babel(),
-    jsRules.ts({
-      transpileOnly: true,
-      context: root,
-      configFile: tsConfig }),
-
-    cssRules.css(),
-    cssRules.less({
-      javascriptEnabled: true }),
-
-    cssRules.sass()] },
-
-
-  plugins: [
-  new _webpack.ProgressPlugin(),
-  new _miniCssExtractPlugin.default({
-    filename: 'styleSheet/[name].[hash:8].css',
-    chunkFilename: 'styleSheet/[name].[chunkhash:8].css' }),
-
-  new _webpackAssetsManifest.default({
-    output: _path.default.join(outputPath, '../static/dll.json'),
-    writeToDisk: true,
-    publicPath: true,
-    customize: ({ key, value }) => {
-      if (key.toLowerCase().endsWith('.map')) return false;
-      return { key, value };
-    } }),
-
-  new _webpack.default.DllPlugin({
-    context: root,
-    path: _path.default.join(outputPath, '../static/dll-manifest.json'),
-    name: "[name]_[hash:8]" }),
-
-  ...(analyzerStatus ? [
-  new _webpackBundleAnalyzer.BundleAnalyzerPlugin({
-    analyzerMode: 'disabled',
-    generateStatsFile: true,
-    statsFilename: 'dll-stats.json' })] :
-
-  [])] },
-
-(0, _webpack2.getMergeConfig)(builder, jsRules));exports.default = _default;
+        new webpack_2.ProgressPlugin(),
+        new mini_css_extract_plugin_1.default({
+            filename: 'styleSheet/[name].[hash:8].css',
+            chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
+        }),
+        new webpack_assets_manifest_1.default({
+            output: path_1.default.join(outputPath, '../static/dll.json'),
+            writeToDisk: true,
+            publicPath: true,
+            customize: ({ key, value }) => {
+                if (key.toLowerCase().endsWith('.map'))
+                    return false;
+                return { key, value };
+            }
+        }),
+        new webpack_1.default.DllPlugin({
+            context: root,
+            path: path_1.default.join(outputPath, '../static/dll-manifest.json'),
+            name: "[name]_[hash:8]"
+        }),
+        ...analyzerStatus ? [
+            new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
+                analyzerMode: 'disabled',
+                generateStatsFile: true,
+                statsFilename: 'dll-stats.json'
+            })
+        ] : [],
+    ],
+}, (0, webpack_config_1.getMergeConfig)(builder, jsRules));

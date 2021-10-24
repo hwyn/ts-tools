@@ -1,57 +1,59 @@
-"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.getMergeConfig = exports.filterAttr = exports.default = exports.copyPlugin = void 0;var _fs = require("fs");
-
-var _copyWebpackPlugin = _interopRequireDefault(require("copy-webpack-plugin"));
-
-var _config = require("../config");
-var _fs2 = require("../../core/fs");
-var _lodash = require("lodash");
-var _path = _interopRequireDefault(require("path"));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-const { isDevelopment, sourceRoot } = (0, _config.platformConfig)();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;
+const tslib_1 = require("tslib");
+const fs_1 = require("fs");
+const copy_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("copy-webpack-plugin"));
+const config_1 = require("../config");
+const fs_2 = require("../../core/fs");
+const lodash_1 = require("lodash");
+const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const { isDevelopment, sourceRoot } = (0, config_1.platformConfig)();
 const getMergeConfig = (filePath, jsRules, cssRules) => {
-  const mergeClientConfig = (0, _fs2.requireSync)(filePath);
-  return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
-};exports.getMergeConfig = getMergeConfig;
-
+    const mergeClientConfig = (0, fs_2.requireSync)(filePath);
+    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
+};
+exports.getMergeConfig = getMergeConfig;
 const filterAttr = (mergeConfig, filter) => {
-  const config = {};
-  Object.keys(mergeConfig || {}).filter((key) => !filter.includes(key)).forEach((key) => config[key] = mergeConfig[key]);
-  return config;
-};exports.filterAttr = filterAttr;
-
+    const config = {};
+    Object.keys(mergeConfig || {}).filter((key) => !filter.includes(key)).forEach((key) => config[key] = mergeConfig[key]);
+    return config;
+};
+exports.filterAttr = filterAttr;
 const copyPlugin = (formFile, toFile, sourcePath = sourceRoot) => {
-  const files = formFile.reduce((copyArr, filePaths) => {
-    const [filePath, _filePath] = filePaths;
-    if ((0, _fs.existsSync)(filePath)) {
-      const toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
-      const toFileInfo = _path.default.parse(toFilePath);
-      copyArr.push({
-        from: filePath,
-        to: toFileInfo.ext === '' && toFileInfo.name === '.env' ? toFileInfo.dir : toFilePath,
-        noErrorOnMissing: false,
-        globOptions: { ignore: ['.*'] } });
-
-    }
-    return copyArr;
-  }, []);
-  return !(0, _lodash.isEmpty)(files) && [new _copyWebpackPlugin.default({ patterns: files })] || [];
-};exports.copyPlugin = copyPlugin;var _default =
-
-{
-  mode: 'production',
-  context: _config.baseDir,
-  stats: {
-    colors: true,
-    hash: true, // required by custom stat output
-    timings: true, // required by custom stat output
-    chunks: true, // required by custom stat output
-    chunkModules: false,
-    modules: false,
-    reasons: false,
-    warnings: true,
-    errors: true,
-    assets: false, // required by custom stat output
-    version: false,
-    errorDetails: false,
-    moduleTrace: false } };exports.default = _default;
+    const files = formFile.reduce((copyArr, filePaths) => {
+        const [filePath, _filePath] = filePaths;
+        if ((0, fs_1.existsSync)(filePath)) {
+            const toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
+            const toFileInfo = path_1.default.parse(toFilePath);
+            copyArr.push({
+                from: filePath,
+                to: toFileInfo.ext === '' && toFileInfo.name === '.env' ? toFileInfo.dir : toFilePath,
+                noErrorOnMissing: false,
+                globOptions: { ignore: ['.*'] }
+            });
+        }
+        return copyArr;
+    }, []);
+    return !(0, lodash_1.isEmpty)(files) && [new copy_webpack_plugin_1.default({ patterns: files })] || [];
+};
+exports.copyPlugin = copyPlugin;
+exports.default = {
+    mode: 'production',
+    context: config_1.baseDir,
+    stats: {
+        colors: true,
+        hash: true,
+        timings: true,
+        chunks: true,
+        chunkModules: false,
+        modules: false,
+        reasons: false,
+        warnings: true,
+        errors: true,
+        assets: false,
+        version: false,
+        errorDetails: false,
+        moduleTrace: false,
+    },
+};
