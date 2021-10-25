@@ -17,9 +17,6 @@
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@babel/core": "^7.15.8",
-    "@babel/node": "^7.15.8",
     "@babel/plugin-transform-runtime": "^7.15.8",
     "@babel/plugin-transform-typescript": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
@@ -36,7 +33,15 @@
     "@types/webpack-bundle-analyzer": "^4.4.1",
     "@types/webpack-dev-middleware": "^5.0.2",
     "@types/webpack-hot-middleware": "^2.25.5",
-    "@types/webpack-node-externals": "^2.5.3",
+    "@types/webpack-node-externals": "^2.5.3"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "postcss-preset-env": "^6.7.0",
+    "tree-kill": "^1.2.2",
+    "tslib": "^2.3.1",
     "babel-loader": "^8.2.3",
     "browser-sync": "^2.27.5",
     "circular-dependency-plugin": "^5.2.2",
@@ -63,12 +68,6 @@
     "webpack-hot-middleware": "^2.25.1",
     "webpack-merge": "^5.8.0",
     "webpack-node-externals": "^3.0.0"
-  },
-  "dependencies": {
-    "postcss-preset-env": "^6.7.0",
-    "tree-kill": "^1.2.2",
-    "tslib": "^2.3.1",
-    "typescript": "^3.9.10"
   },
   "scripts": {
     "start": "babel-node --extensions \".ts,.tsx\" tools/util/run.ts start",
