@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;
 const tslib_1 = require("tslib");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const path_1 = tslib_1.__importDefault(require("path"));
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
 const factoryConfig = (str) => (attr) => {
@@ -48,16 +48,11 @@ const defaultProject = {
     }
 };
 class ProjectConfig {
-    static _project;
-    isDevelopment = false;
-    environmental;
-    getArvgConfig;
-    arvg = ``;
-    analyzerStatus = false;
-    baseResolve = resolve(process.cwd());
-    rootResolve;
-    config;
     constructor(arvg = []) {
+        this.isDevelopment = false;
+        this.arvg = ``;
+        this.analyzerStatus = false;
+        this.baseResolve = resolve(process.cwd());
         const [command] = arvg.slice(2);
         this.arvg = arvg.join(` `);
         this.getArvgConfig = factoryConfig(this.arvg);
@@ -70,9 +65,9 @@ class ProjectConfig {
         this.analyzerStatus = !!this.getArvgConfig('--stats-json');
     }
     parseConfig(config) {
-        this.config = (0, lodash_1.merge)({}, defaultProject, config);
+        this.config = lodash_1.merge({}, defaultProject, config);
         const { root, sourceRoot, outputRoot, architect } = this.config;
-        const environmentalBuild = (0, lodash_1.merge)({}, architect.build, architect[this.environmental]);
+        const environmentalBuild = lodash_1.merge({}, architect.build, architect[this.environmental]);
         this.rootResolve = resolve(this.baseResolve(root));
         this.config.isDevelopment = this.isDevelopment;
         this.config.analyzerStatus = this.analyzerStatus;
@@ -85,8 +80,8 @@ class ProjectConfig {
         const { platform, options, configurations } = build;
         build.platform = Object.keys(platform).reduce((obj, p) => {
             const current = platform[p];
-            current.options = (0, lodash_1.merge)({}, options, current.options);
-            current.configurations = (0, lodash_1.merge)({}, configurations, current.configurations);
+            current.options = lodash_1.merge({}, options, current.options);
+            current.configurations = lodash_1.merge({}, configurations, current.configurations);
             const { options: pOptions, configurations: pConfigurations, builder, outputPath, sourceClient, sourceServer } = current;
             const { main, styles, index, assets, tsConfig, themeVariable } = pOptions;
             const { watchFile, hotContext } = current.configurations;
@@ -107,8 +102,8 @@ class ProjectConfig {
         return build;
     }
     loadProjectConfig() {
-        if ((0, fs_1.existsSync)(projectPath)) {
-            this.parseConfig(JSON.parse((0, fs_1.readFileSync)(projectPath, 'utf-8')));
+        if (fs_1.existsSync(projectPath)) {
+            this.parseConfig(JSON.parse(fs_1.readFileSync(projectPath, 'utf-8')));
         }
         return this.config;
     }
@@ -127,10 +122,10 @@ class ProjectConfig {
     }
     static get existenceClient() {
         const { architect: { build: { platform } } } = this.project;
-        return !(0, lodash_1.isEmpty)(platform.client);
+        return !lodash_1.isEmpty(platform.client);
     }
     static get project() {
-        if ((0, lodash_1.isEmpty)(this._project)) {
+        if (lodash_1.isEmpty(this._project)) {
             this._project = new ProjectConfig(process.argv);
             this._project.loadProjectConfig();
         }
@@ -139,8 +134,8 @@ class ProjectConfig {
 }
 exports.project = ProjectConfig.project;
 exports.existenceClient = ProjectConfig.existenceClient;
-exports.babellrc = (0, fs_1.existsSync)(babel) && JSON.parse((0, fs_1.readFileSync)(babel).toString('utf-8')) || {};
-const platformConfig = (key) => {
+exports.babellrc = fs_1.existsSync(babel) && JSON.parse(fs_1.readFileSync(babel).toString('utf-8')) || {};
+exports.platformConfig = (key) => {
     const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = exports.project;
     const { architect: { build: { platform } } } = exports.project;
     const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
@@ -171,4 +166,3 @@ const platformConfig = (key) => {
         analyzerStatus
     };
 };
-exports.platformConfig = platformConfig;

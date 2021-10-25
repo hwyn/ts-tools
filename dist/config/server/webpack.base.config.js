@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const webpack_node_externals_1 = (0, tslib_1.__importDefault)(require("webpack-node-externals"));
-const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
-const webpack_config_1 = (0, tslib_1.__importStar)(require("../base/webpack.config"));
+const webpack_node_externals_1 = tslib_1.__importDefault(require("webpack-node-externals"));
+const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
+const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
 const util_1 = require("../../core/util");
 const config_1 = require("../config");
-const circular_dependency_plugin_1 = (0, tslib_1.__importDefault)(require("circular-dependency-plugin"));
-const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
-const jsRules = (0, util_1.jsLoader)({ options: config_1.babellrc });
-const { root, entry, assets, outputPath, nodeExternals, tsConfig, builder } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
-const _mergeServerConfig = (0, webpack_config_1.getMergeConfig)(builder, jsRules) || {};
-exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
+const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-dependency-plugin"));
+const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
+const jsRules = util_1.jsLoader({ options: config_1.babellrc });
+const { root, entry, assets, outputPath, nodeExternals, tsConfig, builder } = config_1.platformConfig(config_1.PlatformEnum.server);
+const _mergeServerConfig = webpack_config_1.getMergeConfig(builder, jsRules) || {};
+exports.default = () => webpack_merge_1.default(webpack_config_1.default, {
     target: 'node',
     context: root,
     entry,
@@ -26,7 +26,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
         plugins: [new tsconfig_paths_webpack_plugin_1.default({ configFile: tsConfig })]
     },
-    externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : [],
+    externals: nodeExternals !== false ? [webpack_node_externals_1.default()] : [],
     module: {
         rules: [
             jsRules.babel(),
@@ -38,7 +38,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         ],
     },
     plugins: [
-        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, root),
+        ...webpack_config_1.copyPlugin(assets, outputPath, root),
         new circular_dependency_plugin_1.default({
             exclude: /node_modules/,
             failOnError: true,
@@ -47,10 +47,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         }),
     ],
     node: {
-        console: false,
         global: false,
-        process: false,
-        Buffer: false,
         __filename: false,
         __dirname: false,
     },

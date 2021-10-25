@@ -2,23 +2,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hotServer = void 0;
 const tslib_1 = require("tslib");
-const vm_1 = (0, tslib_1.__importDefault)(require("vm"));
-const webpack_1 = (0, tslib_1.__importDefault)(require("webpack"));
-const webpack_dev_middleware_1 = (0, tslib_1.__importDefault)(require("webpack-dev-middleware"));
+const vm_1 = tslib_1.__importDefault(require("vm"));
+const webpack_1 = tslib_1.__importDefault(require("webpack"));
+const webpack_dev_middleware_1 = tslib_1.__importDefault(require("webpack-dev-middleware"));
 const compilation_1 = require("./compilation");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const path_1 = tslib_1.__importDefault(require("path"));
 const config_1 = require("../config");
 const fs_1 = require("../core/fs");
 const lodash_1 = require("lodash");
-const serverPlatform = (0, config_1.platformConfig)('server');
+const serverPlatform = config_1.platformConfig('server');
 const { hotContext, outputPath } = serverPlatform;
-const hotServer = async () => {
+exports.hotServer = async () => {
     let vmContext;
-    const contextSync = (0, fs_1.requireSync)(hotContext);
-    const hotVmContext = (0, lodash_1.isFunction)(contextSync) ? contextSync(serverPlatform) : contextSync;
-    const serverConfig = (0, config_1.webpackDevServer)();
-    const multiCompiler = (0, webpack_1.default)(serverConfig);
-    const { fileSystem } = (0, webpack_dev_middleware_1.default)(multiCompiler, { logLevel: 'silent' });
+    const contextSync = fs_1.requireSync(hotContext);
+    const hotVmContext = lodash_1.isFunction(contextSync) ? contextSync(serverPlatform) : contextSync;
+    const serverConfig = config_1.webpackDevServer();
+    const multiCompiler = webpack_1.default(serverConfig);
+    webpack_dev_middleware_1.default(multiCompiler, {});
     const promise = new Promise((resolve, reject) => {
         const interval = setInterval(() => {
             if (vmContext && vmContext.global.hotHttpHost) {
@@ -32,10 +32,12 @@ const hotServer = async () => {
             }
             try {
                 if (!stats.hasErrors()) {
-                    const code = fileSystem.readFileSync(path_1.default.join(outputPath, 'server.js'), 'utf-8');
-                    const context = (0, lodash_1.merge)({ ...global, require, process, console, global }, hotVmContext);
-                    vmContext = vm_1.default.createContext(context);
-                    vm_1.default.runInContext(code, vmContext);
+                    multiCompiler.outputFileSystem.readFile(path_1.default.join(outputPath, 'server.js'), (error, code) => {
+                        const context = lodash_1.merge({ ...global, require, process, console, global, Buffer }, hotVmContext);
+                        vmContext = vm_1.default.createContext(context);
+                        console.log(code);
+                        vm_1.default.runInContext(code.toString('utf-8'), vmContext);
+                    });
                 }
             }
             catch (e) {
@@ -45,7 +47,6 @@ const hotServer = async () => {
             }
         });
     });
-    await (0, compilation_1.createCompilationPromise)('server', multiCompiler, serverConfig);
+    await compilation_1.createCompilationPromise('server', multiCompiler, serverConfig);
     return promise;
 };
-exports.hotServer = hotServer;

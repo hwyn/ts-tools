@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fileLoader = exports.cssLoader = exports.jsLoader = void 0;
+exports.assetResource = exports.cssLoader = exports.jsLoader = void 0;
 const tslib_1 = require("tslib");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
-const mini_css_extract_plugin_1 = (0, tslib_1.__importDefault)(require("mini-css-extract-plugin"));
+const mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
 const lodash_1 = require("lodash");
 const factoryUse = (loader, options, mergeOption) => ({
     loader,
@@ -50,14 +49,16 @@ function cssLoader(config, isNotExtract) {
     const concatUse = factoryConcatUse([
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
-            config: { path: path_1.default.join(__dirname, 'postcss.config.js') },
-        }, !isNotExtract ? {} : { sourceMap: 'inline' })),
+            postcssOptions: {
+                plugins: [['postcss-preset-env', {}]]
+            }
+        }, !isNotExtract ? {} : { sourceMap: true })),
     ]);
     const factory = (regExp, loader, defaultOptions) => (mergeOption, preLoader) => {
         const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
         const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
         let oneLoader;
-        if (!(0, lodash_1.isEmpty)(loader)) {
+        if (!lodash_1.isEmpty(loader)) {
             oneLoader = Array.isArray(loader[0]) ? loader[0] : [loader[0]];
             ;
             oneLoader[1] = { ...defaultOptions, ...publicOptions, ...loaderOption };
@@ -79,18 +80,16 @@ function cssLoader(config, isNotExtract) {
     };
 }
 exports.cssLoader = cssLoader;
-function fileLoader(config) {
-    const { options, exclude = /node_modules/, include, outputPath } = config || {};
-    const factory = (regExp, loader) => (mergeOptions) => {
-        const [loadRex, options] = Array.isArray(loader) ? loader : [loader];
-        const { exclude: lExclude = exclude, include: lInclude = include, ...loaderOption } = mergeOptions || {};
-        const factory = factoryRules(regExp, { exclude: lExclude, include: lInclude });
-        const use = factoryUse(loadRex, { outputPath, ...options, ...loaderOption });
-        return factory(use);
+function assetResource(config) {
+    const { generator: defaultGenerator } = config || {};
+    const factory = (regExp, type) => (mergeOptions) => {
+        const [loadRex, _options] = Array.isArray(type) ? type : [type];
+        const { generator = defaultGenerator } = mergeOptions || {};
+        return { test: regExp, type: loadRex, generator };
     };
     return {
-        image: factory(/\.(png|jpe?g|gif)$/i, ['file-loader', {}]),
-        font: factory(/\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/, ['file-loader', {}])
+        image: factory(/\.(png|jpe?g|gif)$/i, ['asset/resource', {}]),
+        font: factory(/\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/, ['asset/resource', {}])
     };
 }
-exports.fileLoader = fileLoader;
+exports.assetResource = assetResource;
