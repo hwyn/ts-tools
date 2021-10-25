@@ -35,7 +35,6 @@ exports.hotServer = async () => {
                     multiCompiler.outputFileSystem.readFile(path_1.default.join(outputPath, 'server.js'), (error, code) => {
                         const context = lodash_1.merge({ ...global, require, process, console, global, Buffer }, hotVmContext);
                         vmContext = vm_1.default.createContext(context);
-                        console.log(code);
                         vm_1.default.runInContext(code.toString('utf-8'), vmContext);
                     });
                 }
