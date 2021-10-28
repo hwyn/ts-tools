@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const tree_kill_1 = tslib_1.__importDefault(require("tree-kill"));
-const chokidar_1 = tslib_1.__importDefault(require("chokidar"));
+const tree_kill_1 = (0, tslib_1.__importDefault)(require("tree-kill"));
+const chokidar_1 = (0, tslib_1.__importDefault)(require("chokidar"));
 const child_process_1 = require("child_process");
 const config_1 = require("../config");
 const config_2 = require("../config");
-const { entry, watchFile, root, tsConfig } = config_1.platformConfig('server');
+const { entry, watchFile, root, tsConfig } = (0, config_1.platformConfig)('server');
 const entryFile = entry;
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
@@ -49,7 +49,7 @@ function startServer() {
     const killCp = () => {
         _stdion = null;
         return new Promise((resolve, reject) => {
-            tree_kill_1.default(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve(null));
+            (0, tree_kill_1.default)(cp.pid, 'SIGKILL', (err) => err ? reject(err) : resolve(null));
         });
     };
     let _stdion = stdioPipe(cp, process);

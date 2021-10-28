@@ -2,11 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.happypackMerge = void 0;
 const tslib_1 = require("tslib");
-const happypack_1 = tslib_1.__importDefault(require("happypack"));
-const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
-const os_1 = tslib_1.__importDefault(require("os"));
+const happypack_1 = (0, tslib_1.__importDefault)(require("happypack"));
+const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
+const os_1 = (0, tslib_1.__importDefault)(require("os"));
 const happyThreadPool = happypack_1.default.ThreadPool({ size: os_1.default.cpus().length });
 class HappyPackUtil {
+    rule;
+    id;
+    threads;
     constructor(threads, rule) {
         this.rule = rule;
         this.threads = threads + 1;
@@ -51,12 +54,13 @@ class HappyPackUtil {
         }
     }
 }
-exports.happypackMerge = (config) => {
+const happypackMerge = (config) => {
     const happyPackConfig = config.module.rules.reduce((o, rule, index) => {
         const happyPackUtil = new HappyPackUtil(index, rule);
         happyPackUtil.addRulePulugins(o.module.rules, o.plugins);
         return o;
     }, { module: { rules: [] }, plugins: [] });
     delete config.module.rules;
-    return webpack_merge_1.default(config, happyPackConfig);
+    return (0, webpack_merge_1.default)(config, happyPackConfig);
 };
+exports.happypackMerge = happypackMerge;

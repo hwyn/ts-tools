@@ -3,25 +3,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
-const copy_webpack_plugin_1 = tslib_1.__importDefault(require("copy-webpack-plugin"));
+const copy_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("copy-webpack-plugin"));
 const config_1 = require("../config");
 const fs_2 = require("../../core/fs");
 const lodash_1 = require("lodash");
-const path_1 = tslib_1.__importDefault(require("path"));
-const { isDevelopment, sourceRoot } = config_1.platformConfig();
-exports.getMergeConfig = (filePath, jsRules, cssRules) => {
-    const mergeClientConfig = fs_2.requireSync(filePath);
+const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const { isDevelopment, sourceRoot } = (0, config_1.platformConfig)();
+const getMergeConfig = (filePath, jsRules, cssRules) => {
+    const mergeClientConfig = (0, fs_2.requireSync)(filePath);
     return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
 };
-exports.filterAttr = (mergeConfig, filter) => {
+exports.getMergeConfig = getMergeConfig;
+const filterAttr = (mergeConfig, filter) => {
     const config = {};
     Object.keys(mergeConfig || {}).filter((key) => !filter.includes(key)).forEach((key) => config[key] = mergeConfig[key]);
     return config;
 };
-exports.copyPlugin = (formFile, toFile, sourcePath = sourceRoot) => {
+exports.filterAttr = filterAttr;
+const copyPlugin = (formFile, toFile, sourcePath = sourceRoot) => {
     const files = formFile.reduce((copyArr, filePaths) => {
         const [filePath, _filePath] = filePaths;
-        if (fs_1.existsSync(filePath)) {
+        if ((0, fs_1.existsSync)(filePath)) {
             const toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
             const toFileInfo = path_1.default.parse(toFilePath);
             copyArr.push({
@@ -33,8 +35,9 @@ exports.copyPlugin = (formFile, toFile, sourcePath = sourceRoot) => {
         }
         return copyArr;
     }, []);
-    return !lodash_1.isEmpty(files) && [new copy_webpack_plugin_1.default({ patterns: files })] || [];
+    return !(0, lodash_1.isEmpty)(files) && [new copy_webpack_plugin_1.default({ patterns: files })] || [];
 };
+exports.copyPlugin = copyPlugin;
 exports.default = {
     mode: 'production',
     context: config_1.baseDir,
@@ -51,6 +54,7 @@ exports.default = {
         assets: false,
         version: false,
         errorDetails: false,
-        moduleTrace: false,
+        cachedAssets: false,
+        moduleTrace: false
     },
 };
