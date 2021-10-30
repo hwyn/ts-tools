@@ -42,17 +42,17 @@ function jsLoader(config) {
     };
 }
 exports.jsLoader = jsLoader;
-function cssLoader(config, isNotExtract) {
-    const publicOptions = !isNotExtract ? {} : { sourceMap: true };
+function cssLoader(config, isExtract) {
+    const publicOptions = !isExtract ? { sourceMap: true } : {};
     const { options, exclude = /node_modules/, include, resources } = config;
-    const preUse = factoryUse(!isNotExtract ? 'style-loader' : mini_css_extract_plugin_1.default.loader, {});
+    const preUse = factoryUse(!isExtract ? 'style-loader' : mini_css_extract_plugin_1.default.loader, {});
     const concatUse = factoryConcatUse([
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
             postcssOptions: {
                 plugins: [['postcss-preset-env', {}]]
             }
-        }, !isNotExtract ? {} : { sourceMap: true })),
+        }, publicOptions)),
     ]);
     const factory = (regExp, loader, defaultOptions) => (mergeOption, preLoader) => {
         const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};

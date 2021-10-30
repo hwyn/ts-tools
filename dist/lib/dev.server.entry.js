@@ -12,8 +12,6 @@ exports.default = async () => {
     }
     const multiCompiler = (0, webpack_1.default)(config);
     const promise = (0, compilation_1.createCompilationPromise)('server-entry', multiCompiler, config);
-    multiCompiler.watch({
-        aggregateTimeout: 300,
-    }, () => { });
+    multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
     return promise;
 };
