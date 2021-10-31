@@ -10,14 +10,16 @@ class HappyPackUtil {
     rule;
     id;
     threads;
-    constructor(threads, rule) {
+    excludeLoader;
+    constructor(threads, rule, options = {}) {
         this.rule = rule;
         this.threads = threads + 1;
         this.id = `happypack${this.threads}`;
+        this.excludeLoader = options.excludeLoader || [];
     }
     isCanHappyPack() {
         const { loader, use = [] } = this.rule;
-        const exclude = ['@ngtools/webpack', '@angular-devkit/build-optimizer/webpack-loader'];
+        const exclude = this.excludeLoader;
         if (!loader && (!use || !use.length)) {
             return false;
         }
@@ -54,9 +56,9 @@ class HappyPackUtil {
         }
     }
 }
-const happypackMerge = (config) => {
+const happypackMerge = (config, options) => {
     const happyPackConfig = config.module.rules.reduce((o, rule, index) => {
-        const happyPackUtil = new HappyPackUtil(index, rule);
+        const happyPackUtil = new HappyPackUtil(index, rule, options);
         happyPackUtil.addRulePulugins(o.module.rules, o.plugins);
         return o;
     }, { module: { rules: [] }, plugins: [] });

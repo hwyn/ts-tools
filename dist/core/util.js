@@ -65,7 +65,9 @@ function cssLoader(config, isExtract) {
             loader[0] = oneLoader;
         }
         const use = concatUse(loader || [], {});
-        use.unshift(preLoader ? factoryUse(preLoader, {}) : preUse);
+        if (preLoader !== false) {
+            use.unshift(preLoader ? factoryUse(preLoader, {}) : preUse);
+        }
         return factory(use);
     };
     return {

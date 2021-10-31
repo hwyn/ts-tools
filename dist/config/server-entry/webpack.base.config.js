@@ -33,8 +33,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         extensions: ['.ts', '.tsx', '.mjs', '.js'],
     },
     externals: [
-        `${outputPath}/assets.json`,
-        // nodeExtrnals(),
+        `${outputPath}/assets.json`
     ],
     module: {
         rules: [
@@ -45,7 +44,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
                 exclude: nodeModules,
                 context: root
             }),
-            cssRules.sass()
+            cssRules.sass({}, false)
         ],
     },
     plugins: [
