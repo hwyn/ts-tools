@@ -17,7 +17,6 @@ function createCompilationPromise(name, compiler, config) {
             const time = timeEnd.getTime() - timeStart.getTime();
             if (stats.hasErrors()) {
                 console.info(`[${format(timeEnd)}] Failed to compile '${name}' after ${time} ms`);
-                console.log(stats);
                 reject(new Error('Compilation failed!'));
             }
             else {

@@ -16,7 +16,7 @@ const cssRules = (0, util_1.cssLoader)({
             localIdentName: `[contenthash:base64:5]`
         }
     }
-}, false);
+}, !isDevelopment);
 exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'node',
     entry,

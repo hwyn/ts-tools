@@ -45,7 +45,7 @@ exports.jsLoader = jsLoader;
 function cssLoader(config, isExtract) {
     const publicOptions = !isExtract ? { sourceMap: true } : {};
     const { options, exclude = /node_modules/, include, resources } = config;
-    const preUse = factoryUse(!isExtract ? 'style-loader' : mini_css_extract_plugin_1.default.loader, {});
+    let preUse = !isExtract ? ['style-loader'] : [mini_css_extract_plugin_1.default.loader];
     const concatUse = factoryConcatUse([
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
@@ -66,7 +66,10 @@ function cssLoader(config, isExtract) {
         }
         const use = concatUse(loader || [], {});
         if (preLoader !== false) {
-            use.unshift(preLoader ? factoryUse(preLoader, {}) : preUse);
+            if (preLoader) {
+                preUse = Array.isArray(preLoader) ? preLoader : [preLoader, {}];
+            }
+            use.unshift(factoryUse(preUse[0], preUse[1] || {}));
         }
         return factory(use);
     };

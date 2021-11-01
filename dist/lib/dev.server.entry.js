@@ -10,7 +10,7 @@ exports.default = async () => {
     if (!(0, bundle_1.isRun)(config)) {
         return Promise.resolve();
     }
-    const multiCompiler = (0, webpack_1.default)(config);
+    const multiCompiler = (0, webpack_1.default)(config, () => { });
     const promise = (0, compilation_1.createCompilationPromise)('server-entry', multiCompiler, config);
     multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
     return promise;
