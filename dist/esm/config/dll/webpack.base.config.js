@@ -5,10 +5,9 @@ import WebpackAssetsManifest from 'webpack-assets-manifest';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader, assetResource } from '../../core/util';
-import { babellrc, platformConfig, platformDefaultEntry, PlatformEnum } from '../config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
 import path from 'path';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import { isEmpty } from 'lodash';
 const { presets, plugins } = babellrc;
 const { root, builder, entry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
 const jsRules = jsLoader({
@@ -26,7 +25,7 @@ const cssRules = cssLoader({}, true);
 const fileResource = assetResource();
 export default () => merge(webpackConfig, {
     target: 'web',
-    entry: !isEmpty(entry) ? { [platformDefaultEntry[PlatformEnum.dll]]: entry } : entry || {},
+    entry,
     output: {
         path: outputPath,
         filename: 'javascript/[name].dll.js',

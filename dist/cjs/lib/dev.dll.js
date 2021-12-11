@@ -6,6 +6,6 @@ exports.default = async () => {
     if (!config_1.existenceDll) {
         return Promise.resolve();
     }
-    const dll = (0, config_1.webpackDevDll)();
+    const dll = (0, config_1.webpackDll)();
     return (0, bundle_1.webpackRun)(dll, dll.stats);
 };

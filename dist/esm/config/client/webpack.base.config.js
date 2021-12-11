@@ -84,6 +84,7 @@ export default () => merge(webpackConfig, {
             writeToDisk: true,
             publicPath: true,
             entrypoints: true,
+            transform: ({ entrypoints }) => Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), {}),
             customize: ({ key, value }) => {
                 if (key.toLowerCase().endsWith('.map'))
                     return false;

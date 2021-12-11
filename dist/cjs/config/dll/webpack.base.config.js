@@ -11,7 +11,6 @@ const util_1 = require("../../core/util");
 const config_1 = require("../config");
 const path_1 = (0, tslib_1.__importDefault)(require("path"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
-const lodash_1 = require("lodash");
 const { presets, plugins } = config_1.babellrc;
 const { root, builder, entry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
 const jsRules = (0, util_1.jsLoader)({
@@ -29,7 +28,7 @@ const cssRules = (0, util_1.cssLoader)({}, true);
 const fileResource = (0, util_1.assetResource)();
 exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'web',
-    entry: !(0, lodash_1.isEmpty)(entry) ? { [config_1.platformDefaultEntry[config_1.PlatformEnum.dll]]: entry } : entry || {},
+    entry,
     output: {
         path: outputPath,
         filename: 'javascript/[name].dll.js',

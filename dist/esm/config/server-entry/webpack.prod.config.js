@@ -1,4 +1,3 @@
-import webpack from 'webpack';
 import merge from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import baseConfig from './webpack.base.config';
@@ -17,13 +16,6 @@ export default () => {
                     extractComments: false,
                 })
             ]
-        },
-        plugins: [
-            new webpack.DefinePlugin({
-                "process.env": {
-                    NODE_ENV: JSON.stringify("production"),
-                },
-            }),
-        ]
+        }
     });
 };

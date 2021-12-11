@@ -7,15 +7,10 @@ const factoryConfig = (str) => (attr) => {
         return null;
     return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^ \]+\)\[\\s\\S\]*`, 'g'), '$1');
 };
-const getArvgConfig = factoryConfig(process.argv.join(` `));
 const resolve = (base) => (..._path) => path.resolve(...[base, ..._path]);
 const toArray = (obj) => Array.isArray(obj) ? obj : obj && [obj] || [];
 const baseDir = process.cwd();
 const baseResolve = resolve(baseDir);
-const projectPath = baseResolve(getArvgConfig('--projectPath') || '.');
-const projectConfigJs = baseResolve(projectPath, 'project.config.js');
-const projectConfigPath = baseResolve(projectPath, 'project.config.json');
-const babel = baseResolve(projectPath, '.babelrc');
 export var PlatformEnum;
 (function (PlatformEnum) {
     PlatformEnum["client"] = "client";
@@ -43,19 +38,22 @@ const defaultProject = {
 };
 class ProjectConfig {
     static _project;
-    isDevelopment = false;
+    babelFilePath;
+    projectPath;
     environmental;
-    getArvgConfig = getArvgConfig;
-    ;
+    isDevelopment = false;
     analyzerStatus = false;
-    baseResolve = resolve(process.cwd());
+    baseResolve = baseResolve;
     rootResolve;
     outputRootResolve;
     sourceRootResolve;
+    getArvgConfig;
     config;
-    constructor(arvg = []) {
-        const [command] = arvg.slice(2);
+    constructor(command, argv = []) {
+        this.getArvgConfig = factoryConfig(argv.join(' '));
+        this.projectPath = baseResolve(this.getArvgConfig('--projectPath') || '.');
         this.environmental = command === 'start' ? 'development' : 'build';
+        this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
         this.parseArvg();
     }
     parseArvg() {
@@ -89,7 +87,7 @@ class ProjectConfig {
             current.options = merge({}, current.options);
             current.configurations = merge({}, current.configurations);
             const { options: pOptions, configurations: pConfigurations, builder, outputPath, sourceClient, sourceServer } = current;
-            const { main, styles, index, assets, tsConfig, themeVariable } = pOptions;
+            const { entry, styles, index, assets, tsConfig, themeVariable } = pOptions;
             const { watchFile, manifestDll, resolveAlias, hotContext } = current.configurations;
             !!builder && (current.builder = this.rootResolve(current.builder));
             !!index && (pOptions.index = this.sourceRootResolve(index));
@@ -100,7 +98,7 @@ class ProjectConfig {
             !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
             !!resolveAlias && (pConfigurations.resolveAlias = this.parseAlias(resolveAlias));
             p === PlatformEnum.client && manifestDll && (pConfigurations.manifestDll = this.outputRootResolve(manifestDll));
-            p !== PlatformEnum.dll && (pOptions.main = this.parseEntry(p, main));
+            pOptions.entry = this.parseEntry(p, entry, p !== PlatformEnum.dll);
             pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.sourceRootResolve(_f)));
             pOptions.styles = toArray(styles).map((f) => this.sourceRootResolve(f));
             !!hotContext && (pConfigurations.hotContext = this.rootResolve(hotContext));
@@ -111,6 +109,8 @@ class ProjectConfig {
     }
     loadProjectConfig() {
         let projectConfig;
+        const projectConfigJs = this.baseResolve(this.projectPath, 'project.config.js');
+        const projectConfigPath = this.baseResolve(this.projectPath, 'project.config.json');
         const projectFunction = requireSync(projectConfigJs);
         if (projectFunction) {
             projectConfig = (typeof projectFunction === 'function' ? projectFunction : () => projectFunction || {})();
@@ -127,18 +127,27 @@ class ProjectConfig {
             [key]: this.rootResolve(alias[key])
         }), {});
     }
-    parseEntry(p, entry) {
+    parseEntry(p, entry, isResolve = true) {
         let entryMain = {};
+        const sourceRootResolve = isResolve ? this.sourceRootResolve.bind(this) : (f) => f;
         if (Object.prototype.toString.apply(entry).replace(/\[object ([\S]*)\]/, '$1') === 'Object') {
             entryMain = Object.keys(entry).reduce((main, key) => ({
                 ...main,
-                [key]: toArray(entry[key]).map((f) => this.sourceRootResolve(f))
+                [key]: toArray(entry[key]).map((f) => sourceRootResolve(f))
             }), {});
         }
         else if (!!entry) {
-            entryMain = { [platformDefaultEntry[p]]: toArray(entry).map((f) => this.sourceRootResolve(f)) };
+            entryMain = { [platformDefaultEntry[p]]: toArray(entry).map((f) => sourceRootResolve(f)) };
         }
         return entryMain;
+    }
+    static get project() {
+        if (isEmpty(this._project)) {
+            const argv = process.argv;
+            this._project = new ProjectConfig(argv.slice(2)[0], argv);
+            this._project.loadProjectConfig();
+        }
+        return this._project && this._project.config || {};
     }
     static existencePlatform(platform) {
         const { architect: { build: { platform: platformMap } = {} } } = this.project;
@@ -146,11 +155,11 @@ class ProjectConfig {
         if (isEmpty(platformConfig)) {
             return false;
         }
-        const { notExistence, options: { main } } = platformConfig;
+        const { notExistence, options: { entry } } = platformConfig;
         if (notExistence) {
             return false;
         }
-        return Array.isArray(main) ? main.length !== 0 : !!main;
+        return Array.isArray(entry) ? entry.length !== 0 : !!entry;
     }
     static get existenceClient() {
         return this.existencePlatform(PlatformEnum.client);
@@ -164,12 +173,8 @@ class ProjectConfig {
     static get existenceServerEntry() {
         return this.existencePlatform(PlatformEnum.serverEntry);
     }
-    static get project() {
-        if (isEmpty(this._project)) {
-            this._project = new ProjectConfig(process.argv);
-            this._project.loadProjectConfig();
-        }
-        return this._project && this._project.config || {};
+    static get babellrc() {
+        return existsSync(this._project.babelFilePath) && JSON.parse(readFileSync(this._project.babelFilePath).toString('utf-8')) || {};
     }
 }
 export const project = ProjectConfig.project;
@@ -177,18 +182,18 @@ export const existenceClient = ProjectConfig.existenceClient;
 export const existenceServer = ProjectConfig.existenceServer;
 export const existenceDll = ProjectConfig.existenceDll;
 export const existenceServerEntry = ProjectConfig.existenceServerEntry;
-export const babellrc = existsSync(babel) && JSON.parse(readFileSync(babel).toString('utf-8')) || {};
+export const babellrc = ProjectConfig.babellrc;
 export const platformConfig = (key) => {
     const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = project;
     const { architect: { build: { platform } } } = project;
     const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
-    const { index, main, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
+    const { index, entry, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
     const { nodeExternals, browserTarget, watchFile, hotContext, publicPath, externals, manifestDll, resolveAlias, styleLoaderOptions, sourceMap: hasSourceMap } = configurations || {};
     return {
         root,
         index,
         externals,
-        entry: main,
+        entry,
         publicPath: publicPath ? `${publicPath}/`.replace(/[\/]+/, '/') : publicPath,
         themeVariable,
         styles,

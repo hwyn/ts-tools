@@ -1,9 +1,9 @@
 import { webpackRun } from '../util/bundle';
-import { webpackDevDll, existenceDll } from '../config';
+import { webpackDll, existenceDll } from '../config';
 export default async () => {
     if (!existenceDll) {
         return Promise.resolve();
     }
-    const dll = webpackDevDll();
+    const dll = webpackDll();
     return webpackRun(dll, dll.stats);
 };

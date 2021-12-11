@@ -2,9 +2,9 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import baseConfig from './webpack.base.config';
 import { happypackMerge } from '../../core/happypack';
-import { platformConfig } from '../config';
+import { platformConfig, PlatformEnum } from '../config';
 const hotPlug = (key) => `webpack-hot-middleware/client?name=${key}&reload=true`;
-const { sourceMap, hasSourceMap } = platformConfig('client');
+const { sourceMap, hasSourceMap } = platformConfig(PlatformEnum.client);
 export default () => {
     const config = baseConfig();
     const { entry } = config;
@@ -20,12 +20,7 @@ export default () => {
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
-            new webpack.NoEmitOnErrorsPlugin(),
-            new webpack.DefinePlugin({
-                "process.env": {
-                    NODE_ENV: JSON.stringify("development"),
-                }
-            }),
+            new webpack.NoEmitOnErrorsPlugin()
         ],
         ...hasSourceMap ? { devtool: sourceMap } : {},
     }));
