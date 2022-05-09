@@ -45,7 +45,7 @@
     "copy-webpack-plugin": "^9.1.0",
     "css-loader": "^6.5.1",
     "express": "^4.17.1",
-    "happypack": "^1.0.2",
+    "happypack": "^5.0.1",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.5",
     "node-sass": "^7.0.1",
