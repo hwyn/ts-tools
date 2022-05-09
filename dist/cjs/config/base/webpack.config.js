@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;
 const tslib_1 = require("tslib");
 const fs_1 = require("fs");
-const copy_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("copy-webpack-plugin"));
+const copy_webpack_plugin_1 = tslib_1.__importDefault(require("copy-webpack-plugin"));
 const config_1 = require("../config");
 const fs_2 = require("../../core/fs");
 const lodash_1 = require("lodash");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const path_1 = tslib_1.__importDefault(require("path"));
 const { isDevelopment, sourceRoot } = (0, config_1.platformConfig)();
 const getMergeConfig = (filePath, jsRules, cssRules) => {
     const mergeClientConfig = (0, fs_2.requireSync)(filePath);

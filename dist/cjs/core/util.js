@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.assetResource = exports.cssLoader = exports.jsLoader = void 0;
 const tslib_1 = require("tslib");
-const mini_css_extract_plugin_1 = (0, tslib_1.__importDefault)(require("mini-css-extract-plugin"));
+const mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
 const lodash_1 = require("lodash");
 const factoryUse = (loader, options, mergeOption) => ({
     loader,
@@ -50,7 +50,7 @@ function cssLoader(config, isExtract) {
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
             postcssOptions: {
-                plugins: [['postcss-preset-env', {}]]
+            // plugins: [['postcss-preset-env', {}]]
             }
         }, publicOptions)),
     ]);

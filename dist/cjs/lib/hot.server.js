@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hotServer = void 0;
 const tslib_1 = require("tslib");
-const vm_1 = (0, tslib_1.__importDefault)(require("vm"));
-const webpack_1 = (0, tslib_1.__importDefault)(require("webpack"));
-const webpack_dev_middleware_1 = (0, tslib_1.__importDefault)(require("webpack-dev-middleware"));
+const vm_1 = tslib_1.__importDefault(require("vm"));
+const webpack_1 = tslib_1.__importDefault(require("webpack"));
+const webpack_dev_middleware_1 = tslib_1.__importDefault(require("webpack-dev-middleware"));
 const compilation_1 = require("./compilation");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const path_1 = tslib_1.__importDefault(require("path"));
 const config_1 = require("../config");
 const fs_1 = require("../core/fs");
 const lodash_1 = require("lodash");

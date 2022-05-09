@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const webpack_node_externals_1 = (0, tslib_1.__importDefault)(require("webpack-node-externals"));
-const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
-const webpack_config_1 = (0, tslib_1.__importStar)(require("../base/webpack.config"));
+const webpack_node_externals_1 = tslib_1.__importDefault(require("webpack-node-externals"));
+const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
+const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
 const util_1 = require("../../core/util");
 const config_1 = require("../config");
-const circular_dependency_plugin_1 = (0, tslib_1.__importDefault)(require("circular-dependency-plugin"));
-const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
+const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-dependency-plugin"));
+const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
 const jsRules = (0, util_1.jsLoader)({ options: config_1.babellrc });
 const { root, entry, assets, sourceRoot, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
 exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {

@@ -45,7 +45,7 @@ export function cssLoader(config, isExtract) {
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
             postcssOptions: {
-                plugins: [['postcss-preset-env', {}]]
+            // plugins: [['postcss-preset-env', {}]]
             }
         }, publicOptions)),
     ]);

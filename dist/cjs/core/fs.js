@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireSync = exports.writeFile = exports.mkdir = exports.cleanDir = exports.exists = void 0;
 const tslib_1 = require("tslib");
-const rimraf_1 = (0, tslib_1.__importDefault)(require("rimraf"));
+const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const fs_1 = require("fs");
 const exists = (path) => {
     return Promise.resolve((0, fs_1.existsSync)(path));

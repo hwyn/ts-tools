@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const tree_kill_1 = (0, tslib_1.__importDefault)(require("tree-kill"));
-const chokidar_1 = (0, tslib_1.__importDefault)(require("chokidar"));
+const tree_kill_1 = tslib_1.__importDefault(require("tree-kill"));
+const chokidar_1 = tslib_1.__importDefault(require("chokidar"));
 const child_process_1 = require("child_process");
 const config_1 = require("../config");
 const config_2 = require("../config");

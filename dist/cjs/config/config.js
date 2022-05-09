@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceServerEntry = exports.existenceDll = exports.existenceServer = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;
 const tslib_1 = require("tslib");
-const path_1 = (0, tslib_1.__importDefault)(require("path"));
+const path_1 = tslib_1.__importDefault(require("path"));
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
 const fs_2 = require("../core/fs");

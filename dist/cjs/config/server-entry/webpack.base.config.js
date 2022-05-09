@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const webpack_merge_1 = (0, tslib_1.__importDefault)(require("webpack-merge"));
-const webpack_node_externals_1 = (0, tslib_1.__importDefault)(require("webpack-node-externals"));
+const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
+const webpack_node_externals_1 = tslib_1.__importDefault(require("webpack-node-externals"));
 const webpack_1 = require("webpack");
-const webpack_config_1 = (0, tslib_1.__importStar)(require("../base/webpack.config"));
+const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
 const util_1 = require("../../core/util");
 const config_1 = require("../config");
-const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
-const circular_dependency_plugin_1 = (0, tslib_1.__importDefault)(require("circular-dependency-plugin"));
+const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
+const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-dependency-plugin"));
 const { entry, nodeExternals, builder, tsConfig, root, isDevelopment, outputPath, themeVariable, resolveAlias, nodeModules, sourceRoot } = (0, config_1.platformConfig)(config_1.PlatformEnum.serverEntry);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);

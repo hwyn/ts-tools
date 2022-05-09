@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.webpackRunDll = exports.webpackRun = exports.isRun = void 0;
 const tslib_1 = require("tslib");
 const lodash_1 = require("lodash");
-const webpack_1 = (0, tslib_1.__importDefault)(require("webpack"));
+const webpack_1 = tslib_1.__importDefault(require("webpack"));
 const config_1 = require("../config");
 const config_2 = require("../config");
 const isRun = (webpackconfig) => {
