@@ -12,7 +12,7 @@ const config_1 = require("../config");
 const path_1 = (0, tslib_1.__importDefault)(require("path"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
 const { presets, plugins } = config_1.babellrc;
-const { root, builder, entry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
+const { root, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
 const jsRules = (0, util_1.jsLoader)({
     options: {
         presets: [
@@ -26,9 +26,9 @@ const jsRules = (0, util_1.jsLoader)({
 });
 const cssRules = (0, util_1.cssLoader)({}, true);
 const fileResource = (0, util_1.assetResource)();
-exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
+exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'web',
-    entry,
+    entry: { [entryKey]: originEntry[entryKey] },
     output: {
         path: outputPath,
         filename: 'javascript/[name].dll.js',
@@ -59,7 +59,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
             chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
         }),
         new webpack_assets_manifest_1.default({
-            output: path_1.default.join(outputPath, 'static/dll.json'),
+            output: path_1.default.join(outputPath, `static/dll-${entryKey}.json`),
             writeToDisk: true,
             publicPath: true,
             customize: ({ key, value }) => {
@@ -70,14 +70,14 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         }),
         new webpack_1.default.DllPlugin({
             context: root,
-            path: path_1.default.join(outputPath, 'static/dll-manifest.json'),
+            path: path_1.default.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),
             name: "[name]_[fullhash:8]"
         }),
         ...analyzerStatus ? [
             new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
                 analyzerMode: 'disabled',
                 generateStatsFile: true,
-                statsFilename: 'dll-stats.json'
+                statsFilename: `stats/dll-${entryKey}-stats.json`
             })
         ] : [],
     ],

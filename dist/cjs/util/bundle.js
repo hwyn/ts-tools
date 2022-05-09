@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.webpackRun = exports.isRun = void 0;
+exports.webpackRunDll = exports.webpackRun = exports.isRun = void 0;
 const tslib_1 = require("tslib");
 const lodash_1 = require("lodash");
 const webpack_1 = (0, tslib_1.__importDefault)(require("webpack"));
@@ -29,8 +29,16 @@ function webpackRun(webpackconfig, _stast) {
     });
 }
 exports.webpackRun = webpackRun;
+function webpackRunDll() {
+    const { entry } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
+    return Object.keys(entry).reduce((promise, key) => {
+        const dll = (0, config_1.webpackDll)(key);
+        return promise.then(() => webpackRun(dll, dll.stats));
+    }, Promise.resolve());
+}
+exports.webpackRunDll = webpackRunDll;
 exports.default = async () => {
-    return webpackRun([...config_2.existenceDll ? [(0, config_1.webpackDll)()] : []]).then(() => webpackRun([
+    return (config_2.existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([
         ...config_2.existenceServerEntry ? [(0, config_1.webpackServerEntry)()] : [],
         ...config_2.existenceClient ? [(0, config_1.webpackClient)()] : [],
     ])).then(() => webpackRun([...config_2.existenceServer ? [(0, config_1.webpackServer)()] : []]));

@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clean = exports.bundle = exports.build = exports.start = void 0;
-const tslib_1 = require("tslib");
-(0, tslib_1.__exportStar)(require("./core/util"), exports);
-var start_1 = require("./util/start");
-Object.defineProperty(exports, "start", { enumerable: true, get: function () { return (0, tslib_1.__importDefault)(start_1).default; } });
-var build_1 = require("./util/build");
-Object.defineProperty(exports, "build", { enumerable: true, get: function () { return (0, tslib_1.__importDefault)(build_1).default; } });
-var bundle_1 = require("./util/bundle");
-Object.defineProperty(exports, "bundle", { enumerable: true, get: function () { return (0, tslib_1.__importDefault)(bundle_1).default; } });
-var clean_1 = require("./util/clean");
-Object.defineProperty(exports, "clean", { enumerable: true, get: function () { return (0, tslib_1.__importDefault)(clean_1).default; } });
+exports.init = void 0;
+const project_arvg_1 = require("./config/project-arvg");
+const init = (projectArgv) => {
+    projectArgv && (0, project_arvg_1.registryProjectArgv)(projectArgv);
+    return {
+        start: require('./util/start').default,
+        build: require('./util/build').default,
+        bundle: require('./util/bundle').default,
+        clean: require('./util/clean').default
+    };
+};
+exports.init = init;

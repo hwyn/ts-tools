@@ -1,5 +1,5 @@
 import merge from 'webpack-merge';
 import baseConfig from './webpack.base.config';
-export default () => merge(baseConfig(), {
+export default (entryKey) => merge(baseConfig(entryKey), {
     mode: 'production',
 });

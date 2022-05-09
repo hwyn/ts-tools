@@ -9,7 +9,7 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 import path from 'path';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 const { presets, plugins } = babellrc;
-const { root, builder, entry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
+const { root, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
 const jsRules = jsLoader({
     options: {
         presets: [
@@ -23,9 +23,9 @@ const jsRules = jsLoader({
 });
 const cssRules = cssLoader({}, true);
 const fileResource = assetResource();
-export default () => merge(webpackConfig, {
+export default (entryKey) => merge(webpackConfig, {
     target: 'web',
-    entry,
+    entry: { [entryKey]: originEntry[entryKey] },
     output: {
         path: outputPath,
         filename: 'javascript/[name].dll.js',
@@ -56,7 +56,7 @@ export default () => merge(webpackConfig, {
             chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
         }),
         new WebpackAssetsManifest({
-            output: path.join(outputPath, 'static/dll.json'),
+            output: path.join(outputPath, `static/dll-${entryKey}.json`),
             writeToDisk: true,
             publicPath: true,
             customize: ({ key, value }) => {
@@ -67,14 +67,14 @@ export default () => merge(webpackConfig, {
         }),
         new webpack.DllPlugin({
             context: root,
-            path: path.join(outputPath, 'static/dll-manifest.json'),
+            path: path.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),
             name: "[name]_[fullhash:8]"
         }),
         ...analyzerStatus ? [
             new BundleAnalyzerPlugin({
                 analyzerMode: 'disabled',
                 generateStatsFile: true,
-                statsFilename: 'dll-stats.json'
+                statsFilename: `stats/dll-${entryKey}-stats.json`
             })
         ] : [],
     ],

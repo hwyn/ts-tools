@@ -3,7 +3,7 @@ import merge from 'webpack-merge';
 import baseConfig from './webpack.base.config';
 import { happypackMerge } from '../../core/happypack';
 import { platformConfig, PlatformEnum } from '../config';
-const hotPlug = (key) => `webpack-hot-middleware/client?name=${key}&reload=true`;
+const hotPlug = (key) => `webpack-hot-middleware/client?path=__webpack_hmr&name=${key}&reload=true&dynamicPublicPath=true`;
 const { sourceMap, hasSourceMap } = platformConfig(PlatformEnum.client);
 export default () => {
     const config = baseConfig();

@@ -14,7 +14,7 @@ const lodash_1 = require("lodash");
 const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
 const { presets, plugins, ...babellrcOthers } = config_1.babellrc;
-const { root, externals = {}, resolveAlias, sourceRoot, sourceClient, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll, styleLoaderOptions } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
+const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
 const cssRules = (0, util_1.cssLoader)({
@@ -38,6 +38,8 @@ const jsRules = (0, util_1.jsLoader)({
     }
 });
 const fileResource = (0, util_1.assetResource)();
+const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
+const manifestDll = originManifestDll ? originManifestDll : (0, fs_1.existsSync)(defaultMainfestPath) ? [defaultMainfestPath] : [];
 exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'web',
     context: root,
@@ -75,7 +77,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     },
     plugins: [
         new webpack_1.ProgressPlugin(),
-        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceClient),
+        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
         new circular_dependency_plugin_1.default({
             exclude: /node_modules/,
             failOnError: true,
@@ -87,7 +89,15 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
             writeToDisk: true,
             publicPath: true,
             entrypoints: true,
-            transform: ({ entrypoints }) => Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), {}),
+            transform: (assets) => {
+                const { entrypoints } = assets;
+                const assetsKeys = Object.keys(assets);
+                const entrypointsKeys = Object.keys(entrypoints);
+                const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
+                assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
+                ;
+                return assetsObject;
+            },
             customize: ({ key, value }) => {
                 if (key.toLowerCase().endsWith('.map'))
                     return false;
@@ -98,15 +108,10 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
             new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
                 analyzerMode: 'disabled',
                 generateStatsFile: true,
-                statsFilename: 'stats.json'
+                statsFilename: 'stats/stats.json'
             })
         ] : [],
-        ...(manifestDll || (0, fs_1.existsSync)(`${outputPath}/static/dll-manifest.json`)) ? [
-            new webpack_1.DllReferencePlugin({
-                context: root,
-                manifest: require(manifestDll || `${outputPath}/static/dll-manifest.json`)
-            })
-        ] : [],
+        ...manifestDll.map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
         ...index ? [new html_webpack_plugin_1.default({
                 template: index,
                 minify: {

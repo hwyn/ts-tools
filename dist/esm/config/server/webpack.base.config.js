@@ -6,7 +6,7 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 const jsRules = jsLoader({ options: babellrc });
-const { root, entry, assets, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = platformConfig(PlatformEnum.server);
+const { root, entry, assets, sourceRoot, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = platformConfig(PlatformEnum.server);
 export default () => merge(webpackConfig, {
     target: 'node',
     context: root,
@@ -35,7 +35,7 @@ export default () => merge(webpackConfig, {
         ],
     },
     plugins: [
-        ...copyPlugin(assets, outputPath, root),
+        ...copyPlugin(assets, outputPath, sourceRoot),
         new CircularDependencyPlugin({
             exclude: /node_modules/,
             failOnError: true,

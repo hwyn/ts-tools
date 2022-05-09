@@ -1,5 +1,7 @@
-export * from './core/util';
-export { default as start } from './util/start';
-export { default as build } from './util/build';
-export { default as bundle } from './util/bundle';
-export { default as clean } from './util/clean';
+import { ProjectArgv } from './config/project-arvg';
+export declare const init: (projectArgv?: ProjectArgv) => {
+    start: any;
+    build: any;
+    bundle: any;
+    clean: any;
+};

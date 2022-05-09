@@ -25,7 +25,7 @@ interface buildOptions {
 interface Configurations {
     browserTarget?: [];
     publicPath?: string;
-    manifestDll?: string;
+    manifestDll?: string[];
     resolveAlias: {
         [key: string]: any;
     };
@@ -42,8 +42,6 @@ interface Platform {
     [key: string]: {
         builder: string;
         outputPath: string;
-        sourceClient?: string;
-        sourceServer?: string;
         options: buildOptions;
         configurations?: Configurations;
         notExistence?: boolean;
@@ -96,12 +94,10 @@ export declare const platformConfig: (key?: string) => {
     nodeExternals: boolean;
     sourceRoot: string;
     outputRoot: string;
-    sourceClient: string;
-    sourceServer: string;
     nodeModules: string;
     watchFile: string[];
     hotContext: string;
-    manifestDll: string;
+    manifestDll: string[];
     resolveAlias: {
         [key: string]: any;
     };

@@ -52,7 +52,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
                 exclude: nodeModules
             }),
             cssRules.sass({}, false)
-        ],
+        ]
     },
     plugins: [
         new webpack_1.ProgressPlugin(),

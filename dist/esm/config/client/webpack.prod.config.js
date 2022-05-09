@@ -12,6 +12,7 @@ export default () => {
             runtimeChunk: false,
             mergeDuplicateChunks: true,
             splitChunks: {},
+            // concatenateModules: false,
             minimize: true,
             minimizer: [
                 new TerserPlugin({

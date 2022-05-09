@@ -6,6 +6,7 @@ const path_1 = (0, tslib_1.__importDefault)(require("path"));
 const fs_1 = require("fs");
 const lodash_1 = require("lodash");
 const fs_2 = require("../core/fs");
+const project_arvg_1 = require("./project-arvg");
 const factoryConfig = (str) => (attr) => {
     if (str.indexOf(attr) === -1)
         return null;
@@ -55,14 +56,14 @@ class ProjectConfig {
     getArvgConfig;
     config;
     constructor(command, argv = []) {
-        this.getArvgConfig = factoryConfig(argv.join(' '));
-        this.projectPath = baseResolve(this.getArvgConfig('--projectPath') || '.');
+        this.getArvgConfig = factoryConfig((0, project_arvg_1.getArgv)()(argv).join(' '));
+        this.projectPath = baseResolve(this.getArvgConfig('project') || '.');
         this.environmental = command === 'start' ? 'development' : 'build';
         this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
         this.parseArvg();
     }
     parseArvg() {
-        this.environmental = this.getArvgConfig('--environmental') || this.environmental;
+        this.environmental = this.getArvgConfig('environmental') || this.environmental;
         this.isDevelopment = !this.getArvgConfig('--prod');
         this.analyzerStatus = !!this.getArvgConfig('--stats-json');
     }
@@ -91,7 +92,7 @@ class ProjectConfig {
             const current = this.getPlatformConfig(p, platform, additional);
             current.options = (0, lodash_1.merge)({}, current.options);
             current.configurations = (0, lodash_1.merge)({}, current.configurations);
-            const { options: pOptions, configurations: pConfigurations, builder, outputPath, sourceClient, sourceServer } = current;
+            const { options: pOptions, configurations: pConfigurations, builder, outputPath } = current;
             const { entry, styles, index, assets, tsConfig, themeVariable } = pOptions;
             const { watchFile, manifestDll, resolveAlias, hotContext } = current.configurations;
             !!builder && (current.builder = this.rootResolve(current.builder));
@@ -99,10 +100,8 @@ class ProjectConfig {
             !!tsConfig && (pOptions.tsConfig = this.rootResolve(tsConfig));
             !!themeVariable && (pOptions.themeVariable = this.sourceRootResolve(themeVariable));
             !!outputPath && (current.outputPath = this.outputRootResolve(outputPath));
-            !!sourceClient && (current.sourceClient = this.rootResolve(sourceRoot, sourceClient));
-            !!sourceServer && (current.sourceServer = this.rootResolve(sourceRoot, sourceServer));
             !!resolveAlias && (pConfigurations.resolveAlias = this.parseAlias(resolveAlias));
-            p === PlatformEnum.client && manifestDll && (pConfigurations.manifestDll = this.outputRootResolve(manifestDll));
+            p === PlatformEnum.client && manifestDll && (pConfigurations.manifestDll = toArray(manifestDll).map((m) => this.outputRootResolve(m)));
             pOptions.entry = this.parseEntry(p, entry, p !== PlatformEnum.dll);
             pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.sourceRootResolve(_f)));
             pOptions.styles = toArray(styles).map((f) => this.sourceRootResolve(f));
@@ -191,16 +190,16 @@ exports.babellrc = ProjectConfig.babellrc;
 const platformConfig = (key) => {
     const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = exports.project;
     const { architect: { build: { platform } } } = exports.project;
-    const { options, configurations, builder, outputPath = '', sourceClient, sourceServer } = platform[key] || {};
+    const { options, configurations, builder, outputPath = '' } = platform[key] || {};
     const { index, entry, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
-    const { nodeExternals, browserTarget, watchFile, hotContext, publicPath, externals, manifestDll, resolveAlias, styleLoaderOptions, sourceMap: hasSourceMap } = configurations || {};
+    const { nodeExternals, browserTarget, watchFile, hotContext, publicPath = '/', externals, manifestDll, resolveAlias, styleLoaderOptions, sourceMap: hasSourceMap } = configurations || {};
     return {
         root,
         index,
         externals,
         entry,
-        publicPath: publicPath ? `${publicPath}/`.replace(/[\/]+/, '/') : publicPath,
-        themeVariable,
+        publicPath: `${publicPath}/`.replace(/[\/]+/, '/'),
+        themeVariable: themeVariable && (0, fs_1.existsSync)(themeVariable) ? themeVariable : undefined,
         styles,
         assets,
         builder,
@@ -210,8 +209,6 @@ const platformConfig = (key) => {
         nodeExternals,
         sourceRoot,
         outputRoot,
-        sourceClient,
-        sourceServer,
         nodeModules,
         watchFile,
         hotContext,

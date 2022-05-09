@@ -49,7 +49,7 @@ export default () => merge(webpackConfig, {
                 exclude: nodeModules
             }),
             cssRules.sass({}, false)
-        ],
+        ]
     },
     plugins: [
         new ProgressPlugin(),

@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import webpack from 'webpack';
-import { webpackServer, webpackClient, webpackDll, webpackServerEntry } from '../config';
+import { webpackServer, webpackClient, webpackDll, webpackServerEntry, platformConfig, PlatformEnum } from '../config';
 import { existenceClient, existenceDll, existenceServer, existenceServerEntry } from '../config';
 export const isRun = (webpackconfig) => {
     return !isEmpty(webpackconfig.entry);
@@ -23,8 +23,15 @@ export function webpackRun(webpackconfig, _stast) {
         });
     });
 }
+export function webpackRunDll() {
+    const { entry } = platformConfig(PlatformEnum.dll);
+    return Object.keys(entry).reduce((promise, key) => {
+        const dll = webpackDll(key);
+        return promise.then(() => webpackRun(dll, dll.stats));
+    }, Promise.resolve());
+}
 export default async () => {
-    return webpackRun([...existenceDll ? [webpackDll()] : []]).then(() => webpackRun([
+    return (existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([
         ...existenceServerEntry ? [webpackServerEntry()] : [],
         ...existenceClient ? [webpackClient()] : [],
     ])).then(() => webpackRun([...existenceServer ? [webpackServer()] : []]));

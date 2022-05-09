@@ -9,7 +9,7 @@ const config_1 = require("../config");
 const circular_dependency_plugin_1 = (0, tslib_1.__importDefault)(require("circular-dependency-plugin"));
 const tsconfig_paths_webpack_plugin_1 = (0, tslib_1.__importDefault)(require("tsconfig-paths-webpack-plugin"));
 const jsRules = (0, util_1.jsLoader)({ options: config_1.babellrc });
-const { root, entry, assets, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
+const { root, entry, assets, sourceRoot, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
 exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'node',
     context: root,
@@ -38,7 +38,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         ],
     },
     plugins: [
-        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, root),
+        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
         new circular_dependency_plugin_1.default({
             exclude: /node_modules/,
             failOnError: true,
