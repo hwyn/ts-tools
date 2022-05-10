@@ -25,10 +25,10 @@ export function webpackRun(webpackconfig, _stast) {
 }
 export function webpackRunDll() {
     const { entry } = platformConfig(PlatformEnum.dll);
-    return Object.keys(entry).reduce((promise, key) => {
+    return Object.keys(entry).reduce((promise, key) => promise.then(() => {
         const dll = webpackDll(key);
-        return promise.then(() => webpackRun(dll, dll.stats));
-    }, Promise.resolve());
+        return webpackRun(dll, dll.stats);
+    }), Promise.resolve());
 }
 export default async () => {
     return (existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const webpack_1 = tslib_1.__importDefault(require("webpack"));
+const webpack_1 = tslib_1.__importStar(require("webpack"));
 const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
 const webpack_2 = require("webpack");
 const webpack_assets_manifest_1 = tslib_1.__importDefault(require("webpack-assets-manifest"));
@@ -10,9 +10,10 @@ const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"))
 const util_1 = require("../../core/util");
 const config_1 = require("../config");
 const path_1 = tslib_1.__importDefault(require("path"));
+const fs_1 = require("fs");
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
 const { presets, plugins } = config_1.babellrc;
-const { root, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
+const { root, resolveAlias, externals, manifestDll, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
 const jsRules = (0, util_1.jsLoader)({
     options: {
         presets: [
@@ -34,6 +35,10 @@ exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.de
         filename: 'javascript/[name].dll.js',
         chunkFilename: `javascript/[name].[chunkhash:8].js`,
         library: "[name]_[fullhash:8]",
+    },
+    externals,
+    resolve: {
+        alias: resolveAlias,
     },
     module: {
         rules: [
@@ -68,6 +73,7 @@ exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.de
                 return { key, value };
             }
         }),
+        ...manifestDll.filter((filePath) => (0, fs_1.existsSync)(filePath)).map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
         new webpack_1.default.DllPlugin({
             context: root,
             path: path_1.default.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),

@@ -96,7 +96,7 @@ class ProjectConfig {
             !!themeVariable && (pOptions.themeVariable = this.sourceRootResolve(themeVariable));
             !!outputPath && (current.outputPath = this.outputRootResolve(outputPath));
             !!resolveAlias && (pConfigurations.resolveAlias = this.parseAlias(resolveAlias));
-            p === PlatformEnum.client && manifestDll && (pConfigurations.manifestDll = toArray(manifestDll).map((m) => this.outputRootResolve(m)));
+            [PlatformEnum.client, PlatformEnum.dll].includes(p) && manifestDll && (pConfigurations.manifestDll = toArray(manifestDll).map((m) => this.outputRootResolve(m)));
             pOptions.entry = this.parseEntry(p, entry, p !== PlatformEnum.dll);
             pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.sourceRootResolve(_f)));
             pOptions.styles = toArray(styles).map((f) => this.sourceRootResolve(f));
@@ -207,7 +207,7 @@ export const platformConfig = (key) => {
         nodeModules,
         watchFile,
         hotContext,
-        manifestDll,
+        manifestDll: manifestDll || [],
         resolveAlias,
         sourceMap,
         styleLoaderOptions,

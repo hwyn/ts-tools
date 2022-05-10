@@ -31,10 +31,10 @@ function webpackRun(webpackconfig, _stast) {
 exports.webpackRun = webpackRun;
 function webpackRunDll() {
     const { entry } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
-    return Object.keys(entry).reduce((promise, key) => {
+    return Object.keys(entry).reduce((promise, key) => promise.then(() => {
         const dll = (0, config_1.webpackDll)(key);
-        return promise.then(() => webpackRun(dll, dll.stats));
-    }, Promise.resolve());
+        return webpackRun(dll, dll.stats);
+    }), Promise.resolve());
 }
 exports.webpackRunDll = webpackRunDll;
 exports.default = async () => {

@@ -1,4 +1,4 @@
-import webpack from 'webpack';
+import webpack, { DllReferencePlugin } from 'webpack';
 import merge from 'webpack-merge';
 import { ProgressPlugin } from 'webpack';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
@@ -7,9 +7,10 @@ import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader, assetResource } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import path from 'path';
+import { existsSync } from 'fs';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 const { presets, plugins } = babellrc;
-const { root, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
+const { root, resolveAlias, externals, manifestDll, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
 const jsRules = jsLoader({
     options: {
         presets: [
@@ -31,6 +32,10 @@ export default (entryKey) => merge(webpackConfig, {
         filename: 'javascript/[name].dll.js',
         chunkFilename: `javascript/[name].[chunkhash:8].js`,
         library: "[name]_[fullhash:8]",
+    },
+    externals,
+    resolve: {
+        alias: resolveAlias,
     },
     module: {
         rules: [
@@ -65,6 +70,7 @@ export default (entryKey) => merge(webpackConfig, {
                 return { key, value };
             }
         }),
+        ...manifestDll.filter((filePath) => existsSync(filePath)).map((manifest) => new DllReferencePlugin({ context: root, manifest: require(manifest) })),
         new webpack.DllPlugin({
             context: root,
             path: path.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),
