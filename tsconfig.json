@@ -3,7 +3,7 @@
     "target": "ESNext",    // 编译目标平台
     "module": "ES2020", // 组织代码的方式
     // "outDir": "../api/node_modules/ts-tools/dist/esm",
-    "outDir": "../ts-tools/dist/esm",
+    "outDir": "./dist/esm",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,  // 让TypeScript支持为带有装饰器的声明生成元数据
     "experimentalDecorators": true, // 是否启用实验性装饰器特性

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "module": "CommonJs", // 组织代码的方式
     // "outDir": "../api/node_modules/ts-tools/dist/cjs",
-    "outDir": "../ts-tools/dist/cjs"
+    "outDir": "./dist/cjs"
   }
 }
