@@ -3,7 +3,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.base.config';
 import { platformConfig, PlatformEnum } from '../config';
-const { tsConfig } = platformConfig(PlatformEnum.client);
+const { tsConfig, analyzerStatus } = platformConfig(PlatformEnum.client);
 export default () => {
     process.env.TS_NODE_PROJECT = tsConfig;
     return merge(baseConfig(), {
@@ -12,7 +12,7 @@ export default () => {
             runtimeChunk: false,
             mergeDuplicateChunks: true,
             splitChunks: {},
-            // concatenateModules: false,
+            ...analyzerStatus ? { concatenateModules: false } : {},
             minimize: true,
             minimizer: [
                 new TerserPlugin({

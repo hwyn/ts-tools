@@ -43,7 +43,6 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     externals: (nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : []).concat(`${outputPath}/assets.json`),
     module: {
         rules: [
-            jsRules.babel(),
             jsRules.ts({
                 happyPackMode: true,
                 transpileOnly: !isDevelopment,

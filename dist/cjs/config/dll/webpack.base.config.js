@@ -29,6 +29,7 @@ const cssRules = (0, util_1.cssLoader)({}, true);
 const fileResource = (0, util_1.assetResource)();
 exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.default, {
     target: 'web',
+    context: root,
     entry: { [entryKey]: originEntry[entryKey] },
     output: {
         path: outputPath,
@@ -49,9 +50,7 @@ exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.de
                 configFile: tsConfig,
             }),
             cssRules.css(),
-            cssRules.less({
-                javascriptEnabled: true,
-            }),
+            cssRules.less({ javascriptEnabled: true }),
             cssRules.sass(),
             fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
             fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })

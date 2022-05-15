@@ -6,7 +6,7 @@ const terser_webpack_plugin_1 = tslib_1.__importDefault(require("terser-webpack-
 const mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
 const webpack_base_config_1 = tslib_1.__importDefault(require("./webpack.base.config"));
 const config_1 = require("../config");
-const { tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
+const { tsConfig, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
 exports.default = () => {
     process.env.TS_NODE_PROJECT = tsConfig;
     return (0, webpack_merge_1.default)((0, webpack_base_config_1.default)(), {
@@ -15,7 +15,7 @@ exports.default = () => {
             runtimeChunk: false,
             mergeDuplicateChunks: true,
             splitChunks: {},
-            // concatenateModules: false,
+            ...analyzerStatus ? { concatenateModules: false } : {},
             minimize: true,
             minimizer: [
                 new terser_webpack_plugin_1.default({

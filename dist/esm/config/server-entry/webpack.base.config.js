@@ -40,7 +40,6 @@ export default () => merge(webpackConfig, {
     externals: (nodeExternals !== false ? [nodeExtrnals()] : []).concat(`${outputPath}/assets.json`),
     module: {
         rules: [
-            jsRules.babel(),
             jsRules.ts({
                 happyPackMode: true,
                 transpileOnly: !isDevelopment,

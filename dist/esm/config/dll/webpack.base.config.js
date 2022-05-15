@@ -26,6 +26,7 @@ const cssRules = cssLoader({}, true);
 const fileResource = assetResource();
 export default (entryKey) => merge(webpackConfig, {
     target: 'web',
+    context: root,
     entry: { [entryKey]: originEntry[entryKey] },
     output: {
         path: outputPath,
@@ -46,9 +47,7 @@ export default (entryKey) => merge(webpackConfig, {
                 configFile: tsConfig,
             }),
             cssRules.css(),
-            cssRules.less({
-                javascriptEnabled: true,
-            }),
+            cssRules.less({ javascriptEnabled: true }),
             cssRules.sass(),
             fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
             fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
