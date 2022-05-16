@@ -32,6 +32,7 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
         chunkFilename: `check/[name].js`,
         filename: `[name].js`,
         libraryTarget: 'commonjs',
+        asyncChunks: false
     },
     resolve: {
         symlinks: true,

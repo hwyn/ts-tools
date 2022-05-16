@@ -45,6 +45,6 @@ export default () => merge(webpackConfig, {
     node: {
         global: false,
         __filename: false,
-        __dirname: false,
+        __dirname: false
     },
 }, getMergeConfig(builder, jsRules));

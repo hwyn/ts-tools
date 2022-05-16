@@ -48,6 +48,6 @@ exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
     node: {
         global: false,
         __filename: false,
-        __dirname: false,
+        __dirname: false
     },
 }, (0, webpack_config_1.getMergeConfig)(builder, jsRules));
