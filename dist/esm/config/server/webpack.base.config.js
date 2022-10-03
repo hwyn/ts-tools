@@ -5,8 +5,9 @@ import { jsLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 const jsRules = jsLoader({ options: babellrc });
-const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, nodeExternals, tsConfig, builder } = platformConfig(PlatformEnum.server);
+const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, nodeExternals, tsConfig, builder, analyzerStatus } = platformConfig(PlatformEnum.server);
 export default () => merge(webpackConfig, {
     target: 'node',
     context: root,
@@ -41,6 +42,13 @@ export default () => merge(webpackConfig, {
             allowAsyncCycles: false,
             cwd: root
         }),
+        ...analyzerStatus ? [
+            new BundleAnalyzerPlugin({
+                analyzerMode: 'disabled',
+                generateStatsFile: true,
+                statsFilename: 'client/stats/server-stats.json'
+            })
+        ] : [],
     ],
     node: {
         global: false,

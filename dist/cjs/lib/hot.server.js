@@ -4,7 +4,6 @@ exports.hotServer = void 0;
 const tslib_1 = require("tslib");
 const vm_1 = tslib_1.__importDefault(require("vm"));
 const webpack_1 = tslib_1.__importDefault(require("webpack"));
-const webpack_dev_middleware_1 = tslib_1.__importDefault(require("webpack-dev-middleware"));
 const compilation_1 = require("./compilation");
 const path_1 = tslib_1.__importDefault(require("path"));
 const config_1 = require("../config");
@@ -18,7 +17,6 @@ const hotServer = async () => {
     const hotVmContext = (0, lodash_1.isFunction)(contextSync) ? contextSync(serverPlatform) : contextSync;
     const serverConfig = (0, config_1.webpackDevServer)();
     const multiCompiler = (0, webpack_1.default)(serverConfig);
-    (0, webpack_dev_middleware_1.default)(multiCompiler, {});
     const promise = new Promise((resolve, reject) => {
         const interval = setInterval(() => {
             if (vmContext && vmContext.global.hotHttpHost) {
@@ -46,6 +44,7 @@ const hotServer = async () => {
             }
         });
     });
+    multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
     await (0, compilation_1.createCompilationPromise)('server', multiCompiler, serverConfig);
     return promise;
 };

@@ -1,6 +1,5 @@
 import vm from 'vm';
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
 import { createCompilationPromise } from './compilation';
 import path from 'path';
 import { platformConfig, webpackDevServer } from '../config';
@@ -14,7 +13,6 @@ export const hotServer = async () => {
     const hotVmContext = isFunction(contextSync) ? contextSync(serverPlatform) : contextSync;
     const serverConfig = webpackDevServer();
     const multiCompiler = webpack(serverConfig);
-    webpackDevMiddleware(multiCompiler, {});
     const promise = new Promise((resolve, reject) => {
         const interval = setInterval(() => {
             if (vmContext && vmContext.global.hotHttpHost) {
@@ -42,6 +40,7 @@ export const hotServer = async () => {
             }
         });
     });
+    multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
     await createCompilationPromise('server', multiCompiler, serverConfig);
     return promise;
 };
