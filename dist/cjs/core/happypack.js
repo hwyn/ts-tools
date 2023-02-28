@@ -57,6 +57,7 @@ class HappyPackUtil {
     }
 }
 const happypackMerge = (config, options) => {
+    return config;
     const happyPackConfig = config.module.rules.reduce((o, rule, index) => {
         const happyPackUtil = new HappyPackUtil(index, rule, options);
         happyPackUtil.addRulePulugins(o.module.rules, o.plugins);
