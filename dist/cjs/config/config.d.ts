@@ -23,6 +23,7 @@ interface buildOptions {
     tsConfig?: string;
 }
 interface Configurations {
+    proxy?: string;
     browserTarget?: [];
     publicPath?: string;
     manifestDll?: string[];
