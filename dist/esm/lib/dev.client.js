@@ -6,6 +6,7 @@ import { createCompilationPromise } from './compilation';
 import { webpackDevClient, existenceClient, existenceServer, project } from '../config';
 const { architect: { build: { platform } } } = project;
 const { outputPath } = platform.client || {};
+const { configurations } = platform.server || {};
 export default async (app) => {
     if (!existenceClient) {
         return Promise.resolve();
@@ -18,7 +19,7 @@ export default async (app) => {
         publicPath: client.output.publicPath.toString(),
     }));
     app.use(webpackHotMiddleware(multiCompiler, { log: false }));
-    if (!existenceServer) {
+    if (!existenceServer && configurations.proxy) {
         app.use(async (request, response) => {
             response.sendStatus(404);
         });
