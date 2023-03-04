@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import { platformConfig } from '../config';
 import { existenceClient } from '../config';
 const { entry, watchFile, root, tsConfig } = platformConfig('server');
-const [entryFile] = entry.server;
+const [entryFile] = entry?.server || [];
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -70,7 +70,8 @@ function startServer() {
 }
 async function runNodemon() {
     let nodemonExa;
-    const watch = chokidar.watch(Array.isArray(watchFile) ? watchFile : [watchFile], {});
+    const watchArray = watchFile && (Array.isArray(watchFile) ? watchFile : [watchFile]) || [];
+    const watch = chokidar.watch(watchArray, {});
     const finallServer = () => startServer().then((exa) => exa && (nodemonExa = exa)).catch((exa) => exa && (nodemonExa = exa));
     const watchClose = () => watch.close();
     try {

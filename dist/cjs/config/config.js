@@ -79,7 +79,7 @@ class ProjectConfig {
         this.config.analyzerStatus = this.analyzerStatus;
         this.outputRootResolve = resolve(this.rootResolve(outputRoot));
         this.sourceRootResolve = resolve(this.rootResolve(sourceRoot));
-        architect.build = this.parseBuild(sourceRoot, { platform: architect.platform }, architect.additional);
+        architect.build = this.parseBuild({ platform: architect.platform }, architect.additional);
     }
     getPlatformConfig(platformKey, platform, additional = {}) {
         const notDevelopmentCommand = this.isDevelopment && this.environmental !== 'development';
@@ -87,7 +87,7 @@ class ProjectConfig {
         const developmentEnvironmental = notDevelopmentCommand ? platform[platformKey]['development'] : {};
         return (0, lodash_1.merge)(additionalConfig, platform[platformKey]['build'], developmentEnvironmental, platform[platformKey][this.environmental]);
     }
-    parseBuild(sourceRoot, build, additional = {}) {
+    parseBuild(build, additional = {}) {
         const { platform } = build;
         build.platform = Object.keys(platform).reduce((obj, p) => {
             const current = this.getPlatformConfig(p, platform, additional);

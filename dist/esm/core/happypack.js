@@ -1,5 +1,4 @@
 import HappyPack from 'happypack';
-import merge from 'webpack-merge';
 import os from 'os';
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
 class HappyPackUtil {
@@ -54,11 +53,11 @@ class HappyPackUtil {
 }
 export const happypackMerge = (config, options) => {
     return config;
-    const happyPackConfig = config.module.rules.reduce((o, rule, index) => {
-        const happyPackUtil = new HappyPackUtil(index, rule, options);
-        happyPackUtil.addRulePulugins(o.module.rules, o.plugins);
-        return o;
-    }, { module: { rules: [] }, plugins: [] });
-    delete config.module.rules;
-    return merge(config, happyPackConfig);
+    // const happyPackConfig: any = config.module.rules.reduce((o: any, rule: any, index: number) => {
+    //   const happyPackUtil = new HappyPackUtil(index, rule, options);
+    //   happyPackUtil.addRulePulugins(o.module.rules, o.plugins);
+    //   return o;
+    // }, { module: { rules: [] }, plugins: [] });
+    // delete config.module.rules;
+    // return merge(config, happyPackConfig);
 };

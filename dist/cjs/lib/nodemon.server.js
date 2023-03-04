@@ -7,7 +7,7 @@ const child_process_1 = require("child_process");
 const config_1 = require("../config");
 const config_2 = require("../config");
 const { entry, watchFile, root, tsConfig } = (0, config_1.platformConfig)('server');
-const [entryFile] = entry.server;
+const [entryFile] = entry?.server || [];
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -73,7 +73,8 @@ function startServer() {
 }
 async function runNodemon() {
     let nodemonExa;
-    const watch = chokidar_1.default.watch(Array.isArray(watchFile) ? watchFile : [watchFile], {});
+    const watchArray = watchFile && (Array.isArray(watchFile) ? watchFile : [watchFile]) || [];
+    const watch = chokidar_1.default.watch(watchArray, {});
     const finallServer = () => startServer().then((exa) => exa && (nodemonExa = exa)).catch((exa) => exa && (nodemonExa = exa));
     const watchClose = () => watch.close();
     try {

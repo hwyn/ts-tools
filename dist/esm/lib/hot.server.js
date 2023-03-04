@@ -6,11 +6,11 @@ import { platformConfig, webpackDevServer } from '../config';
 import { requireSync } from '../core/fs';
 import { isFunction, merge } from 'lodash';
 const serverPlatform = platformConfig('server');
-const { hotContext, outputPath } = serverPlatform;
+const { hotContext = '', outputPath } = serverPlatform;
 export const hotServer = async () => {
     let vmContext;
     const contextSync = requireSync(hotContext);
-    const hotVmContext = isFunction(contextSync) ? contextSync(serverPlatform) : contextSync;
+    const hotVmContext = isFunction(contextSync) ? contextSync(serverPlatform) : contextSync || {};
     const serverConfig = webpackDevServer();
     const multiCompiler = webpack(serverConfig);
     const promise = new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export const hotServer = async () => {
             try {
                 if (!stats.hasErrors()) {
                     multiCompiler.outputFileSystem.readFile(path.join(outputPath, 'server.js'), (error, code) => {
-                        const context = merge(hotVmContext || {}, { ...global, require, process, console, global, Buffer });
+                        const context = merge(hotVmContext, { ...global, require, process, console, global, Buffer });
                         vmContext = vm.createContext(context);
                         vm.runInContext(code.toString('utf-8'), vmContext);
                     });

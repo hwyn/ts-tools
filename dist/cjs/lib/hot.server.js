@@ -10,11 +10,11 @@ const config_1 = require("../config");
 const fs_1 = require("../core/fs");
 const lodash_1 = require("lodash");
 const serverPlatform = (0, config_1.platformConfig)('server');
-const { hotContext, outputPath } = serverPlatform;
+const { hotContext = '', outputPath } = serverPlatform;
 const hotServer = async () => {
     let vmContext;
     const contextSync = (0, fs_1.requireSync)(hotContext);
-    const hotVmContext = (0, lodash_1.isFunction)(contextSync) ? contextSync(serverPlatform) : contextSync;
+    const hotVmContext = (0, lodash_1.isFunction)(contextSync) ? contextSync(serverPlatform) : contextSync || {};
     const serverConfig = (0, config_1.webpackDevServer)();
     const multiCompiler = (0, webpack_1.default)(serverConfig);
     const promise = new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ const hotServer = async () => {
             try {
                 if (!stats.hasErrors()) {
                     multiCompiler.outputFileSystem.readFile(path_1.default.join(outputPath, 'server.js'), (error, code) => {
-                        const context = (0, lodash_1.merge)(hotVmContext || {}, { ...global, require, process, console, global, Buffer });
+                        const context = (0, lodash_1.merge)(hotVmContext, { ...global, require, process, console, global, Buffer });
                         vmContext = vm_1.default.createContext(context);
                         vm_1.default.runInContext(code.toString('utf-8'), vmContext);
                     });
