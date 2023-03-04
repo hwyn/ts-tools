@@ -34,6 +34,7 @@ interface Configurations {
     };
     nodeExternals?: boolean;
     sourceMap?: boolean;
+    isNodemon?: boolean;
     watchFile?: string[];
     hotContext?: string;
     styleLoaderOptions?: any;
@@ -56,6 +57,7 @@ interface Project {
     root: string;
     sourceRoot: string;
     outputRoot: string;
+    packagePath: string;
     nodeModules: string;
     isDevelopment: boolean;
     analyzerStatus: boolean;

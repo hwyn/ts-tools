@@ -12,9 +12,9 @@ const cleanDir = async (path, options) => new Promise((resolve, reject) => {
     if (!(0, fs_1.existsSync)(path)) {
         return resolve(null);
     }
-    (0, rimraf_1.default)(path, { glob: options, }, (err) => {
-        if (err) {
-            return reject(err);
+    (0, rimraf_1.default)(path, { glob: options, }).then((success) => {
+        if (!success) {
+            return reject(`clear dir error: ${path}`);
         }
         resolve(null);
     });

@@ -4,12 +4,13 @@ const tslib_1 = require("tslib");
 const express_1 = tslib_1.__importDefault(require("express"));
 const config_1 = require("../config");
 const hot_server_1 = require("./hot.server");
-const { architect: { build: { platform } } } = config_1.project;
-const { outputPath } = platform.server || {};
+const nodemon_server_1 = tslib_1.__importDefault(require("./nodemon.server"));
+const { architect: { build: { platform } = {} } } = config_1.project;
+const { outputPath, configurations } = platform?.server || {};
 exports.default = async (app) => {
     if (!config_1.existenceServer) {
-        return Promise.resolve(null);
+        return Promise.resolve('');
     }
-    app.use(express_1.default.static(outputPath));
-    return await (0, hot_server_1.hotServer)(); // await nodemon();
+    outputPath && app.use(express_1.default.static(outputPath));
+    return configurations?.isNodemon ? await (0, nodemon_server_1.default)() : await (0, hot_server_1.hotServer)();
 };

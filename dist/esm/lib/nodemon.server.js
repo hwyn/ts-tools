@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 import { platformConfig } from '../config';
 import { existenceClient } from '../config';
 const { entry, watchFile, root, tsConfig } = platformConfig('server');
-const entryFile = entry;
+const [entryFile] = entry.server;
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -24,7 +24,7 @@ const getSpawnArgs = () => {
     const spawnArgs = [];
     let spawnFlags = [];
     const spawnOptions = {
-        env: { ...process.env, PATH: `${root}/node_modules/.bin:${process.env.PATH}` }
+        env: { NODE_ENV: 'development', ...process.env, PATH: `${root}/node_modules/.bin:${process.env.PATH}` }
     };
     if (platform === 'win32') {
         spawnArgs.push(process.env.ComSpec || 'cmd.exe');

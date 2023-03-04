@@ -31,7 +31,7 @@ const hotServer = async () => {
             try {
                 if (!stats.hasErrors()) {
                     multiCompiler.outputFileSystem.readFile(path_1.default.join(outputPath, 'server.js'), (error, code) => {
-                        const context = (0, lodash_1.merge)(hotVmContext, { ...global, require, process, console, global, Buffer });
+                        const context = (0, lodash_1.merge)(hotVmContext || {}, { ...global, require, process, console, global, Buffer });
                         vmContext = vm_1.default.createContext(context);
                         vm_1.default.runInContext(code.toString('utf-8'), vmContext);
                     });

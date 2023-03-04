@@ -29,6 +29,7 @@ const defaultProject = {
     root: '.',
     sourceRoot: 'src',
     outputRoot: 'dist',
+    packagePath: baseResolve('package.json'),
     nodeModules: baseResolve('node_modules'),
     isDevelopment: false,
     analyzerStatus: false,
@@ -89,7 +90,7 @@ class ProjectConfig {
             current.configurations = merge({}, current.configurations);
             const { options: pOptions, configurations: pConfigurations, builder, outputPath } = current;
             const { entry, styles, index, assets, tsConfig, themeVariable } = pOptions;
-            const { watchFile, manifestDll, resolveAlias, hotContext } = current.configurations;
+            const { watchFile, manifestDll, resolveAlias, hotContext } = pConfigurations;
             !!builder && (current.builder = this.rootResolve(current.builder));
             !!index && (pOptions.index = this.sourceRootResolve(index));
             !!tsConfig && (pOptions.tsConfig = this.rootResolve(tsConfig));
@@ -101,7 +102,7 @@ class ProjectConfig {
             pOptions.assets = toArray(assets).map((f) => toArray(f).map((_f) => this.sourceRootResolve(_f)));
             pOptions.styles = toArray(styles).map((f) => this.sourceRootResolve(f));
             !!hotContext && (pConfigurations.hotContext = this.rootResolve(hotContext));
-            pConfigurations.watchFile = toArray(watchFile).map((f) => this.sourceRootResolve(f));
+            !!watchFile && (pConfigurations.watchFile = toArray(watchFile).map((f) => this.sourceRootResolve(f)));
             return { ...obj, [p]: current };
         }, {});
         return build;
@@ -149,7 +150,7 @@ class ProjectConfig {
         return this._project && this._project.config || {};
     }
     static existencePlatform(platform) {
-        const { architect: { build: { platform: platformMap } = {} } } = this.project;
+        const { architect: { build: { platform: platformMap = {} } = {} } } = this.project;
         const platformConfig = platformMap[platform];
         if (isEmpty(platformConfig)) {
             return false;
@@ -184,8 +185,8 @@ export const existenceServerEntry = ProjectConfig.existenceServerEntry;
 export const babellrc = ProjectConfig.babellrc;
 export const platformConfig = (key) => {
     const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = project;
-    const { architect: { build: { platform } } } = project;
-    const { options, configurations, builder, outputPath = '' } = platform[key] || {};
+    const { architect: { build: { platform = {} } = {} } } = project;
+    const { options, configurations, builder, outputPath = '' } = key && platform[key] || {};
     const { index, entry, styles, assets, sourceMap, tsConfig, themeVariable } = options || {};
     const { nodeExternals, browserTarget, watchFile, hotContext, publicPath = '/', externals, manifestDll, resolveAlias, styleLoaderOptions, sourceMap: hasSourceMap } = configurations || {};
     return {

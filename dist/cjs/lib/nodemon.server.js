@@ -7,7 +7,7 @@ const child_process_1 = require("child_process");
 const config_1 = require("../config");
 const config_2 = require("../config");
 const { entry, watchFile, root, tsConfig } = (0, config_1.platformConfig)('server');
-const entryFile = entry;
+const [entryFile] = entry.server;
 let host = `localhost:${process.env.PORT || 3000}`;
 let clearNodemon = () => Promise.resolve();
 const delay = (timer, callback) => {
@@ -27,7 +27,7 @@ const getSpawnArgs = () => {
     const spawnArgs = [];
     let spawnFlags = [];
     const spawnOptions = {
-        env: { ...process.env, PATH: `${root}/node_modules/.bin:${process.env.PATH}` }
+        env: { NODE_ENV: 'development', ...process.env, PATH: `${root}/node_modules/.bin:${process.env.PATH}` }
     };
     if (platform === 'win32') {
         spawnArgs.push(process.env.ComSpec || 'cmd.exe');

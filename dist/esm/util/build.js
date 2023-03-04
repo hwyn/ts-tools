@@ -3,7 +3,9 @@ import { writeFile, requireSync } from '../core/fs';
 import clean from './clean';
 import bundle from './bundle';
 import run from './run';
-const pkg = requireSync(`${project.root}/package.json`);
+import fs from 'fs';
+const defaultPath = `${project.packagePath}/package.json`;
+const pkg = requireSync(fs.existsSync(defaultPath) ? defaultPath : project.packagePath);
 export default ((pkg, buildDir) => async () => {
     await run(clean);
     await run(bundle);
