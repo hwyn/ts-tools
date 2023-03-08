@@ -23,49 +23,52 @@ const cssRules = (0, util_1.cssLoader)({
         }
     }
 }, !isDevelopment);
-exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
-    target: 'node',
-    context: root,
-    entry,
-    output: {
-        path: outputPath,
-        chunkFilename: `check/[name].js`,
-        filename: `[name].js`,
-        libraryTarget: 'commonjs',
-        asyncChunks: false
-    },
-    resolve: {
-        symlinks: true,
-        alias: resolveAlias,
-        modules: [nodeModules, sourceRoot],
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-        plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: serverTsConfig || tsConfig })] : []
-    },
-    externals: (nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : []).concat(`${outputPath}/assets.json`),
-    module: {
-        rules: [
-            jsRules.ts({
-                happyPackMode: true,
-                transpileOnly: !isDevelopment,
-                context: root,
-                configFile: tsConfig,
-                exclude: nodeModules
-            }),
-            cssRules.sass({}, false)
-        ]
-    },
-    plugins: [
-        new webpack_1.ProgressPlugin(),
-        new circular_dependency_plugin_1.default({
-            exclude: /node_modules/,
-            failOnError: true,
-            allowAsyncCycles: false,
-            cwd: root
-        })
-    ],
-    node: {
-        global: false,
-        __filename: false,
-        __dirname: false,
-    },
-}, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules));
+exports.default = () => {
+    const config = (0, webpack_merge_1.default)(webpack_config_1.default, {
+        target: 'node',
+        context: root,
+        entry,
+        output: {
+            path: outputPath,
+            chunkFilename: `check/[name].js`,
+            filename: `[name].js`,
+            libraryTarget: 'commonjs',
+            asyncChunks: false
+        },
+        resolve: {
+            symlinks: true,
+            alias: resolveAlias,
+            modules: [nodeModules, sourceRoot],
+            extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+            plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: serverTsConfig || tsConfig })] : []
+        },
+        externals: (nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : []).concat(`${outputPath}/assets.json`),
+        module: {
+            rules: [
+                jsRules.ts({
+                    happyPackMode: true,
+                    transpileOnly: !isDevelopment,
+                    context: root,
+                    configFile: tsConfig,
+                    exclude: nodeModules
+                }),
+                cssRules.sass({}, false)
+            ]
+        },
+        plugins: [
+            new webpack_1.ProgressPlugin(),
+            new circular_dependency_plugin_1.default({
+                exclude: /node_modules/,
+                failOnError: true,
+                allowAsyncCycles: false,
+                cwd: root
+            })
+        ],
+        node: {
+            global: false,
+            __filename: false,
+            __dirname: false,
+        },
+    });
+    return (0, webpack_merge_1.default)(config, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules, config));
+};

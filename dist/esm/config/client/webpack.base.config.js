@@ -37,89 +37,92 @@ const jsRules = jsLoader({
 const fileResource = assetResource();
 const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
 const manifestDll = originManifestDll ? originManifestDll : existsSync(defaultMainfestPath) ? [defaultMainfestPath] : [];
-export default () => merge(webpackConfig, {
-    target: 'web',
-    context: root,
-    entry: {
-        ...entry,
-        ...(!isEmpty(styles) && { styles } || {}),
-    },
-    output: {
-        publicPath,
-        path: outputPath,
-        chunkFilename: `javascript/[name].[chunkhash:8].js`,
-        filename: `javascript/[name].[contenthash:8].js`
-    },
-    externals,
-    resolve: {
-        symlinks: true,
-        alias: resolveAlias,
-        modules: [nodeModules, sourceRoot],
-        extensions: ['.ts', '.tsx', '.mjs', '.js'],
-        plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: serverTsConfig || tsConfig })] : []
-    },
-    module: {
-        rules: [
-            jsRules.ts({
-                happyPackMode: true,
-                transpileOnly: !isDevelopment,
-                configFile: tsConfig,
-                exclude: nodeModules,
-                context: root
+export default () => {
+    const config = merge(webpackConfig, {
+        target: 'web',
+        context: root,
+        entry: {
+            ...entry,
+            ...(!isEmpty(styles) && { styles } || {}),
+        },
+        output: {
+            publicPath,
+            path: outputPath,
+            chunkFilename: `javascript/[name].[chunkhash:8].js`,
+            filename: `javascript/[name].[contenthash:8].js`
+        },
+        externals,
+        resolve: {
+            symlinks: true,
+            alias: resolveAlias,
+            modules: [nodeModules, sourceRoot],
+            extensions: ['.ts', '.tsx', '.mjs', '.js'],
+            plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: serverTsConfig || tsConfig })] : []
+        },
+        module: {
+            rules: [
+                jsRules.ts({
+                    happyPackMode: true,
+                    transpileOnly: !isDevelopment,
+                    configFile: tsConfig,
+                    exclude: nodeModules,
+                    context: root
+                }),
+                cssRules.sass(),
+                fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
+                fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
+            ],
+        },
+        plugins: [
+            new ProgressPlugin(),
+            ...copyPlugin(assets, outputPath, sourceRoot),
+            new CircularDependencyPlugin({
+                exclude: /node_modules/,
+                failOnError: true,
+                allowAsyncCycles: false,
+                cwd: root
             }),
-            cssRules.sass(),
-            fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
-            fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
-        ],
-    },
-    plugins: [
-        new ProgressPlugin(),
-        ...copyPlugin(assets, outputPath, sourceRoot),
-        new CircularDependencyPlugin({
-            exclude: /node_modules/,
-            failOnError: true,
-            allowAsyncCycles: false,
-            cwd: root
-        }),
-        new WebpackAssetsManifest({
-            output: `${outputPath}/static/assets.json`,
-            writeToDisk: true,
-            publicPath: true,
-            entrypoints: true,
-            transform: (assets) => {
-                const { entrypoints } = assets;
-                const assetsKeys = Object.keys(assets);
-                const entrypointsKeys = Object.keys(entrypoints);
-                const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
-                assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
-                ;
-                return assetsObject;
-            },
-            customize: ({ key, value }) => {
-                if (key.toLowerCase().endsWith('.map'))
-                    return false;
-                return { key, value };
-            }
-        }),
-        ...analyzerStatus ? [
-            new BundleAnalyzerPlugin({
-                analyzerMode: 'disabled',
-                generateStatsFile: true,
-                statsFilename: 'stats/stats.json'
-            })
-        ] : [],
-        ...manifestDll.map((manifest) => new DllReferencePlugin({ context: root, manifest: require(manifest) })),
-        ...index ? [new HtmlWebpackPlugin({
-                template: index,
-                minify: {
-                    collapseWhitespace: true,
-                    keepClosingSlash: true,
-                    removeComments: false,
-                    removeRedundantAttributes: true,
-                    removeScriptTypeAttributes: true,
-                    removeStyleLinkTypeAttributes: true,
-                    useShortDoctype: true
+            new WebpackAssetsManifest({
+                output: `${outputPath}/static/assets.json`,
+                writeToDisk: true,
+                publicPath: true,
+                entrypoints: true,
+                transform: (assets) => {
+                    const { entrypoints } = assets;
+                    const assetsKeys = Object.keys(assets);
+                    const entrypointsKeys = Object.keys(entrypoints);
+                    const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
+                    assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
+                    ;
+                    return assetsObject;
+                },
+                customize: ({ key, value }) => {
+                    if (key.toLowerCase().endsWith('.map'))
+                        return false;
+                    return { key, value };
                 }
-            })] : []
-    ],
-}, getMergeConfig(builder, jsRules, cssRules));
+            }),
+            ...analyzerStatus ? [
+                new BundleAnalyzerPlugin({
+                    analyzerMode: 'disabled',
+                    generateStatsFile: true,
+                    statsFilename: 'stats/stats.json'
+                })
+            ] : [],
+            ...manifestDll.map((manifest) => new DllReferencePlugin({ context: root, manifest: require(manifest) })),
+            ...index ? [new HtmlWebpackPlugin({
+                    template: index,
+                    minify: {
+                        collapseWhitespace: true,
+                        keepClosingSlash: true,
+                        removeComments: false,
+                        removeRedundantAttributes: true,
+                        removeScriptTypeAttributes: true,
+                        removeStyleLinkTypeAttributes: true,
+                        useShortDoctype: true
+                    }
+                })] : []
+        ],
+    });
+    return merge(config, getMergeConfig(builder, jsRules, cssRules, config));
+};

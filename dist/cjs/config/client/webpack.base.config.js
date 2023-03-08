@@ -40,89 +40,92 @@ const jsRules = (0, util_1.jsLoader)({
 const fileResource = (0, util_1.assetResource)();
 const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
 const manifestDll = originManifestDll ? originManifestDll : (0, fs_1.existsSync)(defaultMainfestPath) ? [defaultMainfestPath] : [];
-exports.default = () => (0, webpack_merge_1.default)(webpack_config_1.default, {
-    target: 'web',
-    context: root,
-    entry: {
-        ...entry,
-        ...(!(0, lodash_1.isEmpty)(styles) && { styles } || {}),
-    },
-    output: {
-        publicPath,
-        path: outputPath,
-        chunkFilename: `javascript/[name].[chunkhash:8].js`,
-        filename: `javascript/[name].[contenthash:8].js`
-    },
-    externals,
-    resolve: {
-        symlinks: true,
-        alias: resolveAlias,
-        modules: [nodeModules, sourceRoot],
-        extensions: ['.ts', '.tsx', '.mjs', '.js'],
-        plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: serverTsConfig || tsConfig })] : []
-    },
-    module: {
-        rules: [
-            jsRules.ts({
-                happyPackMode: true,
-                transpileOnly: !isDevelopment,
-                configFile: tsConfig,
-                exclude: nodeModules,
-                context: root
+exports.default = () => {
+    const config = (0, webpack_merge_1.default)(webpack_config_1.default, {
+        target: 'web',
+        context: root,
+        entry: {
+            ...entry,
+            ...(!(0, lodash_1.isEmpty)(styles) && { styles } || {}),
+        },
+        output: {
+            publicPath,
+            path: outputPath,
+            chunkFilename: `javascript/[name].[chunkhash:8].js`,
+            filename: `javascript/[name].[contenthash:8].js`
+        },
+        externals,
+        resolve: {
+            symlinks: true,
+            alias: resolveAlias,
+            modules: [nodeModules, sourceRoot],
+            extensions: ['.ts', '.tsx', '.mjs', '.js'],
+            plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: serverTsConfig || tsConfig })] : []
+        },
+        module: {
+            rules: [
+                jsRules.ts({
+                    happyPackMode: true,
+                    transpileOnly: !isDevelopment,
+                    configFile: tsConfig,
+                    exclude: nodeModules,
+                    context: root
+                }),
+                cssRules.sass(),
+                fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
+                fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
+            ],
+        },
+        plugins: [
+            new webpack_1.ProgressPlugin(),
+            ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
+            new circular_dependency_plugin_1.default({
+                exclude: /node_modules/,
+                failOnError: true,
+                allowAsyncCycles: false,
+                cwd: root
             }),
-            cssRules.sass(),
-            fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
-            fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
-        ],
-    },
-    plugins: [
-        new webpack_1.ProgressPlugin(),
-        ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
-        new circular_dependency_plugin_1.default({
-            exclude: /node_modules/,
-            failOnError: true,
-            allowAsyncCycles: false,
-            cwd: root
-        }),
-        new webpack_assets_manifest_1.default({
-            output: `${outputPath}/static/assets.json`,
-            writeToDisk: true,
-            publicPath: true,
-            entrypoints: true,
-            transform: (assets) => {
-                const { entrypoints } = assets;
-                const assetsKeys = Object.keys(assets);
-                const entrypointsKeys = Object.keys(entrypoints);
-                const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
-                assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
-                ;
-                return assetsObject;
-            },
-            customize: ({ key, value }) => {
-                if (key.toLowerCase().endsWith('.map'))
-                    return false;
-                return { key, value };
-            }
-        }),
-        ...analyzerStatus ? [
-            new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
-                analyzerMode: 'disabled',
-                generateStatsFile: true,
-                statsFilename: 'stats/stats.json'
-            })
-        ] : [],
-        ...manifestDll.map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
-        ...index ? [new html_webpack_plugin_1.default({
-                template: index,
-                minify: {
-                    collapseWhitespace: true,
-                    keepClosingSlash: true,
-                    removeComments: false,
-                    removeRedundantAttributes: true,
-                    removeScriptTypeAttributes: true,
-                    removeStyleLinkTypeAttributes: true,
-                    useShortDoctype: true
+            new webpack_assets_manifest_1.default({
+                output: `${outputPath}/static/assets.json`,
+                writeToDisk: true,
+                publicPath: true,
+                entrypoints: true,
+                transform: (assets) => {
+                    const { entrypoints } = assets;
+                    const assetsKeys = Object.keys(assets);
+                    const entrypointsKeys = Object.keys(entrypoints);
+                    const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
+                    assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
+                    ;
+                    return assetsObject;
+                },
+                customize: ({ key, value }) => {
+                    if (key.toLowerCase().endsWith('.map'))
+                        return false;
+                    return { key, value };
                 }
-            })] : []
-    ],
-}, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules));
+            }),
+            ...analyzerStatus ? [
+                new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
+                    analyzerMode: 'disabled',
+                    generateStatsFile: true,
+                    statsFilename: 'stats/stats.json'
+                })
+            ] : [],
+            ...manifestDll.map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
+            ...index ? [new html_webpack_plugin_1.default({
+                    template: index,
+                    minify: {
+                        collapseWhitespace: true,
+                        keepClosingSlash: true,
+                        removeComments: false,
+                        removeRedundantAttributes: true,
+                        removeScriptTypeAttributes: true,
+                        removeStyleLinkTypeAttributes: true,
+                        useShortDoctype: true
+                    }
+                })] : []
+        ],
+    });
+    return (0, webpack_merge_1.default)(config, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules, config));
+};

@@ -27,63 +27,66 @@ const jsRules = (0, util_1.jsLoader)({
 });
 const cssRules = (0, util_1.cssLoader)({}, true);
 const fileResource = (0, util_1.assetResource)();
-exports.default = (entryKey) => (0, webpack_merge_1.default)(webpack_config_1.default, {
-    target: 'web',
-    context: root,
-    entry: { [entryKey]: originEntry[entryKey] },
-    output: {
-        path: outputPath,
-        filename: 'javascript/[name].dll.js',
-        chunkFilename: `javascript/[name].[chunkhash:8].js`,
-        library: "[name]_[fullhash:8]",
-    },
-    externals,
-    resolve: {
-        alias: resolveAlias,
-    },
-    module: {
-        rules: [
-            jsRules.babel(),
-            jsRules.ts({
-                transpileOnly: true,
-                context: root,
-                configFile: tsConfig,
+exports.default = (entryKey) => {
+    const config = (0, webpack_merge_1.default)(webpack_config_1.default, {
+        target: 'web',
+        context: root,
+        entry: { [entryKey]: originEntry[entryKey] },
+        output: {
+            path: outputPath,
+            filename: 'javascript/[name].dll.js',
+            chunkFilename: `javascript/[name].[chunkhash:8].js`,
+            library: "[name]_[fullhash:8]",
+        },
+        externals,
+        resolve: {
+            alias: resolveAlias,
+        },
+        module: {
+            rules: [
+                jsRules.babel(),
+                jsRules.ts({
+                    transpileOnly: true,
+                    context: root,
+                    configFile: tsConfig,
+                }),
+                cssRules.css(),
+                cssRules.less({ javascriptEnabled: true }),
+                cssRules.sass(),
+                fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
+                fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
+            ]
+        },
+        plugins: [
+            new webpack_2.ProgressPlugin(),
+            new mini_css_extract_plugin_1.default({
+                filename: 'styleSheet/[name].css',
+                chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
             }),
-            cssRules.css(),
-            cssRules.less({ javascriptEnabled: true }),
-            cssRules.sass(),
-            fileResource.image({ generator: { filename: 'images/[name][contenthash:4][ext]' } }),
-            fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
-        ]
-    },
-    plugins: [
-        new webpack_2.ProgressPlugin(),
-        new mini_css_extract_plugin_1.default({
-            filename: 'styleSheet/[name].css',
-            chunkFilename: 'styleSheet/[name].[chunkhash:8].css',
-        }),
-        new webpack_assets_manifest_1.default({
-            output: path_1.default.join(outputPath, `static/dll-${entryKey}.json`),
-            writeToDisk: true,
-            publicPath: true,
-            customize: ({ key, value }) => {
-                if (key.toLowerCase().endsWith('.map'))
-                    return false;
-                return { key, value };
-            }
-        }),
-        ...manifestDll.filter((filePath) => (0, fs_1.existsSync)(filePath)).map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
-        new webpack_1.default.DllPlugin({
-            context: root,
-            path: path_1.default.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),
-            name: "[name]_[fullhash:8]"
-        }),
-        ...analyzerStatus ? [
-            new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
-                analyzerMode: 'disabled',
-                generateStatsFile: true,
-                statsFilename: `stats/dll-${entryKey}-stats.json`
-            })
-        ] : [],
-    ],
-}, (0, webpack_config_1.getMergeConfig)(builder, jsRules));
+            new webpack_assets_manifest_1.default({
+                output: path_1.default.join(outputPath, `static/dll-${entryKey}.json`),
+                writeToDisk: true,
+                publicPath: true,
+                customize: ({ key, value }) => {
+                    if (key.toLowerCase().endsWith('.map'))
+                        return false;
+                    return { key, value };
+                }
+            }),
+            ...manifestDll.filter((filePath) => (0, fs_1.existsSync)(filePath)).map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
+            new webpack_1.default.DllPlugin({
+                context: root,
+                path: path_1.default.join(outputPath, `manifest/dll-${entryKey}-manifest.json`),
+                name: "[name]_[fullhash:8]"
+            }),
+            ...analyzerStatus ? [
+                new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
+                    analyzerMode: 'disabled',
+                    generateStatsFile: true,
+                    statsFilename: `stats/dll-${entryKey}-stats.json`
+                })
+            ] : [],
+        ],
+    });
+    return (0, webpack_merge_1.default)(config, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules, config));
+};

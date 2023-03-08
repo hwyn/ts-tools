@@ -9,9 +9,9 @@ const fs_2 = require("../../core/fs");
 const lodash_1 = require("lodash");
 const path_1 = tslib_1.__importDefault(require("path"));
 const { isDevelopment, sourceRoot } = (0, config_1.platformConfig)();
-const getMergeConfig = (filePath, jsRules, cssRules) => {
+const getMergeConfig = (filePath, jsRules, cssRules, config) => {
     const mergeClientConfig = (0, fs_2.requireSync)(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
+    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment, config);
 };
 exports.getMergeConfig = getMergeConfig;
 const filterAttr = (mergeConfig, filter) => {

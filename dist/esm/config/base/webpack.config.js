@@ -5,9 +5,9 @@ import { requireSync } from '../../core/fs';
 import { isEmpty } from 'lodash';
 import path from 'path';
 const { isDevelopment, sourceRoot } = platformConfig();
-export const getMergeConfig = (filePath, jsRules, cssRules) => {
+export const getMergeConfig = (filePath, jsRules, cssRules, config) => {
     const mergeClientConfig = requireSync(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment);
+    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment, config);
 };
 export const filterAttr = (mergeConfig, filter) => {
     const config = {};

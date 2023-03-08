@@ -46,6 +46,7 @@ function cssLoader(config, isExtract) {
     const publicOptions = !isExtract ? { sourceMap: true } : {};
     const { options, exclude, include, resources, styleLoaderOptions } = config;
     let preUse = !isExtract ? ['style-loader', { ...styleLoaderOptions }] : [mini_css_extract_plugin_1.default.loader];
+    const clone = (getConfig, _isExtract = isExtract) => cssLoader(getConfig ? getConfig(config) : config, _isExtract);
     const concatUse = factoryConcatUse([
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
         factoryUse('postcss-loader', Object.assign({
@@ -77,6 +78,7 @@ function cssLoader(config, isExtract) {
         sassLoader.push(['sass-resources-loader', { resources }]);
     }
     return {
+        clone,
         css: factory(/\.(css)$/),
         less: factory(/\.(less)$/, ['less-loader']),
         sass: factory(/\.(sass|scss)$/, sassLoader),
