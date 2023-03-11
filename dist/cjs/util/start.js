@@ -20,7 +20,7 @@ exports.default = async () => {
         config_1.existenceClient ? browser_sync_1.default.create().init({
             ui: false,
             middleware: app,
-            ...host ? { proxy: { target: host } } : {},
+            ...host ? { proxy: { target: host } } : { server: true },
         }, (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
     });
 };

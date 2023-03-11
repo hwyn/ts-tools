@@ -17,7 +17,7 @@ export default async () => {
         existenceClient ? browserSync.create().init({
             ui: false,
             middleware: app,
-            ...host ? { proxy: { target: host } } : {},
+            ...host ? { proxy: { target: host } } : { server: true },
         }, (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
     });
 };
