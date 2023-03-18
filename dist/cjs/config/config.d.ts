@@ -42,6 +42,7 @@ interface Configurations {
 }
 interface Platform {
     [key: string]: {
+        [key: string]: any;
         builder: string;
         outputPath: string;
         options: buildOptions;

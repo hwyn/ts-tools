@@ -8,7 +8,6 @@
     "emitDecoratorMetadata": true,  // 让TypeScript支持为带有装饰器的声明生成元数据
     "experimentalDecorators": true, // 是否启用实验性装饰器特性
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
