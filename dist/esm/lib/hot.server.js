@@ -27,6 +27,7 @@ export const hotServer = async () => {
             try {
                 if (!stats.hasErrors()) {
                     multiCompiler.outputFileSystem.readFile(path.join(outputPath, 'server.js'), (error, code) => {
+                        process.env.NODE_ENV = 'development';
                         const context = merge(hotVmContext, { ...global, require, process, console, global, Buffer });
                         vmContext = vm.createContext(context);
                         vm.runInContext(code.toString('utf-8'), vmContext);
