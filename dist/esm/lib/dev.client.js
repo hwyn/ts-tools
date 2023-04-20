@@ -19,7 +19,7 @@ export default async (app) => {
         publicPath: client.output.publicPath.toString(),
     }));
     app.use(webpackHotMiddleware(multiCompiler, { log: false }));
-    if (!existenceServer && configurations?.proxy) {
+    if (!existenceServer && !configurations?.proxy) {
         app.use(async (request, response) => {
             response.sendStatus(404);
         });
