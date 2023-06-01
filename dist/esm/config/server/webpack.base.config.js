@@ -7,7 +7,7 @@ import CircularDependencyPlugin from 'circular-dependency-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 const jsRules = jsLoader({ options: babellrc });
-const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, nodeExternals, tsConfig, builder, analyzerStatus } = platformConfig(PlatformEnum.server);
+const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, isDevelopment, nodeExternals, tsConfig, builder, analyzerStatus } = platformConfig(PlatformEnum.server);
 export default () => {
     const config = merge(webpackConfig, {
         target: 'node',
@@ -25,7 +25,7 @@ export default () => {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [nodeExtrnals()] : [],
+        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: (name) => /@fm\/.*/g.test(name) } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({

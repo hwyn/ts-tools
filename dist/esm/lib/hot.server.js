@@ -30,7 +30,7 @@ export const hotServer = async () => {
                         process.env.NODE_ENV = 'development';
                         const context = merge(hotVmContext, { ...global, require, process, console, global, Buffer });
                         vmContext = vm.createContext(context);
-                        vm.runInContext(code.toString('utf-8'), vmContext);
+                        vm.runInNewContext(code.toString('utf-8'), vmContext);
                     });
                 }
             }

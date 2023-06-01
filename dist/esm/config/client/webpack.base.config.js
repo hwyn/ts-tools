@@ -10,7 +10,7 @@ import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-const { presets, plugins, ...babellrcOthers } = babellrc;
+const { presets = [], plugins, ...babellrcOthers } = babellrc;
 const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = platformConfig(PlatformEnum.client);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = platformConfig(PlatformEnum.server);
@@ -27,8 +27,8 @@ const cssRules = cssLoader({
 const jsRules = jsLoader({
     options: {
         presets: [
-            ["@babel/preset-env", { targets: browserTarget }],
-            ...(presets || []).slice(1),
+            ['@babel/preset-env', { targets: browserTarget }],
+            ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env'),
         ],
         plugins: plugins || [],
         ...babellrcOthers

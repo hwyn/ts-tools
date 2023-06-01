@@ -44,11 +44,7 @@ export function cssLoader(config, isExtract) {
     const clone = (getConfig, _isExtract = isExtract) => cssLoader(getConfig ? getConfig(config) : config, _isExtract);
     const concatUse = factoryConcatUse([
         factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
-        factoryUse('postcss-loader', Object.assign({
-            postcssOptions: {
-            // plugins: [['postcss-preset-env', {}]]
-            }
-        }, publicOptions)),
+        factoryUse('postcss-loader', Object.assign({ postcssOptions: {} }, publicOptions)),
     ]);
     const factory = (regExp, loader, defaultOptions) => (mergeOption, preLoader) => {
         const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};

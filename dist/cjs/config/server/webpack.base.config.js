@@ -10,7 +10,7 @@ const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-d
 const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
 const jsRules = (0, util_1.jsLoader)({ options: config_1.babellrc });
-const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, nodeExternals, tsConfig, builder, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
+const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, isDevelopment, nodeExternals, tsConfig, builder, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
 exports.default = () => {
     const config = (0, webpack_merge_1.default)(webpack_config_1.default, {
         target: 'node',
@@ -28,7 +28,7 @@ exports.default = () => {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)()] : [],
+        externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)(isDevelopment ? { allowlist: (name) => /@fm\/.*/g.test(name) } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({

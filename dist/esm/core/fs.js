@@ -1,5 +1,4 @@
-import rimraf from 'rimraf';
-import { existsSync, mkdir as fsMkkdir, writeFile as fsWriteFile } from 'fs';
+import { rm, rmdir, existsSync, mkdir as fsMkdir, writeFile as fsWriteFile } from 'fs';
 export const exists = (path) => {
     return Promise.resolve(existsSync(path));
 };
@@ -7,8 +6,8 @@ export const cleanDir = async (path, options) => new Promise((resolve, reject) =
     if (!existsSync(path)) {
         return resolve(null);
     }
-    rimraf(path, { glob: options, }).then((success) => {
-        if (!success) {
+    (rm || rmdir)(path, { recursive: true }, (error) => {
+        if (error) {
             return reject(`clear dir error: ${path}`);
         }
         resolve(null);
@@ -16,7 +15,7 @@ export const cleanDir = async (path, options) => new Promise((resolve, reject) =
 });
 export const mkdir = async (path, options) => cleanDir(path).then(() => {
     return new Promise((resolve, reject) => {
-        fsMkkdir(path, Object.assign({ recursive: true }, options), (err) => {
+        fsMkdir(path, Object.assign({ recursive: true }, options), (err) => {
             if (err) {
                 return reject(err);
             }

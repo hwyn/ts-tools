@@ -13,7 +13,7 @@ const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-d
 const lodash_1 = require("lodash");
 const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
-const { presets, plugins, ...babellrcOthers } = config_1.babellrc;
+const { presets = [], plugins, ...babellrcOthers } = config_1.babellrc;
 const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
@@ -30,8 +30,8 @@ const cssRules = (0, util_1.cssLoader)({
 const jsRules = (0, util_1.jsLoader)({
     options: {
         presets: [
-            ["@babel/preset-env", { targets: browserTarget }],
-            ...(presets || []).slice(1),
+            ['@babel/preset-env', { targets: browserTarget }],
+            ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env'),
         ],
         plugins: plugins || [],
         ...babellrcOthers

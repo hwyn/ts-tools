@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireSync = exports.writeFile = exports.mkdir = exports.cleanDir = exports.exists = void 0;
-const tslib_1 = require("tslib");
-const rimraf_1 = tslib_1.__importDefault(require("rimraf"));
 const fs_1 = require("fs");
 const exists = (path) => {
     return Promise.resolve((0, fs_1.existsSync)(path));
@@ -12,8 +10,8 @@ const cleanDir = async (path, options) => new Promise((resolve, reject) => {
     if (!(0, fs_1.existsSync)(path)) {
         return resolve(null);
     }
-    (0, rimraf_1.default)(path, { glob: options, }).then((success) => {
-        if (!success) {
+    (fs_1.rm || fs_1.rmdir)(path, { recursive: true }, (error) => {
+        if (error) {
             return reject(`clear dir error: ${path}`);
         }
         resolve(null);

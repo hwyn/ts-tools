@@ -9,13 +9,13 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 import path from 'path';
 import { existsSync } from 'fs';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-const { presets, plugins } = babellrc;
+const { presets = [], plugins } = babellrc;
 const { root, resolveAlias, externals, manifestDll, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
 const jsRules = jsLoader({
     options: {
         presets: [
             ["@babel/preset-env", { "targets": browserTarget }],
-            ...(presets || []).slice(1),
+            ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env')
         ],
         plugins: [
             ...(plugins || []),

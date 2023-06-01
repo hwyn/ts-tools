@@ -8,7 +8,7 @@ const { sourceMap, hasSourceMap } = platformConfig(PlatformEnum.client);
 export default () => {
     const config = baseConfig();
     const { entry } = config;
-    const { output: { filename = '' } = {} } = config;
+    const { output: { filename = '', chunkFilename = '' } = {} } = config;
     delete config.entry;
     return happypackMerge(merge(config, {
         mode: 'development',
@@ -17,6 +17,7 @@ export default () => {
         }), {}),
         output: {
             filename: typeof filename === 'string' ? filename.replace('\.[contenthash:8]', '') : filename,
+            chunkFilename: typeof chunkFilename === 'string' ? chunkFilename.replace('\.[chunkhash:8]', '') : chunkFilename,
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),

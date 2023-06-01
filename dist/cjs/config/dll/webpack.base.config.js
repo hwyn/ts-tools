@@ -12,13 +12,13 @@ const config_1 = require("../config");
 const path_1 = tslib_1.__importDefault(require("path"));
 const fs_1 = require("fs");
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
-const { presets, plugins } = config_1.babellrc;
+const { presets = [], plugins } = config_1.babellrc;
 const { root, resolveAlias, externals, manifestDll, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
 const jsRules = (0, util_1.jsLoader)({
     options: {
         presets: [
             ["@babel/preset-env", { "targets": browserTarget }],
-            ...(presets || []).slice(1),
+            ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env')
         ],
         plugins: [
             ...(plugins || []),

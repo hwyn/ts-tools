@@ -34,7 +34,7 @@ const hotServer = async () => {
                         process.env.NODE_ENV = 'development';
                         const context = (0, lodash_1.merge)(hotVmContext, { ...global, require, process, console, global, Buffer });
                         vmContext = vm_1.default.createContext(context);
-                        vm_1.default.runInContext(code.toString('utf-8'), vmContext);
+                        vm_1.default.runInNewContext(code.toString('utf-8'), vmContext);
                     });
                 }
             }
