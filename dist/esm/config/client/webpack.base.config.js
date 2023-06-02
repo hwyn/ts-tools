@@ -6,7 +6,6 @@ import { existsSync } from 'fs';
 import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
 import { jsLoader, cssLoader, assetResource } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
-import CircularDependencyPlugin from 'circular-dependency-plugin';
 import { isEmpty } from 'lodash';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -76,12 +75,12 @@ export default () => {
         plugins: [
             new ProgressPlugin(),
             ...copyPlugin(assets, outputPath, sourceRoot),
-            new CircularDependencyPlugin({
-                exclude: /node_modules/,
-                failOnError: true,
-                allowAsyncCycles: false,
-                cwd: root
-            }),
+            // new CircularDependencyPlugin({
+            //   exclude: /node_modules/,
+            //   failOnError: true,
+            //   allowAsyncCycles: false,
+            //   cwd: root
+            // }),
             new WebpackAssetsManifest({
                 output: `${outputPath}/static/assets.json`,
                 writeToDisk: true,

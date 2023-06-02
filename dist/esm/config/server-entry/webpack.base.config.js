@@ -5,7 +5,6 @@ import webpackConfig, { getMergeConfig } from '../base/webpack.config';
 import { jsLoader, cssLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import CircularDependencyPlugin from 'circular-dependency-plugin';
 const { entry, nodeExternals, builder, tsConfig, root, isDevelopment, outputPath, themeVariable, resolveAlias, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = platformConfig(PlatformEnum.server);
@@ -54,12 +53,12 @@ export default () => {
         },
         plugins: [
             new ProgressPlugin(),
-            new CircularDependencyPlugin({
-                exclude: /node_modules/,
-                failOnError: true,
-                allowAsyncCycles: false,
-                cwd: root
-            })
+            // new CircularDependencyPlugin({
+            //   exclude: /node_modules/,
+            //   failOnError: true,
+            //   allowAsyncCycles: false,
+            //   cwd: root
+            // })
         ],
         node: {
             global: false,
