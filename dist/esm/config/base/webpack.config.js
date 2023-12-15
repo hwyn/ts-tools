@@ -36,15 +36,15 @@ export default {
     context: baseDir,
     stats: {
         colors: true,
-        hash: true,
-        timings: true,
-        chunks: true,
+        hash: true, // required by custom stat output
+        timings: true, // required by custom stat output
+        chunks: true, // required by custom stat output
         chunkModules: false,
         modules: false,
         reasons: false,
         warnings: true,
         errors: true,
-        assets: false,
+        assets: false, // required by custom stat output
         version: false,
         errorDetails: false,
         cachedAssets: false,
