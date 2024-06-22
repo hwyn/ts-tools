@@ -24,6 +24,7 @@ const hotServer = async () => {
                 clearInterval(interval);
             }
         }, 500);
+        process.on('unhandledRejection', (reason) => console.log(reason));
         multiCompiler.hooks.done.tap('hot-server', (stats) => {
             if (vmContext && vmContext.global.hotHttpServer) {
                 vmContext.global.hotHttpServer.close();

@@ -9,7 +9,6 @@ const fs_1 = require("fs");
 const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
 const util_1 = require("../../core/util");
 const config_1 = require("../config");
-const circular_dependency_plugin_1 = tslib_1.__importDefault(require("circular-dependency-plugin"));
 const lodash_1 = require("lodash");
 const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
 const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
@@ -79,12 +78,12 @@ exports.default = () => {
         plugins: [
             new webpack_1.ProgressPlugin(),
             ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
-            new circular_dependency_plugin_1.default({
-                exclude: /node_modules/,
-                failOnError: true,
-                allowAsyncCycles: false,
-                cwd: root
-            }),
+            // new CircularDependencyPlugin({
+            //   exclude: /node_modules/,
+            //   failOnError: true,
+            //   allowAsyncCycles: false,
+            //   cwd: root
+            // }),
             new webpack_assets_manifest_1.default({
                 output: `${outputPath}/static/assets.json`,
                 writeToDisk: true,

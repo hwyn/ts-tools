@@ -23,7 +23,7 @@ var PlatformEnum;
     PlatformEnum["server"] = "server";
     PlatformEnum["dll"] = "dll";
     PlatformEnum["serverEntry"] = "server-entry";
-})(PlatformEnum = exports.PlatformEnum || (exports.PlatformEnum = {}));
+})(PlatformEnum || (exports.PlatformEnum = PlatformEnum = {}));
 exports.platformDefaultEntry = {
     [PlatformEnum.client]: 'main',
     [PlatformEnum.server]: 'server',
