@@ -1,3 +1,4 @@
+import { __rest } from "tslib";
 import merge from 'webpack-merge';
 import { ProgressPlugin, DllReferencePlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -9,29 +10,21 @@ import { babellrc, platformConfig, PlatformEnum } from '../config';
 import { isEmpty } from 'lodash';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-const { presets = [], plugins, ...babellrcOthers } = babellrc;
+const { presets = [], plugins } = babellrc, babellrcOthers = __rest(babellrc, ["presets", "plugins"]);
 const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = platformConfig(PlatformEnum.client);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = platformConfig(PlatformEnum.server);
-const cssRules = cssLoader({
-    options: {
+const cssRules = cssLoader(Object.assign(Object.assign({ options: {
         modules: {
             localIdentName: isDevelopment ? `[local]--[hash:base64:4]` : `[contenthash:base64:5]`,
             mode: (resourcePath) => /node_modules/.test(resourcePath) ? 'global' : 'local'
         }
-    },
-    ...(themeVariable ? { resources: themeVariable } : {}),
-    styleLoaderOptions
-}, !isDevelopment);
+    } }, (themeVariable ? { resources: themeVariable } : {})), { styleLoaderOptions }), !isDevelopment);
 const jsRules = jsLoader({
-    options: {
-        presets: [
+    options: Object.assign({ presets: [
             ['@babel/preset-env', { targets: browserTarget }],
             ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env'),
-        ],
-        plugins: plugins || [],
-        ...babellrcOthers
-    }
+        ], plugins: plugins || [] }, babellrcOthers)
 });
 const fileResource = assetResource();
 const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
@@ -40,10 +33,7 @@ export default () => {
     const config = merge(webpackConfig, {
         target: 'web',
         context: root,
-        entry: {
-            ...entry,
-            ...(!isEmpty(styles) && { styles } || {}),
-        },
+        entry: Object.assign(Object.assign({}, entry), (!isEmpty(styles) && { styles } || {})),
         output: {
             publicPath,
             path: outputPath,
@@ -90,7 +80,7 @@ export default () => {
                     const { entrypoints } = assets;
                     const assetsKeys = Object.keys(assets);
                     const entrypointsKeys = Object.keys(entrypoints);
-                    const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
+                    const assetsObject = Object.keys(entrypoints).reduce((obj, key) => (Object.assign(Object.assign({}, obj), { [key]: Object.assign({}, entrypoints[key].assets) })), { chunk: { css: [] } });
                     assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
                     ;
                     return assetsObject;

@@ -1,3 +1,4 @@
+import { __awaiter } from "tslib";
 import express from 'express';
 import browserSync from 'browser-sync';
 import { existenceClient } from '../config';
@@ -7,17 +8,13 @@ import clientHotDev from '../lib/dev.client';
 import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
 const app = express();
-export default async () => {
-    await cleanDir();
-    await dllDev();
-    await clientHotDev(app);
-    await serverEntryHotDev();
-    const host = await serverHotDev(app);
+export default () => __awaiter(void 0, void 0, void 0, function* () {
+    yield cleanDir();
+    yield dllDev();
+    yield clientHotDev(app);
+    yield serverEntryHotDev();
+    const host = yield serverHotDev(app);
     return new Promise((resolve, reject) => {
-        existenceClient ? browserSync.create().init({
-            ui: false,
-            middleware: app,
-            ...host ? { proxy: { target: host } } : { server: true },
-        }, (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
+        existenceClient ? browserSync.create().init(Object.assign({ ui: false, middleware: app }, host ? { proxy: { target: host } } : { server: true }), (error, bs) => error ? reject(error) : resolve(bs)) : Promise.resolve();
     });
-};
+});

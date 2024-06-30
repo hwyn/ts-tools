@@ -1,22 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCompilationPromise = exports.format = void 0;
+exports.format = format;
+exports.createCompilationPromise = createCompilationPromise;
 function format(time) {
     return time.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
 }
-exports.format = format;
 function createCompilationPromise(name, compiler, config) {
-    return new Promise((resolve, reject) => {
-        let timeStart = new Date();
-        compiler.hooks.beforeCompile.tap(name, () => {
+    return new Promise(function (resolve, reject) {
+        var timeStart = new Date();
+        compiler.hooks.beforeCompile.tap(name, function () {
             timeStart = new Date();
-            console.info(`[${format(timeStart)}] Compiling '${name}'...`);
+            console.info("[".concat(format(timeStart), "] Compiling '").concat(name, "'..."));
         });
-        compiler.hooks.afterDone.tap(name, (stats) => {
-            const timeEnd = new Date();
-            const time = timeEnd.getTime() - timeStart.getTime();
+        compiler.hooks.afterDone.tap(name, function (stats) {
+            var timeEnd = new Date();
+            var time = timeEnd.getTime() - timeStart.getTime();
             if (stats.hasErrors()) {
-                console.info(`[${format(timeEnd)}] Failed to compile '${name}' after ${time} ms`);
+                console.info("[".concat(format(timeEnd), "] Failed to compile '").concat(name, "' after ").concat(time, " ms"));
                 reject(new Error('Compilation failed!'));
             }
             else {
@@ -26,4 +26,3 @@ function createCompilationPromise(name, compiler, config) {
         });
     });
 }
-exports.createCompilationPromise = createCompilationPromise;

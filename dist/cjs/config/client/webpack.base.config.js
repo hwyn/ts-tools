@@ -1,59 +1,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
-const webpack_1 = require("webpack");
-const html_webpack_plugin_1 = tslib_1.__importDefault(require("html-webpack-plugin"));
-const webpack_assets_manifest_1 = tslib_1.__importDefault(require("webpack-assets-manifest"));
-const fs_1 = require("fs");
-const webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
-const util_1 = require("../../core/util");
-const config_1 = require("../config");
-const lodash_1 = require("lodash");
-const tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
-const webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
-const { presets = [], plugins, ...babellrcOthers } = config_1.babellrc;
-const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
+var tslib_1 = require("tslib");
+var webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
+var webpack_1 = require("webpack");
+var html_webpack_plugin_1 = tslib_1.__importDefault(require("html-webpack-plugin"));
+var webpack_assets_manifest_1 = tslib_1.__importDefault(require("webpack-assets-manifest"));
+var fs_1 = require("fs");
+var webpack_config_1 = tslib_1.__importStar(require("../base/webpack.config"));
+var util_1 = require("../../core/util");
+var config_1 = require("../config");
+var lodash_1 = require("lodash");
+var tsconfig_paths_webpack_plugin_1 = tslib_1.__importDefault(require("tsconfig-paths-webpack-plugin"));
+var webpack_bundle_analyzer_1 = require("webpack-bundle-analyzer");
+var _a = config_1.babellrc.presets, presets = _a === void 0 ? [] : _a, plugins = config_1.babellrc.plugins, babellrcOthers = tslib_1.__rest(config_1.babellrc, ["presets", "plugins"]);
+var _b = (0, config_1.platformConfig)(config_1.PlatformEnum.client), root = _b.root, _c = _b.externals, externals = _c === void 0 ? {} : _c, resolveAlias = _b.resolveAlias, sourceRoot = _b.sourceRoot, nodeModules = _b.nodeModules, index = _b.index, entry = _b.entry, _d = _b.publicPath, publicPath = _d === void 0 ? '/' : _d, themeVariable = _b.themeVariable, styles = _b.styles, assets = _b.assets, outputPath = _b.outputPath, tsConfig = _b.tsConfig, isDevelopment = _b.isDevelopment, analyzerStatus = _b.analyzerStatus, builder = _b.builder, _e = _b.browserTarget, browserTarget = _e === void 0 ? [] : _e, originManifestDll = _b.manifestDll, styleLoaderOptions = _b.styleLoaderOptions;
 // tsconfig path 可以统一配置
-const { tsConfig: serverTsConfig = tsConfig } = (0, config_1.platformConfig)(config_1.PlatformEnum.server);
-const cssRules = (0, util_1.cssLoader)({
-    options: {
+var _f = (0, config_1.platformConfig)(config_1.PlatformEnum.server).tsConfig, serverTsConfig = _f === void 0 ? tsConfig : _f;
+var cssRules = (0, util_1.cssLoader)(tslib_1.__assign(tslib_1.__assign({ options: {
         modules: {
-            localIdentName: isDevelopment ? `[local]--[hash:base64:4]` : `[contenthash:base64:5]`,
-            mode: (resourcePath) => /node_modules/.test(resourcePath) ? 'global' : 'local'
+            localIdentName: isDevelopment ? "[local]--[hash:base64:4]" : "[contenthash:base64:5]",
+            mode: function (resourcePath) { return /node_modules/.test(resourcePath) ? 'global' : 'local'; }
         }
-    },
-    ...(themeVariable ? { resources: themeVariable } : {}),
-    styleLoaderOptions
-}, !isDevelopment);
-const jsRules = (0, util_1.jsLoader)({
-    options: {
-        presets: [
-            ['@babel/preset-env', { targets: browserTarget }],
-            ...presets.filter((item) => (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env'),
-        ],
-        plugins: plugins || [],
-        ...babellrcOthers
-    }
+    } }, (themeVariable ? { resources: themeVariable } : {})), { styleLoaderOptions: styleLoaderOptions }), !isDevelopment);
+var jsRules = (0, util_1.jsLoader)({
+    options: tslib_1.__assign({ presets: tslib_1.__spreadArray([
+            ['@babel/preset-env', { targets: browserTarget }]
+        ], presets.filter(function (item) { return (Array.isArray(item) ? item[0] : item) !== '@babel/preset-env'; }), true), plugins: plugins || [] }, babellrcOthers)
 });
-const fileResource = (0, util_1.assetResource)();
-const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
-const manifestDll = originManifestDll ? originManifestDll : (0, fs_1.existsSync)(defaultMainfestPath) ? [defaultMainfestPath] : [];
-exports.default = () => {
-    const config = (0, webpack_merge_1.default)(webpack_config_1.default, {
+var fileResource = (0, util_1.assetResource)();
+var defaultMainfestPath = "".concat(outputPath, "/manifest/dll-common-manifest.json");
+var manifestDll = originManifestDll ? originManifestDll : (0, fs_1.existsSync)(defaultMainfestPath) ? [defaultMainfestPath] : [];
+exports.default = (function () {
+    var config = (0, webpack_merge_1.default)(webpack_config_1.default, {
         target: 'web',
         context: root,
-        entry: {
-            ...entry,
-            ...(!(0, lodash_1.isEmpty)(styles) && { styles } || {}),
-        },
+        entry: tslib_1.__assign(tslib_1.__assign({}, entry), (!(0, lodash_1.isEmpty)(styles) && { styles: styles } || {})),
         output: {
-            publicPath,
+            publicPath: publicPath,
             path: outputPath,
-            chunkFilename: `javascript/[name].[chunkhash:8].js`,
-            filename: `javascript/[name].[contenthash:8].js`
+            chunkFilename: "javascript/[name].[chunkhash:8].js",
+            filename: "javascript/[name].[contenthash:8].js"
         },
-        externals,
+        externals: externals,
         resolve: {
             symlinks: true,
             alias: resolveAlias,
@@ -75,9 +63,9 @@ exports.default = () => {
                 fileResource.font({ generator: { filename: 'fonts/[name][contenthash:4][ext]' } })
             ],
         },
-        plugins: [
-            new webpack_1.ProgressPlugin(),
-            ...(0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot),
+        plugins: tslib_1.__spreadArray(tslib_1.__spreadArray(tslib_1.__spreadArray(tslib_1.__spreadArray(tslib_1.__spreadArray([
+            new webpack_1.ProgressPlugin()
+        ], (0, webpack_config_1.copyPlugin)(assets, outputPath, sourceRoot), true), [
             // new CircularDependencyPlugin({
             //   exclude: /node_modules/,
             //   failOnError: true,
@@ -85,46 +73,47 @@ exports.default = () => {
             //   cwd: root
             // }),
             new webpack_assets_manifest_1.default({
-                output: `${outputPath}/static/assets.json`,
+                output: "".concat(outputPath, "/static/assets.json"),
                 writeToDisk: true,
                 publicPath: true,
                 entrypoints: true,
-                transform: (assets) => {
-                    const { entrypoints } = assets;
-                    const assetsKeys = Object.keys(assets);
-                    const entrypointsKeys = Object.keys(entrypoints);
-                    const assetsObject = Object.keys(entrypoints).reduce((obj, key) => ({ ...obj, [key]: { ...entrypoints[key].assets } }), { chunk: { css: [] } });
-                    assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
+                transform: function (assets) {
+                    var entrypoints = assets.entrypoints;
+                    var assetsKeys = Object.keys(assets);
+                    var entrypointsKeys = Object.keys(entrypoints);
+                    var assetsObject = Object.keys(entrypoints).reduce(function (obj, key) {
+                        var _a;
+                        return (tslib_1.__assign(tslib_1.__assign({}, obj), (_a = {}, _a[key] = tslib_1.__assign({}, entrypoints[key].assets), _a)));
+                    }, { chunk: { css: [] } });
+                    assetsObject.chunk.css = assetsKeys.filter(function (key) { return /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, '')); }).map(function (key) { return assets[key]; });
                     ;
                     return assetsObject;
                 },
-                customize: ({ key, value }) => {
+                customize: function (_a) {
+                    var key = _a.key, value = _a.value;
                     if (key.toLowerCase().endsWith('.map'))
                         return false;
-                    return { key, value };
+                    return { key: key, value: value };
                 }
-            }),
-            ...analyzerStatus ? [
-                new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
-                    analyzerMode: 'disabled',
-                    generateStatsFile: true,
-                    statsFilename: 'stats/stats.json'
-                })
-            ] : [],
-            ...manifestDll.map((manifest) => new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) })),
-            ...index ? [new html_webpack_plugin_1.default({
-                    template: index,
-                    minify: {
-                        collapseWhitespace: true,
-                        keepClosingSlash: true,
-                        removeComments: false,
-                        removeRedundantAttributes: true,
-                        removeScriptTypeAttributes: true,
-                        removeStyleLinkTypeAttributes: true,
-                        useShortDoctype: true
-                    }
-                })] : []
-        ],
+            })
+        ], false), analyzerStatus ? [
+            new webpack_bundle_analyzer_1.BundleAnalyzerPlugin({
+                analyzerMode: 'disabled',
+                generateStatsFile: true,
+                statsFilename: 'stats/stats.json'
+            })
+        ] : [], true), manifestDll.map(function (manifest) { return new webpack_1.DllReferencePlugin({ context: root, manifest: require(manifest) }); }), true), index ? [new html_webpack_plugin_1.default({
+                template: index,
+                minify: {
+                    collapseWhitespace: true,
+                    keepClosingSlash: true,
+                    removeComments: false,
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    useShortDoctype: true
+                }
+            })] : [], true),
     });
     return (0, webpack_merge_1.default)(config, (0, webpack_config_1.getMergeConfig)(builder, jsRules, cssRules, config));
-};
+});

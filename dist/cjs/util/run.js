@@ -1,18 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = void 0;
-const tslib_1 = require("tslib");
-const path_1 = tslib_1.__importDefault(require("path"));
-const arvg = process.argv;
+exports.init = init;
+var tslib_1 = require("tslib");
+var path_1 = tslib_1.__importDefault(require("path"));
+var arvg = process.argv;
 function run(fn, options) {
-    const task = typeof fn.default === 'undefined' ? fn : fn.default;
+    var task = typeof fn.default === 'undefined' ? fn : fn.default;
     return task(options);
 }
-async function init() {
-    if (arvg.length > 2) {
-        const { default: exports } = require(`${path_1.default.join(__dirname, arvg.slice(2)[0])}`);
-        await run(exports);
-    }
+function init() {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var exports_1;
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(arvg.length > 2)) return [3 /*break*/, 2];
+                    exports_1 = require("".concat(path_1.default.join(__dirname, arvg.slice(2)[0]))).default;
+                    return [4 /*yield*/, run(exports_1)];
+                case 1:
+                    _a.sent();
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
+    });
 }
-exports.init = init;
 exports.default = run;

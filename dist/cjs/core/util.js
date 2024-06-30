@@ -1,66 +1,76 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.assetResource = exports.cssLoader = exports.jsLoader = void 0;
-const tslib_1 = require("tslib");
-const mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
-const lodash_1 = require("lodash");
-const factoryUse = (loader, options, mergeOption) => ({
-    loader,
+exports.jsLoader = jsLoader;
+exports.cssLoader = cssLoader;
+exports.assetResource = assetResource;
+var tslib_1 = require("tslib");
+var mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
+var lodash_1 = require("lodash");
+var factoryUse = function (loader, options, mergeOption) { return ({
+    loader: loader,
     options: Object.assign({}, options, mergeOption || {}),
-});
-const factoryRules = (regExp, options = {}) => (use) => Object.keys(options).reduce((o, key) => Object.assign(o, options[key] ? {
-    [key]: options[key],
-} : {}), {
-    test: regExp,
-    use,
-});
-const factoryLoaders = (loader, mergeOption) => (loader || []).map((loader) => {
-    const [l, options = {}] = Array.isArray(loader) ? loader : [loader];
-    return factoryUse(l, options, mergeOption);
-});
-const factoryConcatUse = (defaultUse) => (loader, mergeOption) => {
-    return (Array.isArray(defaultUse) ? defaultUse : defaultUse ? [defaultUse] : []).concat(factoryLoaders(loader, mergeOption));
+}); };
+var factoryRules = function (regExp, options) {
+    if (options === void 0) { options = {}; }
+    return function (use) { return Object.keys(options).reduce(function (o, key) {
+        var _a;
+        return Object.assign(o, options[key] ? (_a = {},
+            _a[key] = options[key],
+            _a) : {});
+    }, {
+        test: regExp,
+        use: use,
+    }); };
 };
+var factoryLoaders = function (loader, mergeOption) { return (loader || []).map(function (loader) {
+    var _a = Array.isArray(loader) ? loader : [loader], l = _a[0], _b = _a[1], options = _b === void 0 ? {} : _b;
+    return factoryUse(l, options, mergeOption);
+}); };
+var factoryConcatUse = function (defaultUse) { return function (loader, mergeOption) {
+    return (Array.isArray(defaultUse) ? defaultUse : defaultUse ? [defaultUse] : []).concat(factoryLoaders(loader, mergeOption));
+}; };
 function jsLoader(config) {
-    const { options = {}, exclude = /node_modules/, include } = config;
-    const concatBabelUse = factoryConcatUse(factoryUse('babel-loader', options));
-    const factory = (regExp, loader, isNoBabelLoader) => (_regExp, mergeOption) => {
-        const concatUse = isNoBabelLoader ? factoryConcatUse([]) : concatBabelUse;
+    var _a = config.options, options = _a === void 0 ? {} : _a, _b = config.exclude, exclude = _b === void 0 ? /node_modules/ : _b, include = config.include;
+    var concatBabelUse = factoryConcatUse(factoryUse('babel-loader', options));
+    var factory = function (regExp, loader, isNoBabelLoader) { return function (_regExp, mergeOption) {
+        var concatUse = isNoBabelLoader ? factoryConcatUse([]) : concatBabelUse;
         if (_regExp instanceof RegExp) {
             regExp = _regExp;
         }
         else {
             mergeOption = _regExp;
         }
-        const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
-        const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
+        var _a = mergeOption || {}, _b = _a.exclude, cExclude = _b === void 0 ? exclude : _b, _c = _a.include, cInclude = _c === void 0 ? include : _c, loaderOption = tslib_1.__rest(_a, ["exclude", "include"]);
+        var factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
         return factory(concatUse(loader || [], loaderOption || {}));
-    };
+    }; };
     return {
         babel: factory(/\.(js|jsx)$/),
         ts: factory(/\.(ts|tsx)$/, ['ts-loader'])
     };
 }
-exports.jsLoader = jsLoader;
 function cssLoader(config, isExtract) {
-    const publicOptions = !isExtract ? { sourceMap: true } : {};
-    const { options, exclude, include, resources, styleLoaderOptions } = config;
-    let preUse = !isExtract ? ['style-loader', { ...styleLoaderOptions }] : [mini_css_extract_plugin_1.default.loader];
-    const clone = (getConfig, _isExtract = isExtract) => cssLoader(getConfig ? getConfig(config) : config, _isExtract);
-    const concatUse = factoryConcatUse([
-        factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
+    var publicOptions = !isExtract ? { sourceMap: true } : {};
+    var options = config.options, exclude = config.exclude, include = config.include, resources = config.resources, styleLoaderOptions = config.styleLoaderOptions;
+    var preUse = !isExtract ? ['style-loader', tslib_1.__assign({}, styleLoaderOptions)] : [mini_css_extract_plugin_1.default.loader];
+    var clone = function (getConfig, _isExtract) {
+        if (_isExtract === void 0) { _isExtract = isExtract; }
+        return cssLoader(getConfig ? getConfig(config) : config, _isExtract);
+    };
+    var concatUse = factoryConcatUse([
+        factoryUse('css-loader', tslib_1.__assign(tslib_1.__assign({ modules: true }, publicOptions), options)),
         factoryUse('postcss-loader', Object.assign({ postcssOptions: {} }, publicOptions)),
     ]);
-    const factory = (regExp, loader, defaultOptions) => (mergeOption, preLoader) => {
-        const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
-        const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
-        let oneLoader;
+    var factory = function (regExp, loader, defaultOptions) { return function (mergeOption, preLoader) {
+        var _a = mergeOption || {}, _b = _a.exclude, cExclude = _b === void 0 ? exclude : _b, _c = _a.include, cInclude = _c === void 0 ? include : _c, loaderOption = tslib_1.__rest(_a, ["exclude", "include"]);
+        var factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
+        var oneLoader;
         if (!(0, lodash_1.isEmpty)(loader)) {
             oneLoader = Array.isArray(loader[0]) ? loader[0] : [loader[0]];
-            oneLoader[1] = { ...defaultOptions, ...publicOptions, ...loaderOption };
+            oneLoader[1] = tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, defaultOptions), publicOptions), loaderOption);
             loader[0] = oneLoader;
         }
-        const use = concatUse(loader || [], {});
+        var use = concatUse(loader || [], {});
         if (preLoader !== false) {
             if (preLoader) {
                 preUse = Array.isArray(preLoader) ? preLoader : [preLoader, {}];
@@ -68,32 +78,31 @@ function cssLoader(config, isExtract) {
             use.unshift(factoryUse(preUse[0], preUse[1] || {}));
         }
         return factory(use);
-    };
-    const sassLoader = ['sass-loader'];
+    }; };
+    var sassLoader = ['sass-loader'];
     if (resources) {
-        sassLoader.push(['sass-resources-loader', { resources }]);
+        sassLoader.push(['sass-resources-loader', { resources: resources }]);
     }
     return {
-        clone,
+        clone: clone,
         css: factory(/\.(css)$/),
         less: factory(/\.(less)$/, ['less-loader']),
         sass: factory(/\.(sass|scss)$/, sassLoader),
         more: function (types, options, preLoader) {
-            return types.map((type) => this[type](options, preLoader));
+            var _this = this;
+            return types.map(function (type) { return _this[type](options, preLoader); });
         },
     };
 }
-exports.cssLoader = cssLoader;
 function assetResource(config) {
-    const { generator: defaultGenerator } = config || {};
-    const factory = (regExp, type) => (mergeOptions) => {
-        const [loadRex, _options] = Array.isArray(type) ? type : [type];
-        const { generator = defaultGenerator } = mergeOptions || {};
-        return { test: regExp, type: loadRex, generator };
-    };
+    var defaultGenerator = (config || {}).generator;
+    var factory = function (regExp, type) { return function (mergeOptions) {
+        var _a = Array.isArray(type) ? type : [type], loadRex = _a[0], _options = _a[1];
+        var _b = (mergeOptions || {}).generator, generator = _b === void 0 ? defaultGenerator : _b;
+        return { test: regExp, type: loadRex, generator: generator };
+    }; };
     return {
         image: factory(/\.(png|jpe?g|gif)$/i, ['asset/resource', {}]),
         font: factory(/\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/, ['asset/resource', {}])
     };
 }
-exports.assetResource = assetResource;

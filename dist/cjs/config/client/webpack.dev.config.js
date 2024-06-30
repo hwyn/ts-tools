@@ -1,31 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const webpack_1 = tslib_1.__importDefault(require("webpack"));
-const webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
-const webpack_base_config_1 = tslib_1.__importDefault(require("./webpack.base.config"));
-const happypack_1 = require("../../core/happypack");
-const config_1 = require("../config");
-const hotPlug = (key) => `webpack-hot-middleware/client?path=__webpack_hmr&name=${key}&reload=true&dynamicPublicPath=true`;
-const { sourceMap, hasSourceMap } = (0, config_1.platformConfig)(config_1.PlatformEnum.client);
-exports.default = () => {
-    const config = (0, webpack_base_config_1.default)();
-    const { entry } = config;
-    const { output: { filename = '', chunkFilename = '' } = {} } = config;
+var tslib_1 = require("tslib");
+var webpack_1 = tslib_1.__importDefault(require("webpack"));
+var webpack_merge_1 = tslib_1.__importDefault(require("webpack-merge"));
+var webpack_base_config_1 = tslib_1.__importDefault(require("./webpack.base.config"));
+var happypack_1 = require("../../core/happypack");
+var config_1 = require("../config");
+var hotPlug = function (key) { return "webpack-hot-middleware/client?path=__webpack_hmr&name=".concat(key, "&reload=true&dynamicPublicPath=true"); };
+var _a = (0, config_1.platformConfig)(config_1.PlatformEnum.client), sourceMap = _a.sourceMap, hasSourceMap = _a.hasSourceMap;
+exports.default = (function () {
+    var config = (0, webpack_base_config_1.default)();
+    var entry = config.entry;
+    var _a = config.output, _b = _a === void 0 ? {} : _a, _c = _b.filename, filename = _c === void 0 ? '' : _c, _d = _b.chunkFilename, chunkFilename = _d === void 0 ? '' : _d;
     delete config.entry;
-    return (0, happypack_1.happypackMerge)((0, webpack_merge_1.default)(config, {
-        mode: 'development',
-        entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {
-            [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
-        }), {}),
-        output: {
+    return (0, happypack_1.happypackMerge)((0, webpack_merge_1.default)(config, tslib_1.__assign({ mode: 'development', entry: Object.keys(entry).reduce(function (obj, key) {
+            var _a;
+            return Object.assign(obj, (_a = {},
+                _a[key] = Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
+                _a));
+        }, {}), output: {
             filename: typeof filename === 'string' ? filename.replace('\.[contenthash:8]', '') : filename,
             chunkFilename: typeof chunkFilename === 'string' ? chunkFilename.replace('\.[chunkhash:8]', '') : chunkFilename,
-        },
-        plugins: [
+        }, plugins: [
             new webpack_1.default.HotModuleReplacementPlugin(),
             new webpack_1.default.NoEmitOnErrorsPlugin()
-        ],
-        ...hasSourceMap ? { devtool: sourceMap } : {},
-    }));
-};
+        ] }, hasSourceMap ? { devtool: sourceMap } : {})));
+});

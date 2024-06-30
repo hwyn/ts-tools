@@ -9,16 +9,13 @@ const { entry, nodeExternals, builder, tsConfig, root, isDevelopment, outputPath
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = platformConfig(PlatformEnum.server);
 const jsRules = jsLoader({ options: babellrc });
-const cssRules = cssLoader({
-    ...(themeVariable ? { resources: themeVariable } : {}),
-    options: {
+const cssRules = cssLoader(Object.assign(Object.assign({}, (themeVariable ? { resources: themeVariable } : {})), { options: {
         modules: {
             exportOnlyLocals: true,
             localIdentName: isDevelopment ? `[local]--[hash:base64:4]` : `[contenthash:base64:5]`,
             mode: (resourcePath) => /node_modules/.test(resourcePath) ? 'global' : 'local'
         }
-    }
-}, !isDevelopment);
+    } }), !isDevelopment);
 export default () => {
     const config = merge(webpackConfig, {
         target: 'node',

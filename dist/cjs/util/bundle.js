@@ -1,25 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.webpackRunDll = exports.webpackRun = exports.isRun = void 0;
-const tslib_1 = require("tslib");
-const lodash_1 = require("lodash");
-const webpack_1 = tslib_1.__importDefault(require("webpack"));
-const config_1 = require("../config");
-const config_2 = require("../config");
-const isRun = (webpackconfig) => {
+exports.isRun = void 0;
+exports.webpackRun = webpackRun;
+exports.webpackRunDll = webpackRunDll;
+var tslib_1 = require("tslib");
+var lodash_1 = require("lodash");
+var webpack_1 = tslib_1.__importDefault(require("webpack"));
+var config_1 = require("../config");
+var config_2 = require("../config");
+var isRun = function (webpackconfig) {
     return !(0, lodash_1.isEmpty)(webpackconfig.entry);
 };
 exports.isRun = isRun;
 function webpackRun(webpackconfig, _stast) {
     if (Array.isArray(webpackconfig)) {
-        return Promise.all(webpackconfig.map((config) => webpackRun(config, config.stats)));
+        return Promise.all(webpackconfig.map(function (config) { return webpackRun(config, config.stats); }));
     }
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         if (!(0, exports.isRun)(webpackconfig)) {
             return resolve(null);
         }
-        const multiCompiler = (0, webpack_1.default)(webpackconfig);
-        multiCompiler.run((err, stats) => {
+        var multiCompiler = (0, webpack_1.default)(webpackconfig);
+        multiCompiler.run(function (err, stats) {
             if (err) {
                 return reject();
             }
@@ -28,18 +30,15 @@ function webpackRun(webpackconfig, _stast) {
         });
     });
 }
-exports.webpackRun = webpackRun;
 function webpackRunDll() {
-    const { entry } = (0, config_1.platformConfig)(config_1.PlatformEnum.dll);
-    return Object.keys(entry).reduce((promise, key) => promise.then(() => {
-        const dll = (0, config_1.webpackDll)(key);
+    var entry = (0, config_1.platformConfig)(config_1.PlatformEnum.dll).entry;
+    return Object.keys(entry).reduce(function (promise, key) { return promise.then(function () {
+        var dll = (0, config_1.webpackDll)(key);
         return webpackRun(dll, dll.stats);
-    }), Promise.resolve());
+    }); }, Promise.resolve());
 }
-exports.webpackRunDll = webpackRunDll;
-exports.default = async () => {
-    return (config_2.existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([
-        ...config_2.existenceServerEntry ? [(0, config_1.webpackServerEntry)()] : [],
-        ...config_2.existenceClient ? [(0, config_1.webpackClient)()] : [],
-    ])).then(() => webpackRun([...config_2.existenceServer ? [(0, config_1.webpackServer)()] : []]));
-};
+exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+    return tslib_1.__generator(this, function (_a) {
+        return [2 /*return*/, (config_2.existenceDll ? webpackRunDll() : Promise.resolve()).then(function () { return webpackRun(tslib_1.__spreadArray(tslib_1.__spreadArray([], config_2.existenceServerEntry ? [(0, config_1.webpackServerEntry)()] : [], true), config_2.existenceClient ? [(0, config_1.webpackClient)()] : [], true)); }).then(function () { return webpackRun(tslib_1.__spreadArray([], config_2.existenceServer ? [(0, config_1.webpackServer)()] : [], true)); })];
+    });
+}); });

@@ -39,19 +39,10 @@ const defaultProject = {
     }
 };
 class ProjectConfig {
-    static _project;
-    babelFilePath;
-    projectPath;
-    environmental;
-    isDevelopment = false;
-    analyzerStatus = false;
-    baseResolve = baseResolve;
-    rootResolve;
-    outputRootResolve;
-    sourceRootResolve;
-    getArvgConfig;
-    config;
     constructor(command, argv = []) {
+        this.isDevelopment = false;
+        this.analyzerStatus = false;
+        this.baseResolve = baseResolve;
         this.getArvgConfig = factoryConfig(getArgv()(argv).join(' '));
         this.projectPath = baseResolve(this.getArvgConfig('project') || '.');
         this.environmental = command === 'start' ? 'development' : 'build';
@@ -103,7 +94,7 @@ class ProjectConfig {
             pOptions.styles = toArray(styles).map((f) => this.sourceRootResolve(f));
             !!hotContext && (pConfigurations.hotContext = this.rootResolve(hotContext));
             !!watchFile && (pConfigurations.watchFile = toArray(watchFile).map((f) => this.sourceRootResolve(f)));
-            return { ...obj, [p]: current };
+            return Object.assign(Object.assign({}, obj), { [p]: current });
         }, {});
         return build;
     }
@@ -122,19 +113,13 @@ class ProjectConfig {
         return this.config;
     }
     parseAlias(alias) {
-        return Object.keys(alias).reduce((obj, key) => ({
-            ...obj,
-            [key]: this.rootResolve(alias[key])
-        }), {});
+        return Object.keys(alias).reduce((obj, key) => (Object.assign(Object.assign({}, obj), { [key]: this.rootResolve(alias[key]) })), {});
     }
     parseEntry(p, entry, isResolve = true) {
         let entryMain = {};
         const sourceRootResolve = isResolve ? this.sourceRootResolve.bind(this) : (f) => f;
         if (Object.prototype.toString.apply(entry).replace(/\[object ([\S]*)\]/, '$1') === 'Object') {
-            entryMain = Object.keys(entry).reduce((main, key) => ({
-                ...main,
-                [key]: toArray(entry[key]).map((f) => sourceRootResolve(f))
-            }), {});
+            entryMain = Object.keys(entry).reduce((main, key) => (Object.assign(Object.assign({}, main), { [key]: toArray(entry[key]).map((f) => sourceRootResolve(f)) })), {});
         }
         else if (!!entry) {
             entryMain = { [platformDefaultEntry[p]]: toArray(entry).map((f) => sourceRootResolve(f)) };

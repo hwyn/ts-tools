@@ -1,3 +1,4 @@
+import { __awaiter } from "tslib";
 import { isEmpty } from 'lodash';
 import webpack from 'webpack';
 import { webpackServer, webpackClient, webpackDll, webpackServerEntry, platformConfig, PlatformEnum } from '../config';
@@ -30,9 +31,9 @@ export function webpackRunDll() {
         return webpackRun(dll, dll.stats);
     }), Promise.resolve());
 }
-export default async () => {
+export default () => __awaiter(void 0, void 0, void 0, function* () {
     return (existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([
         ...existenceServerEntry ? [webpackServerEntry()] : [],
         ...existenceClient ? [webpackClient()] : [],
     ])).then(() => webpackRun([...existenceServer ? [webpackServer()] : []]));
-};
+});

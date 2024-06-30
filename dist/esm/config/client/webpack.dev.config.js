@@ -10,19 +10,13 @@ export default () => {
     const { entry } = config;
     const { output: { filename = '', chunkFilename = '' } = {} } = config;
     delete config.entry;
-    return happypackMerge(merge(config, {
-        mode: 'development',
-        entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {
+    return happypackMerge(merge(config, Object.assign({ mode: 'development', entry: Object.keys(entry).reduce((obj, key) => Object.assign(obj, {
             [key]: Array.isArray(entry[key]) ? (entry[key].push(hotPlug(key)), entry[key]) : [hotPlug(key), entry[key]],
-        }), {}),
-        output: {
+        }), {}), output: {
             filename: typeof filename === 'string' ? filename.replace('\.[contenthash:8]', '') : filename,
             chunkFilename: typeof chunkFilename === 'string' ? chunkFilename.replace('\.[chunkhash:8]', '') : chunkFilename,
-        },
-        plugins: [
+        }, plugins: [
             new webpack.HotModuleReplacementPlugin(),
             new webpack.NoEmitOnErrorsPlugin()
-        ],
-        ...hasSourceMap ? { devtool: sourceMap } : {},
-    }));
+        ] }, hasSourceMap ? { devtool: sourceMap } : {})));
 };

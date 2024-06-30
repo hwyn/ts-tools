@@ -1,31 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;
-const tslib_1 = require("tslib");
-const fs_1 = require("fs");
-const copy_webpack_plugin_1 = tslib_1.__importDefault(require("copy-webpack-plugin"));
-const config_1 = require("../config");
-const fs_2 = require("../../core/fs");
-const lodash_1 = require("lodash");
-const path_1 = tslib_1.__importDefault(require("path"));
-const { isDevelopment, sourceRoot } = (0, config_1.platformConfig)();
-const getMergeConfig = (filePath, jsRules, cssRules, config) => {
-    const mergeClientConfig = (0, fs_2.requireSync)(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment, config);
+var tslib_1 = require("tslib");
+var fs_1 = require("fs");
+var copy_webpack_plugin_1 = tslib_1.__importDefault(require("copy-webpack-plugin"));
+var config_1 = require("../config");
+var fs_2 = require("../../core/fs");
+var lodash_1 = require("lodash");
+var path_1 = tslib_1.__importDefault(require("path"));
+var _a = (0, config_1.platformConfig)(), isDevelopment = _a.isDevelopment, sourceRoot = _a.sourceRoot;
+var getMergeConfig = function (filePath, jsRules, cssRules, config) {
+    var mergeClientConfig = (0, fs_2.requireSync)(filePath);
+    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : function () { return mergeClientConfig || {}; })(jsRules, cssRules, isDevelopment, config);
 };
 exports.getMergeConfig = getMergeConfig;
-const filterAttr = (mergeConfig, filter) => {
-    const config = {};
-    Object.keys(mergeConfig || {}).filter((key) => !filter.includes(key)).forEach((key) => config[key] = mergeConfig[key]);
+var filterAttr = function (mergeConfig, filter) {
+    var config = {};
+    Object.keys(mergeConfig || {}).filter(function (key) { return !filter.includes(key); }).forEach(function (key) { return config[key] = mergeConfig[key]; });
     return config;
 };
 exports.filterAttr = filterAttr;
-const copyPlugin = (formFile = [], toFile, sourcePath = sourceRoot) => {
-    const files = formFile.reduce((copyArr, filePaths) => {
-        const [filePath, _filePath] = filePaths;
+var copyPlugin = function (formFile, toFile, sourcePath) {
+    if (formFile === void 0) { formFile = []; }
+    if (sourcePath === void 0) { sourcePath = sourceRoot; }
+    var files = formFile.reduce(function (copyArr, filePaths) {
+        var filePath = filePaths[0], _filePath = filePaths[1];
         if ((0, fs_1.existsSync)(filePath)) {
-            const toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
-            const toFileInfo = path_1.default.parse(toFilePath);
+            var toFilePath = (_filePath || filePath).replace(sourcePath, toFile);
+            var toFileInfo = path_1.default.parse(toFilePath);
             copyArr.push({
                 from: filePath,
                 to: toFileInfo.ext === '' && toFileInfo.name === '.env' ? toFileInfo.dir : toFilePath,

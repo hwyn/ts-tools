@@ -1,5 +1,6 @@
+import { __awaiter } from "tslib";
 import { cleanDir } from '../core/fs';
 import { project } from '../config';
-export default async () => {
-    await cleanDir(project.outputRoot);
-};
+export default () => __awaiter(void 0, void 0, void 0, function* () {
+    yield cleanDir(project.outputRoot);
+});

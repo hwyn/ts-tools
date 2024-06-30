@@ -7,21 +7,13 @@ const { tsConfig, analyzerStatus } = platformConfig(PlatformEnum.client);
 export default () => {
     process.env.TS_NODE_PROJECT = tsConfig;
     return merge(baseConfig(), {
-        optimization: {
-            emitOnErrors: true,
-            runtimeChunk: false,
-            mergeDuplicateChunks: true,
-            splitChunks: {},
-            ...analyzerStatus ? { concatenateModules: false } : {},
-            minimize: true,
-            minimizer: [
+        optimization: Object.assign(Object.assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
                 new TerserPlugin({
                     minify: TerserPlugin.uglifyJsMinify,
                     terserOptions: {},
                     extractComments: false,
                 })
-            ]
-        },
+            ] }),
         plugins: [
             new MiniCssExtractPlugin({
                 filename: 'styleSheet/[name].[contenthash:4].css',

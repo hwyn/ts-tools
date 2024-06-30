@@ -1,3 +1,4 @@
+import { __rest } from "tslib";
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { isEmpty } from 'lodash';
 const factoryUse = (loader, options, mergeOption) => ({
@@ -28,7 +29,7 @@ export function jsLoader(config) {
         else {
             mergeOption = _regExp;
         }
-        const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
+        const _a = mergeOption || {}, { exclude: cExclude = exclude, include: cInclude = include } = _a, loaderOption = __rest(_a, ["exclude", "include"]);
         const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
         return factory(concatUse(loader || [], loaderOption || {}));
     };
@@ -40,19 +41,19 @@ export function jsLoader(config) {
 export function cssLoader(config, isExtract) {
     const publicOptions = !isExtract ? { sourceMap: true } : {};
     const { options, exclude, include, resources, styleLoaderOptions } = config;
-    let preUse = !isExtract ? ['style-loader', { ...styleLoaderOptions }] : [MiniCssExtractPlugin.loader];
+    let preUse = !isExtract ? ['style-loader', Object.assign({}, styleLoaderOptions)] : [MiniCssExtractPlugin.loader];
     const clone = (getConfig, _isExtract = isExtract) => cssLoader(getConfig ? getConfig(config) : config, _isExtract);
     const concatUse = factoryConcatUse([
-        factoryUse('css-loader', { modules: true, ...publicOptions, ...options }),
+        factoryUse('css-loader', Object.assign(Object.assign({ modules: true }, publicOptions), options)),
         factoryUse('postcss-loader', Object.assign({ postcssOptions: {} }, publicOptions)),
     ]);
     const factory = (regExp, loader, defaultOptions) => (mergeOption, preLoader) => {
-        const { exclude: cExclude = exclude, include: cInclude = include, ...loaderOption } = mergeOption || {};
+        const _a = mergeOption || {}, { exclude: cExclude = exclude, include: cInclude = include } = _a, loaderOption = __rest(_a, ["exclude", "include"]);
         const factory = factoryRules(regExp, { exclude: cExclude, include: cInclude });
         let oneLoader;
         if (!isEmpty(loader)) {
             oneLoader = Array.isArray(loader[0]) ? loader[0] : [loader[0]];
-            oneLoader[1] = { ...defaultOptions, ...publicOptions, ...loaderOption };
+            oneLoader[1] = Object.assign(Object.assign(Object.assign({}, defaultOptions), publicOptions), loaderOption);
             loader[0] = oneLoader;
         }
         const use = concatUse(loader || [], {});

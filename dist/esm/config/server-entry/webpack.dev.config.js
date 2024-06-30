@@ -4,10 +4,5 @@ import { platformConfig, PlatformEnum } from '../config';
 import baseConfig from './webpack.base.config';
 const { sourceMap, hasSourceMap } = platformConfig(PlatformEnum.serverEntry);
 export default () => {
-    return happypackMerge(merge(baseConfig(), {
-        mode: 'development',
-        watch: true,
-        devtool: false,
-        ...hasSourceMap ? { devtool: sourceMap } : {},
-    }), { excludeLoader: ['css-loader'] });
+    return happypackMerge(merge(baseConfig(), Object.assign({ mode: 'development', watch: true, devtool: false }, hasSourceMap ? { devtool: sourceMap } : {})), { excludeLoader: ['css-loader'] });
 };

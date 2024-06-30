@@ -1,7 +1,8 @@
+import { __awaiter } from "tslib";
 import webpack from 'webpack';
 import { webpackDevServerEntry, existenceServerEntry } from '../config';
 import { createCompilationPromise } from './compilation';
-export default async () => {
+export default () => __awaiter(void 0, void 0, void 0, function* () {
     if (!existenceServerEntry) {
         return Promise.resolve();
     }
@@ -15,4 +16,4 @@ export default async () => {
     const promise = createCompilationPromise('server-entry', multiCompiler, config);
     multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
     return promise;
-};
+});

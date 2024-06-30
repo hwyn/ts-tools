@@ -1,3 +1,4 @@
+import { __awaiter } from "tslib";
 import vm from 'vm';
 import webpack from 'webpack';
 import { createCompilationPromise } from './compilation';
@@ -7,7 +8,7 @@ import { requireSync } from '../core/fs';
 import { isFunction, merge } from 'lodash';
 const serverPlatform = platformConfig('server');
 const { hotContext = '', outputPath } = serverPlatform;
-export const hotServer = async () => {
+export const hotServer = () => __awaiter(void 0, void 0, void 0, function* () {
     let vmContext;
     const contextSync = requireSync(hotContext);
     const hotVmContext = isFunction(contextSync) ? contextSync(serverPlatform) : contextSync || {};
@@ -29,7 +30,7 @@ export const hotServer = async () => {
                 if (!stats.hasErrors()) {
                     multiCompiler.outputFileSystem.readFile(path.join(outputPath, 'server.js'), (error, code) => {
                         process.env.NODE_ENV = 'development';
-                        const context = merge(hotVmContext, { ...global, require, process, console, global, Buffer });
+                        const context = merge(hotVmContext, Object.assign(Object.assign({}, global), { require, process, console, global, Buffer }));
                         vmContext = vm.createContext(context);
                         vm.runInNewContext(code.toString('utf-8'), vmContext);
                     });
@@ -43,6 +44,6 @@ export const hotServer = async () => {
         });
     });
     multiCompiler.watch({ aggregateTimeout: 300 }, () => { });
-    await createCompilationPromise('server', multiCompiler, serverConfig);
+    yield createCompilationPromise('server', multiCompiler, serverConfig);
     return promise;
-};
+});

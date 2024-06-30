@@ -1,3 +1,4 @@
+import { __awaiter } from "tslib";
 import webpack from 'webpack';
 import express from 'express';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -7,7 +8,7 @@ import { webpackDevClient, existenceClient, existenceServer, project } from '../
 const { architect: { build: { platform } } } = project;
 const { outputPath } = platform.client || {};
 const { configurations } = platform.server || {};
-export default async (app) => {
+export default (app) => __awaiter(void 0, void 0, void 0, function* () {
     if (!existenceClient) {
         return Promise.resolve();
     }
@@ -19,10 +20,10 @@ export default async (app) => {
         publicPath: client.output.publicPath.toString(),
     }));
     app.use(webpackHotMiddleware(multiCompiler, { log: false }));
-    if (!existenceServer && !configurations?.proxy) {
-        app.use(async (request, response) => {
+    if (!existenceServer && !(configurations === null || configurations === void 0 ? void 0 : configurations.proxy)) {
+        app.use((request, response) => __awaiter(void 0, void 0, void 0, function* () {
             response.sendStatus(404);
-        });
+        }));
     }
     return promise;
-};
+});

@@ -5,7 +5,7 @@
 // import { Configuration, RuleSetRule as Rule, WebpackPluginInstance as Plugin } from 'webpack';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.happypackMerge = void 0;
-const happypackMerge = (config, options) => {
+var happypackMerge = function (config, options) {
     return config;
     // const happyPackConfig: any = config.module.rules.reduce((o: any, rule: any, index: number) => {
     //   const happyPackUtil = new HappyPackUtil(index, rule, options);
