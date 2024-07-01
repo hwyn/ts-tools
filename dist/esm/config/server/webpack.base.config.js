@@ -24,7 +24,7 @@ export default () => {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: (name) => /@fm\/.*/g.test(name) } : {})] : [],
+        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: (name) => /(@fm|@hwy-fm)\/.*/g.test(name) } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({

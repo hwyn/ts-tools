@@ -1,6 +1,6 @@
 {
   "name": "ts-tools",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "a ts tools",
   "files": [
     "bin",
@@ -10,11 +10,7 @@
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
-  "author": {
-    "name": " HWuYing",
-    "email": "237617561@qq.com"
-  },
-  "private": true,
+  "private": false,
   "license": "MIT",
   "devDependencies": {
     "@types/browser-sync": "^2.29.0",

@@ -25,7 +25,7 @@ export default (function () {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: function (name) { return /@fm\/.*/g.test(name); } } : {})] : [],
+        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: function (name) { return /(@fm|@hwy-fm)\/.*/g.test(name); } } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({

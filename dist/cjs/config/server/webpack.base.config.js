@@ -27,7 +27,7 @@ exports.default = (function () {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)(isDevelopment ? { allowlist: function (name) { return /@fm\/.*/g.test(name); } } : {})] : [],
+        externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)(isDevelopment ? { allowlist: function (name) { return /(@fm|@hwy-fm)\/.*/g.test(name); } } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({
