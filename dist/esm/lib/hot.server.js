@@ -35,6 +35,9 @@ export const hotServer = () => __awaiter(void 0, void 0, void 0, function* () {
                         vm.runInNewContext(code.toString('utf-8'), vmContext);
                     });
                 }
+                else {
+                    stats.toJson().errors.forEach((error) => console.error(error.stack));
+                }
             }
             catch (e) {
                 console.log(e);

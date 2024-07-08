@@ -41,6 +41,9 @@ var hotServer = function () { return tslib_1.__awaiter(void 0, void 0, void 0, f
                                     vm_1.default.runInNewContext(code.toString('utf-8'), vmContext);
                                 });
                             }
+                            else {
+                                stats.toJson().errors.forEach(function (error) { return console.error(error.stack); });
+                            }
                         }
                         catch (e) {
                             console.log(e);

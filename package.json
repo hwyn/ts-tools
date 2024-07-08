@@ -1,6 +1,6 @@
 {
   "name": "ts-tools",
-  "version": "0.0.1",
+  "version": "0.0.1.beta.1",
   "description": "a ts tools",
   "files": [
     "bin",
@@ -10,7 +10,6 @@
   "bin": {
     "ts-tools": "./bin/ts-tools.js"
   },
-  "private": false,
   "license": "MIT",
   "devDependencies": {
     "@types/browser-sync": "^2.29.0",

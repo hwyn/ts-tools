@@ -38,6 +38,9 @@ export var hotServer = function () { return __awaiter(void 0, void 0, void 0, fu
                                     vm.runInNewContext(code.toString('utf-8'), vmContext);
                                 });
                             }
+                            else {
+                                stats.toJson().errors.forEach(function (error) { return console.error(error.stack); });
+                            }
                         }
                         catch (e) {
                             console.log(e);
