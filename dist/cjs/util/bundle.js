@@ -7,7 +7,6 @@ var tslib_1 = require("tslib");
 var lodash_1 = require("lodash");
 var webpack_1 = tslib_1.__importDefault(require("webpack"));
 var config_1 = require("../config");
-var config_2 = require("../config");
 var isRun = function (webpackconfig) {
     return !(0, lodash_1.isEmpty)(webpackconfig.entry);
 };
@@ -32,13 +31,15 @@ function webpackRun(webpackconfig, _stast) {
 }
 function webpackRunDll() {
     var entry = (0, config_1.platformConfig)(config_1.PlatformEnum.dll).entry;
-    return Object.keys(entry).reduce(function (promise, key) { return promise.then(function () {
-        var dll = (0, config_1.webpackDll)(key);
-        return webpackRun(dll, dll.stats);
-    }); }, Promise.resolve());
+    return Object.keys(entry).reduce(function (promise, key) { return promise
+        .then(function () { return (0, config_1.webpackDll)(key); })
+        .then(function (dll) { return webpackRun(dll, dll.stats); }); }, Promise.resolve());
 }
 exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
     return tslib_1.__generator(this, function (_a) {
-        return [2 /*return*/, (config_2.existenceDll ? webpackRunDll() : Promise.resolve()).then(function () { return webpackRun(tslib_1.__spreadArray(tslib_1.__spreadArray([], config_2.existenceServerEntry ? [(0, config_1.webpackServerEntry)()] : [], true), config_2.existenceClient ? [(0, config_1.webpackClient)()] : [], true)); }).then(function () { return webpackRun(tslib_1.__spreadArray([], config_2.existenceServer ? [(0, config_1.webpackServer)()] : [], true)); })];
+        return [2 /*return*/, (config_1.existenceDll ? webpackRunDll() : Promise.resolve()).then(function () { return Promise.all(tslib_1.__spreadArray(tslib_1.__spreadArray([], config_1.existenceServerEntry ? [(0, config_1.webpackServerEntry)()] : [], true), config_1.existenceClient ? [(0, config_1.webpackClient)()] : [], true)); })
+                .then(function (result) { return webpackRun(result); })
+                .then(function () { return Promise.all(tslib_1.__spreadArray([], config_1.existenceServer ? [(0, config_1.webpackServer)()] : [], true)); })
+                .then(function (result) { return webpackRun(result); })];
     });
 }); });

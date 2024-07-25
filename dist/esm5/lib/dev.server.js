@@ -1,6 +1,6 @@
 import { __awaiter, __generator } from "tslib";
 import express from 'express';
-import { project, existenceServer } from '../config';
+import { existenceServer, project } from '../config';
 import { hotServer } from './hot.server';
 // import nodemon from './nodemon.server';
 var _a = project.architect.build, _b = _a === void 0 ? {} : _a, platform = _b.platform;

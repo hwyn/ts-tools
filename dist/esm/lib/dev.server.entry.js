@@ -1,12 +1,12 @@
 import { __awaiter } from "tslib";
 import webpack from 'webpack';
-import { webpackDevServerEntry, existenceServerEntry } from '../config';
+import { existenceServerEntry, webpackDevServerEntry } from '../config';
 import { createCompilationPromise } from './compilation';
 export default () => __awaiter(void 0, void 0, void 0, function* () {
     if (!existenceServerEntry) {
         return Promise.resolve();
     }
-    const config = webpackDevServerEntry();
+    const config = yield webpackDevServerEntry();
     const multiCompiler = webpack(config, (error, stats) => {
         if (error) {
             return console.log(error);

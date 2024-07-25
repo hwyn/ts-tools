@@ -1,14 +1,16 @@
-import { existsSync } from 'fs';
+import { __awaiter } from "tslib";
 import CopyPlugin from 'copy-webpack-plugin';
-import { baseDir, platformConfig } from '../config';
-import { requireSync } from '../../core/fs';
+import { existsSync } from 'fs';
 import { isEmpty } from 'lodash';
 import path from 'path';
+import { requireSync } from '../../core/fs';
+import { baseDir, platformConfig } from '../config';
 const { isDevelopment, sourceRoot } = platformConfig();
-export const getMergeConfig = (filePath, jsRules, cssRules, config) => {
-    const mergeClientConfig = requireSync(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(jsRules, cssRules, isDevelopment, config);
-};
+export const getMergeConfig = (filePath, jsRules, cssRules, config) => __awaiter(void 0, void 0, void 0, function* () {
+    const mergeClientConfig = yield requireSync(filePath);
+    const args = [jsRules, cssRules, isDevelopment, config];
+    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : () => mergeClientConfig || {})(...args);
+});
 export const filterAttr = (mergeConfig, filter) => {
     const config = {};
     Object.keys(mergeConfig || {}).filter((key) => !filter.includes(key)).forEach((key) => config[key] = mergeConfig[key]);

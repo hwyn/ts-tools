@@ -1,17 +1,7 @@
-import path from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { isEmpty, merge } from 'lodash';
-import { requireSync } from '../core/fs';
-import { getArgv } from './project-arvg';
-const factoryConfig = (str) => (attr) => {
-    if (str.indexOf(attr) === -1)
-        return null;
-    return str.replace(new RegExp(`\[\\s\\S\]*${attr}=\(\[^ \]+\)\[\\s\\S\]*`, 'g'), '$1');
-};
-const resolve = (base) => (..._path) => path.resolve(...[base, ..._path]);
+import { baseResolve, resolve, resolveProject } from './resolve.project';
 const toArray = (obj) => Array.isArray(obj) ? obj : obj && [obj] || [];
-const baseDir = process.cwd();
-const baseResolve = resolve(baseDir);
 export var PlatformEnum;
 (function (PlatformEnum) {
     PlatformEnum["client"] = "client";
@@ -39,20 +29,19 @@ const defaultProject = {
     }
 };
 class ProjectConfig {
-    constructor(command, argv = []) {
+    constructor(command) {
         this.isDevelopment = false;
         this.analyzerStatus = false;
         this.baseResolve = baseResolve;
-        this.getArvgConfig = factoryConfig(getArgv()(argv).join(' '));
-        this.projectPath = baseResolve(this.getArvgConfig('project') || '.');
-        this.environmental = command === 'start' ? 'development' : 'build';
+        this.projectPath = baseResolve(resolveProject.getArgvConfig('project') || '.');
         this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
-        this.parseArvg();
+        this.environmental = command === 'start' ? 'development' : 'build';
+        this.parseArgv();
     }
-    parseArvg() {
-        this.environmental = this.getArvgConfig('environmental') || this.environmental;
-        this.isDevelopment = !this.getArvgConfig('--prod');
-        this.analyzerStatus = !!this.getArvgConfig('--stats-json');
+    parseArgv() {
+        this.environmental = resolveProject.getArgvConfig('environmental') || this.environmental;
+        this.isDevelopment = !resolveProject.getArgvConfig('--prod');
+        this.analyzerStatus = !!resolveProject.getArgvConfig('--stats-json');
     }
     parseConfig(config) {
         this.config = merge({}, defaultProject, config);
@@ -98,20 +87,6 @@ class ProjectConfig {
         }, {});
         return build;
     }
-    loadProjectConfig() {
-        let projectConfig;
-        const projectConfigJs = this.baseResolve(this.projectPath, 'project.config.js');
-        const projectConfigPath = this.baseResolve(this.projectPath, 'project.config.json');
-        const projectFunction = requireSync(projectConfigJs);
-        if (projectFunction) {
-            projectConfig = (typeof projectFunction === 'function' ? projectFunction : () => projectFunction || {})();
-        }
-        if (!projectConfig && existsSync(projectConfigPath)) {
-            projectConfig = JSON.parse(readFileSync(projectConfigPath, 'utf-8'));
-        }
-        this.parseConfig(projectConfig);
-        return this.config;
-    }
     parseAlias(alias) {
         return Object.keys(alias).reduce((obj, key) => (Object.assign(Object.assign({}, obj), { [key]: this.rootResolve(alias[key]) })), {});
     }
@@ -129,8 +104,8 @@ class ProjectConfig {
     static get project() {
         if (isEmpty(this._project)) {
             const argv = process.argv;
-            this._project = new ProjectConfig(argv.slice(2)[0], argv);
-            this._project.loadProjectConfig();
+            this._project = new ProjectConfig(argv.slice(2)[0]);
+            this._project.parseConfig(resolveProject.projectConfig);
         }
         return this._project && this._project.config || {};
     }
@@ -168,6 +143,7 @@ export const existenceServer = ProjectConfig.existenceServer;
 export const existenceDll = ProjectConfig.existenceDll;
 export const existenceServerEntry = ProjectConfig.existenceServerEntry;
 export const babellrc = ProjectConfig.babellrc;
+export { baseDir } from './resolve.project';
 export const platformConfig = (key) => {
     const { root, isDevelopment, analyzerStatus, sourceRoot, outputRoot, nodeModules } = project;
     const { architect: { build: { platform = {} } = {} } } = project;
@@ -202,4 +178,3 @@ export const platformConfig = (key) => {
         analyzerStatus
     };
 };
-export { baseDir };

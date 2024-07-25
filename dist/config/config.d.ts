@@ -1,4 +1,3 @@
-declare const baseDir: string;
 export declare enum PlatformEnum {
     client = "client",
     server = "server",
@@ -77,6 +76,7 @@ export declare const existenceServer: boolean;
 export declare const existenceDll: boolean;
 export declare const existenceServerEntry: boolean;
 export declare const babellrc: any;
+export { baseDir } from './resolve.project';
 export declare const platformConfig: (key?: string) => {
     root: string;
     index: string;
@@ -110,4 +110,3 @@ export declare const platformConfig: (key?: string) => {
     isDevelopment: boolean;
     analyzerStatus: boolean;
 };
-export { baseDir };

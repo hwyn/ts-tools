@@ -1,9 +1,9 @@
 import { __awaiter } from "tslib";
-import { rm, rmdir, existsSync, mkdir as fsMkdir, writeFile as fsWriteFile } from 'fs';
+import { existsSync, mkdir as fsMkdir, rm, rmdir, writeFile as fsWriteFile } from 'fs';
 export const exists = (path) => {
     return Promise.resolve(existsSync(path));
 };
-export const cleanDir = (path, options) => __awaiter(void 0, void 0, void 0, function* () {
+export const cleanDir = (path) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
         if (!existsSync(path)) {
             return resolve(null);
@@ -42,9 +42,9 @@ export const writeFile = (path, data, options) => __awaiter(void 0, void 0, void
         });
     });
 });
-export const requireSync = (path) => {
+export const requireSync = (path) => __awaiter(void 0, void 0, void 0, function* () {
     if (!existsSync(path)) {
         return;
     }
     return require(path);
-};
+});

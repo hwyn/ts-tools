@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
-var express_1 = tslib_1.__importDefault(require("express"));
 var browser_sync_1 = tslib_1.__importDefault(require("browser-sync"));
+var express_1 = tslib_1.__importDefault(require("express"));
 var config_1 = require("../config");
-var clean_1 = tslib_1.__importDefault(require("./clean"));
-var dev_server_1 = tslib_1.__importDefault(require("../lib/dev.server"));
 var dev_client_1 = tslib_1.__importDefault(require("../lib/dev.client"));
-var dev_server_entry_1 = tslib_1.__importDefault(require("../lib/dev.server.entry"));
 var dev_dll_1 = tslib_1.__importDefault(require("../lib/dev.dll"));
+var dev_server_1 = tslib_1.__importDefault(require("../lib/dev.server"));
+var dev_server_entry_1 = tslib_1.__importDefault(require("../lib/dev.server.entry"));
+var clean_1 = tslib_1.__importDefault(require("./clean"));
 var app = (0, express_1.default)();
 exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
     var host;

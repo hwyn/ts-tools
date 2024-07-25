@@ -1,6 +1,6 @@
 import { __awaiter, __generator } from "tslib";
-import { cleanDir } from '../core/fs';
 import { project } from '../config';
+import { cleanDir } from '../core/fs';
 export default (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {

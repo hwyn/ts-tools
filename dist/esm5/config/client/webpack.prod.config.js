@@ -1,25 +1,33 @@
-import { __assign } from "tslib";
-import merge from 'webpack-merge';
-import TerserPlugin from 'terser-webpack-plugin';
+import { __assign, __awaiter, __generator } from "tslib";
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import baseConfig from './webpack.base.config';
+import TerserPlugin from 'terser-webpack-plugin';
+import merge from 'webpack-merge';
 import { platformConfig, PlatformEnum } from '../config';
+import baseConfig from './webpack.base.config';
 var _a = platformConfig(PlatformEnum.client), tsConfig = _a.tsConfig, analyzerStatus = _a.analyzerStatus;
-export default (function () {
-    process.env.TS_NODE_PROJECT = tsConfig;
-    return merge(baseConfig(), {
-        optimization: __assign(__assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
-                new TerserPlugin({
-                    minify: TerserPlugin.uglifyJsMinify,
-                    terserOptions: {},
-                    extractComments: false,
-                })
-            ] }),
-        plugins: [
-            new MiniCssExtractPlugin({
-                filename: 'styleSheet/[name].[contenthash:4].css',
-                chunkFilename: 'styleSheet/[name].[chunkhash:4].css',
-            }),
-        ]
+export default (function () { return __awaiter(void 0, void 0, void 0, function () {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                process.env.TS_NODE_PROJECT = tsConfig;
+                _a = merge;
+                return [4 /*yield*/, baseConfig()];
+            case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
+                        optimization: __assign(__assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
+                                new TerserPlugin({
+                                    minify: TerserPlugin.uglifyJsMinify,
+                                    terserOptions: {},
+                                    extractComments: false,
+                                })
+                            ] }),
+                        plugins: [
+                            new MiniCssExtractPlugin({
+                                filename: 'styleSheet/[name].[contenthash:4].css',
+                                chunkFilename: 'styleSheet/[name].[chunkhash:4].css',
+                            }),
+                        ]
+                    }])];
+        }
     });
-});
+}); });

@@ -1,12 +1,12 @@
 import { __assign, __awaiter, __generator } from "tslib";
-import express from 'express';
 import browserSync from 'browser-sync';
+import express from 'express';
 import { existenceClient } from '../config';
-import cleanDir from './clean';
-import serverHotDev from '../lib/dev.server';
 import clientHotDev from '../lib/dev.client';
-import serverEntryHotDev from '../lib/dev.server.entry';
 import dllDev from '../lib/dev.dll';
+import serverHotDev from '../lib/dev.server';
+import serverEntryHotDev from '../lib/dev.server.entry';
+import cleanDir from './clean';
 var app = express();
 export default (function () { return __awaiter(void 0, void 0, void 0, function () {
     var host;

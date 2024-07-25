@@ -4,8 +4,8 @@ exports.jsLoader = jsLoader;
 exports.cssLoader = cssLoader;
 exports.assetResource = assetResource;
 var tslib_1 = require("tslib");
-var mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
 var lodash_1 = require("lodash");
+var mini_css_extract_plugin_1 = tslib_1.__importDefault(require("mini-css-extract-plugin"));
 var factoryUse = function (loader, options, mergeOption) { return ({
     loader: loader,
     options: Object.assign({}, options, mergeOption || {}),

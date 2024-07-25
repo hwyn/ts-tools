@@ -1,10 +1,11 @@
+import { __awaiter } from "tslib";
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import { ProgressPlugin } from 'webpack';
 import merge from 'webpack-merge';
 import nodeExtrnals from 'webpack-node-externals';
-import { ProgressPlugin } from 'webpack';
+import { cssLoader, jsLoader } from '../../core/util';
 import webpackConfig, { getMergeConfig } from '../base/webpack.config';
-import { jsLoader, cssLoader } from '../../core/util';
 import { babellrc, platformConfig, PlatformEnum } from '../config';
-import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 const { entry, nodeExternals, builder, tsConfig, root, isDevelopment, outputPath, themeVariable, resolveAlias, nodeModules, sourceRoot } = platformConfig(PlatformEnum.serverEntry);
 // tsconfig path 可以统一配置
 const { tsConfig: serverTsConfig = tsConfig } = platformConfig(PlatformEnum.server);
@@ -16,7 +17,7 @@ const cssRules = cssLoader(Object.assign(Object.assign({}, (themeVariable ? { re
             mode: (resourcePath) => /node_modules/.test(resourcePath) ? 'global' : 'local'
         }
     } }), !isDevelopment);
-export default () => {
+export default () => __awaiter(void 0, void 0, void 0, function* () {
     const config = merge(webpackConfig, {
         target: 'node',
         context: root,
@@ -63,5 +64,5 @@ export default () => {
             __dirname: false,
         },
     });
-    return merge(config, getMergeConfig(builder, jsRules, cssRules, config));
-};
+    return merge(config, yield getMergeConfig(builder, jsRules, cssRules, config));
+});

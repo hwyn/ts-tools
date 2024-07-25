@@ -1,6 +1,7 @@
 import { __awaiter, __generator } from "tslib";
 import path from 'path';
-var arvg = process.argv;
+import { resolveProject } from '../config/resolve.project';
+var argv = process.argv;
 function run(fn, options) {
     var task = typeof fn.default === 'undefined' ? fn : fn.default;
     return task(options);
@@ -10,14 +11,16 @@ export function init() {
         var exports_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    if (!(arvg.length > 2)) return [3 /*break*/, 2];
-                    exports_1 = require("".concat(path.join(__dirname, arvg.slice(2)[0]))).default;
-                    return [4 /*yield*/, run(exports_1)];
+                case 0: return [4 /*yield*/, resolveProject.loadProjectConfig()];
                 case 1:
                     _a.sent();
-                    _a.label = 2;
-                case 2: return [2 /*return*/];
+                    if (!(argv.length > 2)) return [3 /*break*/, 3];
+                    exports_1 = require("".concat(path.join(__dirname, argv.slice(2)[0]))).default;
+                    return [4 /*yield*/, run(exports_1)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
             }
         });
     });

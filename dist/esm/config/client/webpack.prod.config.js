@@ -1,12 +1,13 @@
-import merge from 'webpack-merge';
-import TerserPlugin from 'terser-webpack-plugin';
+import { __awaiter } from "tslib";
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import baseConfig from './webpack.base.config';
+import TerserPlugin from 'terser-webpack-plugin';
+import merge from 'webpack-merge';
 import { platformConfig, PlatformEnum } from '../config';
+import baseConfig from './webpack.base.config';
 const { tsConfig, analyzerStatus } = platformConfig(PlatformEnum.client);
-export default () => {
+export default () => __awaiter(void 0, void 0, void 0, function* () {
     process.env.TS_NODE_PROJECT = tsConfig;
-    return merge(baseConfig(), {
+    return merge(yield baseConfig(), {
         optimization: Object.assign(Object.assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
                 new TerserPlugin({
                     minify: TerserPlugin.uglifyJsMinify,
@@ -21,4 +22,4 @@ export default () => {
             }),
         ]
     });
-};
+});

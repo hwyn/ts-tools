@@ -1,8 +1,7 @@
 import { __awaiter } from "tslib";
 import { isEmpty } from 'lodash';
 import webpack from 'webpack';
-import { webpackServer, webpackClient, webpackDll, webpackServerEntry, platformConfig, PlatformEnum } from '../config';
-import { existenceClient, existenceDll, existenceServer, existenceServerEntry } from '../config';
+import { existenceClient, existenceDll, existenceServer, existenceServerEntry, platformConfig, PlatformEnum, webpackClient, webpackDll, webpackServer, webpackServerEntry } from '../config';
 export const isRun = (webpackconfig) => {
     return !isEmpty(webpackconfig.entry);
 };
@@ -26,14 +25,16 @@ export function webpackRun(webpackconfig, _stast) {
 }
 export function webpackRunDll() {
     const { entry } = platformConfig(PlatformEnum.dll);
-    return Object.keys(entry).reduce((promise, key) => promise.then(() => {
-        const dll = webpackDll(key);
-        return webpackRun(dll, dll.stats);
-    }), Promise.resolve());
+    return Object.keys(entry).reduce((promise, key) => promise
+        .then(() => webpackDll(key))
+        .then((dll) => webpackRun(dll, dll.stats)), Promise.resolve());
 }
 export default () => __awaiter(void 0, void 0, void 0, function* () {
-    return (existenceDll ? webpackRunDll() : Promise.resolve()).then(() => webpackRun([
+    return (existenceDll ? webpackRunDll() : Promise.resolve()).then(() => Promise.all([
         ...existenceServerEntry ? [webpackServerEntry()] : [],
         ...existenceClient ? [webpackClient()] : [],
-    ])).then(() => webpackRun([...existenceServer ? [webpackServer()] : []]));
+    ]))
+        .then((result) => webpackRun(result))
+        .then(() => Promise.all([...existenceServer ? [webpackServer()] : []]))
+        .then((result) => webpackRun(result));
 });

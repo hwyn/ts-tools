@@ -1,29 +1,12 @@
 "use strict";
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.baseDir = exports.platformConfig = exports.babellrc = exports.existenceServerEntry = exports.existenceDll = exports.existenceServer = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;
+exports.platformConfig = exports.baseDir = exports.babellrc = exports.existenceServerEntry = exports.existenceDll = exports.existenceServer = exports.existenceClient = exports.project = exports.platformDefaultEntry = exports.PlatformEnum = void 0;
 var tslib_1 = require("tslib");
-var path_1 = tslib_1.__importDefault(require("path"));
 var fs_1 = require("fs");
 var lodash_1 = require("lodash");
-var fs_2 = require("../core/fs");
-var project_arvg_1 = require("./project-arvg");
-var factoryConfig = function (str) { return function (attr) {
-    if (str.indexOf(attr) === -1)
-        return null;
-    return str.replace(new RegExp("[\\s\\S]*".concat(attr, "=([^ ]+)[\\s\\S]*"), 'g'), '$1');
-}; };
-var resolve = function (base) { return function () {
-    var _path = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        _path[_i] = arguments[_i];
-    }
-    return path_1.default.resolve.apply(path_1.default, tslib_1.__spreadArray([base], _path, true));
-}; };
+var resolve_project_1 = require("./resolve.project");
 var toArray = function (obj) { return Array.isArray(obj) ? obj : obj && [obj] || []; };
-var baseDir = process.cwd();
-exports.baseDir = baseDir;
-var baseResolve = resolve(baseDir);
 var PlatformEnum;
 (function (PlatformEnum) {
     PlatformEnum["client"] = "client";
@@ -41,8 +24,8 @@ var defaultProject = {
     root: '.',
     sourceRoot: 'src',
     outputRoot: 'dist',
-    packagePath: baseResolve('package.json'),
-    nodeModules: baseResolve('node_modules'),
+    packagePath: (0, resolve_project_1.baseResolve)('package.json'),
+    nodeModules: (0, resolve_project_1.baseResolve)('node_modules'),
     isDevelopment: false,
     analyzerStatus: false,
     architect: {
@@ -51,33 +34,31 @@ var defaultProject = {
     }
 };
 var ProjectConfig = /** @class */ (function () {
-    function ProjectConfig(command, argv) {
-        if (argv === void 0) { argv = []; }
+    function ProjectConfig(command) {
         this.isDevelopment = false;
         this.analyzerStatus = false;
-        this.baseResolve = baseResolve;
-        this.getArvgConfig = factoryConfig((0, project_arvg_1.getArgv)()(argv).join(' '));
-        this.projectPath = baseResolve(this.getArvgConfig('project') || '.');
+        this.baseResolve = resolve_project_1.baseResolve;
+        this.projectPath = (0, resolve_project_1.baseResolve)(resolve_project_1.resolveProject.getArgvConfig('project') || '.');
+        this.babelFilePath = (0, resolve_project_1.baseResolve)(this.projectPath, '.babelrc');
         this.environmental = command === 'start' ? 'development' : 'build';
-        this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
-        this.parseArvg();
+        this.parseArgv();
     }
-    ProjectConfig.prototype.parseArvg = function () {
-        this.environmental = this.getArvgConfig('environmental') || this.environmental;
-        this.isDevelopment = !this.getArvgConfig('--prod');
-        this.analyzerStatus = !!this.getArvgConfig('--stats-json');
+    ProjectConfig.prototype.parseArgv = function () {
+        this.environmental = resolve_project_1.resolveProject.getArgvConfig('environmental') || this.environmental;
+        this.isDevelopment = !resolve_project_1.resolveProject.getArgvConfig('--prod');
+        this.analyzerStatus = !!resolve_project_1.resolveProject.getArgvConfig('--stats-json');
     };
     ProjectConfig.prototype.parseConfig = function (config) {
         this.config = (0, lodash_1.merge)({}, defaultProject, config);
         var _a = this.config, root = _a.root, sourceRoot = _a.sourceRoot, outputRoot = _a.outputRoot, architect = _a.architect;
         this.config.root = this.baseResolve(root);
-        this.rootResolve = resolve(this.baseResolve(root));
+        this.rootResolve = (0, resolve_project_1.resolve)(this.baseResolve(root));
         this.config.sourceRoot = this.rootResolve(sourceRoot);
         this.config.outputRoot = this.rootResolve(outputRoot);
         this.config.isDevelopment = this.isDevelopment;
         this.config.analyzerStatus = this.analyzerStatus;
-        this.outputRootResolve = resolve(this.rootResolve(outputRoot));
-        this.sourceRootResolve = resolve(this.rootResolve(sourceRoot));
+        this.outputRootResolve = (0, resolve_project_1.resolve)(this.rootResolve(outputRoot));
+        this.sourceRootResolve = (0, resolve_project_1.resolve)(this.rootResolve(sourceRoot));
         architect.build = this.parseBuild({ platform: architect.platform }, architect.additional);
     };
     ProjectConfig.prototype.getPlatformConfig = function (platformKey, platform, additional) {
@@ -115,20 +96,6 @@ var ProjectConfig = /** @class */ (function () {
         }, {});
         return build;
     };
-    ProjectConfig.prototype.loadProjectConfig = function () {
-        var projectConfig;
-        var projectConfigJs = this.baseResolve(this.projectPath, 'project.config.js');
-        var projectConfigPath = this.baseResolve(this.projectPath, 'project.config.json');
-        var projectFunction = (0, fs_2.requireSync)(projectConfigJs);
-        if (projectFunction) {
-            projectConfig = (typeof projectFunction === 'function' ? projectFunction : function () { return projectFunction || {}; })();
-        }
-        if (!projectConfig && (0, fs_1.existsSync)(projectConfigPath)) {
-            projectConfig = JSON.parse((0, fs_1.readFileSync)(projectConfigPath, 'utf-8'));
-        }
-        this.parseConfig(projectConfig);
-        return this.config;
-    };
     ProjectConfig.prototype.parseAlias = function (alias) {
         var _this = this;
         return Object.keys(alias).reduce(function (obj, key) {
@@ -156,8 +123,8 @@ var ProjectConfig = /** @class */ (function () {
         get: function () {
             if ((0, lodash_1.isEmpty)(this._project)) {
                 var argv = process.argv;
-                this._project = new ProjectConfig(argv.slice(2)[0], argv);
-                this._project.loadProjectConfig();
+                this._project = new ProjectConfig(argv.slice(2)[0]);
+                this._project.parseConfig(resolve_project_1.resolveProject.projectConfig);
             }
             return this._project && this._project.config || {};
         },
@@ -219,6 +186,8 @@ exports.existenceServer = ProjectConfig.existenceServer;
 exports.existenceDll = ProjectConfig.existenceDll;
 exports.existenceServerEntry = ProjectConfig.existenceServerEntry;
 exports.babellrc = ProjectConfig.babellrc;
+var resolve_project_2 = require("./resolve.project");
+Object.defineProperty(exports, "baseDir", { enumerable: true, get: function () { return resolve_project_2.baseDir; } });
 var platformConfig = function (key) {
     var root = exports.project.root, isDevelopment = exports.project.isDevelopment, analyzerStatus = exports.project.analyzerStatus, sourceRoot = exports.project.sourceRoot, outputRoot = exports.project.outputRoot, nodeModules = exports.project.nodeModules;
     var _a = exports.project.architect.build, _b = _a === void 0 ? {} : _a, _c = _b.platform, platform = _c === void 0 ? {} : _c;

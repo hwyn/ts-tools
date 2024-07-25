@@ -1,15 +1,15 @@
-import { __rest } from "tslib";
-import merge from 'webpack-merge';
-import { ProgressPlugin, DllReferencePlugin } from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import WebpackAssetsManifest from 'webpack-assets-manifest';
+import { __awaiter, __rest } from "tslib";
 import { existsSync } from 'fs';
-import webpackConfig, { getMergeConfig, copyPlugin } from '../base/webpack.config';
-import { jsLoader, cssLoader, assetResource } from '../../core/util';
-import { babellrc, platformConfig, PlatformEnum } from '../config';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { isEmpty } from 'lodash';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+import { DllReferencePlugin, ProgressPlugin } from 'webpack';
+import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import merge from 'webpack-merge';
+import { assetResource, cssLoader, jsLoader } from '../../core/util';
+import webpackConfig, { copyPlugin, getMergeConfig } from '../base/webpack.config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
 const { presets = [], plugins } = babellrc, babellrcOthers = __rest(babellrc, ["presets", "plugins"]);
 const { root, externals = {}, resolveAlias, sourceRoot, nodeModules, index, entry, publicPath = '/', themeVariable, styles, assets, outputPath, tsConfig, isDevelopment, analyzerStatus, builder, browserTarget = [], manifestDll: originManifestDll, styleLoaderOptions } = platformConfig(PlatformEnum.client);
 // tsconfig path 可以统一配置
@@ -29,7 +29,7 @@ const jsRules = jsLoader({
 const fileResource = assetResource();
 const defaultMainfestPath = `${outputPath}/manifest/dll-common-manifest.json`;
 const manifestDll = originManifestDll ? originManifestDll : existsSync(defaultMainfestPath) ? [defaultMainfestPath] : [];
-export default () => {
+export default () => __awaiter(void 0, void 0, void 0, function* () {
     const config = merge(webpackConfig, {
         target: 'web',
         context: root,
@@ -113,5 +113,5 @@ export default () => {
                 })] : []
         ],
     });
-    return merge(config, getMergeConfig(builder, jsRules, cssRules, config));
-};
+    return merge(config, yield getMergeConfig(builder, jsRules, cssRules, config));
+});

@@ -1,20 +1,23 @@
 import { __awaiter, __generator } from "tslib";
-import { project } from '../config';
-import { writeFile, requireSync } from '../core/fs';
-import clean from './clean';
-import bundle from './bundle';
-import run from './run';
 import fs from 'fs';
+import { project } from '../config';
+import { requireSync, writeFile } from '../core/fs';
+import bundle from './bundle';
+import clean from './clean';
+import run from './run';
 var defaultPath = "".concat(project.packagePath, "/package.json");
-var pkg = requireSync(fs.existsSync(defaultPath) ? defaultPath : project.packagePath);
-export default (function (pkg, buildDir) { return function () { return __awaiter(void 0, void 0, void 0, function () {
+export default (function (buildDir) { return function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkg;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, run(clean)];
+            case 0: return [4 /*yield*/, requireSync(fs.existsSync(defaultPath) ? defaultPath : project.packagePath)];
             case 1:
+                pkg = (_a.sent()) || {};
+                return [4 /*yield*/, run(clean)];
+            case 2:
                 _a.sent();
                 return [4 /*yield*/, run(bundle)];
-            case 2:
+            case 3:
                 _a.sent();
                 return [4 /*yield*/, writeFile("".concat(buildDir, "/package.json"), JSON.stringify({
                         private: true,
@@ -23,9 +26,9 @@ export default (function (pkg, buildDir) { return function () { return __awaiter
                         },
                         dependencies: pkg.dependencies,
                     }))];
-            case 3:
+            case 4:
                 _a.sent();
                 return [2 /*return*/];
         }
     });
-}); }; })(pkg || {}, project.outputRoot);
+}); }; })(project.outputRoot);

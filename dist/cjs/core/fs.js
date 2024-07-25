@@ -7,7 +7,7 @@ var exists = function (path) {
     return Promise.resolve((0, fs_1.existsSync)(path));
 };
 exports.exists = exists;
-var cleanDir = function (path, options) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+var cleanDir = function (path) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
     return tslib_1.__generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 if (!(0, fs_1.existsSync)(path)) {
@@ -56,10 +56,12 @@ var writeFile = function (path, data, options) { return tslib_1.__awaiter(void 0
     });
 }); };
 exports.writeFile = writeFile;
-var requireSync = function (path) {
-    if (!(0, fs_1.existsSync)(path)) {
-        return;
-    }
-    return require(path);
-};
+var requireSync = function (path) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+    return tslib_1.__generator(this, function (_a) {
+        if (!(0, fs_1.existsSync)(path)) {
+            return [2 /*return*/];
+        }
+        return [2 /*return*/, require(path)];
+    });
+}); };
 exports.requireSync = requireSync;

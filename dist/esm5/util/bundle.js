@@ -1,8 +1,7 @@
 import { __awaiter, __generator, __spreadArray } from "tslib";
 import { isEmpty } from 'lodash';
 import webpack from 'webpack';
-import { webpackServer, webpackClient, webpackDll, webpackServerEntry, platformConfig, PlatformEnum } from '../config';
-import { existenceClient, existenceDll, existenceServer, existenceServerEntry } from '../config';
+import { existenceClient, existenceDll, existenceServer, existenceServerEntry, platformConfig, PlatformEnum, webpackClient, webpackDll, webpackServer, webpackServerEntry } from '../config';
 export var isRun = function (webpackconfig) {
     return !isEmpty(webpackconfig.entry);
 };
@@ -26,13 +25,15 @@ export function webpackRun(webpackconfig, _stast) {
 }
 export function webpackRunDll() {
     var entry = platformConfig(PlatformEnum.dll).entry;
-    return Object.keys(entry).reduce(function (promise, key) { return promise.then(function () {
-        var dll = webpackDll(key);
-        return webpackRun(dll, dll.stats);
-    }); }, Promise.resolve());
+    return Object.keys(entry).reduce(function (promise, key) { return promise
+        .then(function () { return webpackDll(key); })
+        .then(function (dll) { return webpackRun(dll, dll.stats); }); }, Promise.resolve());
 }
 export default (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, (existenceDll ? webpackRunDll() : Promise.resolve()).then(function () { return webpackRun(__spreadArray(__spreadArray([], existenceServerEntry ? [webpackServerEntry()] : [], true), existenceClient ? [webpackClient()] : [], true)); }).then(function () { return webpackRun(__spreadArray([], existenceServer ? [webpackServer()] : [], true)); })];
+        return [2 /*return*/, (existenceDll ? webpackRunDll() : Promise.resolve()).then(function () { return Promise.all(__spreadArray(__spreadArray([], existenceServerEntry ? [webpackServerEntry()] : [], true), existenceClient ? [webpackClient()] : [], true)); })
+                .then(function (result) { return webpackRun(result); })
+                .then(function () { return Promise.all(__spreadArray([], existenceServer ? [webpackServer()] : [], true)); })
+                .then(function (result) { return webpackRun(result); })];
     });
 }); });

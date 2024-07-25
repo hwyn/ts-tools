@@ -1,14 +1,14 @@
-import webpack, { DllReferencePlugin } from 'webpack';
-import merge from 'webpack-merge';
-import { ProgressPlugin } from 'webpack';
-import WebpackAssetsManifest from 'webpack-assets-manifest';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import webpackConfig, { getMergeConfig } from '../base/webpack.config';
-import { jsLoader, cssLoader, assetResource } from '../../core/util';
-import { babellrc, platformConfig, PlatformEnum } from '../config';
-import path from 'path';
+import { __awaiter } from "tslib";
 import { existsSync } from 'fs';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import path from 'path';
+import webpack, { DllReferencePlugin, ProgressPlugin } from 'webpack';
+import WebpackAssetsManifest from 'webpack-assets-manifest';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import merge from 'webpack-merge';
+import { assetResource, cssLoader, jsLoader } from '../../core/util';
+import webpackConfig, { getMergeConfig } from '../base/webpack.config';
+import { babellrc, platformConfig, PlatformEnum } from '../config';
 const { presets = [], plugins } = babellrc;
 const { root, resolveAlias, externals, manifestDll, builder, entry: originEntry, outputPath, tsConfig, browserTarget, analyzerStatus } = platformConfig(PlatformEnum.dll);
 const jsRules = jsLoader({
@@ -24,7 +24,7 @@ const jsRules = jsLoader({
 });
 const cssRules = cssLoader({}, true);
 const fileResource = assetResource();
-export default (entryKey) => {
+export default (entryKey) => __awaiter(void 0, void 0, void 0, function* () {
     const config = merge(webpackConfig, {
         target: 'web',
         context: root,
@@ -85,5 +85,5 @@ export default (entryKey) => {
             ] : [],
         ],
     });
-    return merge(config, getMergeConfig(builder, jsRules, cssRules, config));
-};
+    return merge(config, yield getMergeConfig(builder, jsRules, cssRules, config));
+});

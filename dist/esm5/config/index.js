@@ -1,10 +1,10 @@
-import webpackClient from './client/webpack.prod.config';
 import webpackDevClient from './client/webpack.dev.config';
-import webpackServer from './server/webpack.prod.config';
-import webpackDevServer from './server/webpack.dev.config';
-import webpackDll from './dll/webpack.prod.config';
+import webpackClient from './client/webpack.prod.config';
 import webpackDevDll from './dll/webpack.dev.config';
-import webpackServerEntry from './server-entry/webpack.prod.config';
+import webpackDll from './dll/webpack.prod.config';
+import webpackDevServer from './server/webpack.dev.config';
+import webpackServer from './server/webpack.prod.config';
 import webpackDevServerEntry from './server-entry/webpack.dev.config';
-export { webpackClient, webpackDevClient, webpackServer, webpackDevServer, webpackDll, webpackDevDll, webpackServerEntry, webpackDevServerEntry, };
+import webpackServerEntry from './server-entry/webpack.prod.config';
+export { webpackClient, webpackDevClient, webpackDevDll, webpackDevServer, webpackDevServerEntry, webpackDll, webpackServer, webpackServerEntry, };
 export * from './config';

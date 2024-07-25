@@ -1,14 +1,23 @@
-import { existsSync } from 'fs';
+import { __awaiter, __generator } from "tslib";
 import CopyPlugin from 'copy-webpack-plugin';
-import { baseDir, platformConfig } from '../config';
-import { requireSync } from '../../core/fs';
+import { existsSync } from 'fs';
 import { isEmpty } from 'lodash';
 import path from 'path';
+import { requireSync } from '../../core/fs';
+import { baseDir, platformConfig } from '../config';
 var _a = platformConfig(), isDevelopment = _a.isDevelopment, sourceRoot = _a.sourceRoot;
-export var getMergeConfig = function (filePath, jsRules, cssRules, config) {
-    var mergeClientConfig = requireSync(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : function () { return mergeClientConfig || {}; })(jsRules, cssRules, isDevelopment, config);
-};
+export var getMergeConfig = function (filePath, jsRules, cssRules, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var mergeClientConfig, args;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, requireSync(filePath)];
+            case 1:
+                mergeClientConfig = _a.sent();
+                args = [jsRules, cssRules, isDevelopment, config];
+                return [2 /*return*/, (typeof mergeClientConfig === 'function' ? mergeClientConfig : function () { return mergeClientConfig || {}; }).apply(void 0, args)];
+        }
+    });
+}); };
 export var filterAttr = function (mergeConfig, filter) {
     var config = {};
     Object.keys(mergeConfig || {}).filter(function (key) { return !filter.includes(key); }).forEach(function (key) { return config[key] = mergeConfig[key]; });

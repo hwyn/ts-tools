@@ -2,17 +2,25 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.copyPlugin = exports.filterAttr = exports.getMergeConfig = void 0;
 var tslib_1 = require("tslib");
-var fs_1 = require("fs");
 var copy_webpack_plugin_1 = tslib_1.__importDefault(require("copy-webpack-plugin"));
-var config_1 = require("../config");
-var fs_2 = require("../../core/fs");
+var fs_1 = require("fs");
 var lodash_1 = require("lodash");
 var path_1 = tslib_1.__importDefault(require("path"));
+var fs_2 = require("../../core/fs");
+var config_1 = require("../config");
 var _a = (0, config_1.platformConfig)(), isDevelopment = _a.isDevelopment, sourceRoot = _a.sourceRoot;
-var getMergeConfig = function (filePath, jsRules, cssRules, config) {
-    var mergeClientConfig = (0, fs_2.requireSync)(filePath);
-    return (typeof mergeClientConfig === 'function' ? mergeClientConfig : function () { return mergeClientConfig || {}; })(jsRules, cssRules, isDevelopment, config);
-};
+var getMergeConfig = function (filePath, jsRules, cssRules, config) { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
+    var mergeClientConfig, args;
+    return tslib_1.__generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, fs_2.requireSync)(filePath)];
+            case 1:
+                mergeClientConfig = _a.sent();
+                args = [jsRules, cssRules, isDevelopment, config];
+                return [2 /*return*/, (typeof mergeClientConfig === 'function' ? mergeClientConfig : function () { return mergeClientConfig || {}; }).apply(void 0, args)];
+        }
+    });
+}); };
 exports.getMergeConfig = getMergeConfig;
 var filterAttr = function (mergeConfig, filter) {
     var config = {};

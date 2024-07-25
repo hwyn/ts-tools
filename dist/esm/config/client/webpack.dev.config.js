@@ -1,12 +1,13 @@
+import { __awaiter } from "tslib";
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-import baseConfig from './webpack.base.config';
 import { happypackMerge } from '../../core/happypack';
 import { platformConfig, PlatformEnum } from '../config';
+import baseConfig from './webpack.base.config';
 const hotPlug = (key) => `webpack-hot-middleware/client?path=__webpack_hmr&name=${key}&reload=true&dynamicPublicPath=true`;
 const { sourceMap, hasSourceMap } = platformConfig(PlatformEnum.client);
-export default () => {
-    const config = baseConfig();
+export default () => __awaiter(void 0, void 0, void 0, function* () {
+    const config = yield baseConfig();
     const { entry } = config;
     const { output: { filename = '', chunkFilename = '' } = {} } = config;
     delete config.entry;
@@ -19,4 +20,4 @@ export default () => {
             new webpack.HotModuleReplacementPlugin(),
             new webpack.NoEmitOnErrorsPlugin()
         ] }, hasSourceMap ? { devtool: sourceMap } : {})));
-};
+});

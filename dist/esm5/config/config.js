@@ -1,25 +1,9 @@
 var _a;
-import { __assign, __spreadArray } from "tslib";
-import path from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { __assign } from "tslib";
+import { existsSync, readFileSync } from 'fs';
 import { isEmpty, merge } from 'lodash';
-import { requireSync } from '../core/fs';
-import { getArgv } from './project-arvg';
-var factoryConfig = function (str) { return function (attr) {
-    if (str.indexOf(attr) === -1)
-        return null;
-    return str.replace(new RegExp("[\\s\\S]*".concat(attr, "=([^ ]+)[\\s\\S]*"), 'g'), '$1');
-}; };
-var resolve = function (base) { return function () {
-    var _path = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        _path[_i] = arguments[_i];
-    }
-    return path.resolve.apply(path, __spreadArray([base], _path, true));
-}; };
+import { baseResolve, resolve, resolveProject } from './resolve.project';
 var toArray = function (obj) { return Array.isArray(obj) ? obj : obj && [obj] || []; };
-var baseDir = process.cwd();
-var baseResolve = resolve(baseDir);
 export var PlatformEnum;
 (function (PlatformEnum) {
     PlatformEnum["client"] = "client";
@@ -47,21 +31,19 @@ var defaultProject = {
     }
 };
 var ProjectConfig = /** @class */ (function () {
-    function ProjectConfig(command, argv) {
-        if (argv === void 0) { argv = []; }
+    function ProjectConfig(command) {
         this.isDevelopment = false;
         this.analyzerStatus = false;
         this.baseResolve = baseResolve;
-        this.getArvgConfig = factoryConfig(getArgv()(argv).join(' '));
-        this.projectPath = baseResolve(this.getArvgConfig('project') || '.');
-        this.environmental = command === 'start' ? 'development' : 'build';
+        this.projectPath = baseResolve(resolveProject.getArgvConfig('project') || '.');
         this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
-        this.parseArvg();
+        this.environmental = command === 'start' ? 'development' : 'build';
+        this.parseArgv();
     }
-    ProjectConfig.prototype.parseArvg = function () {
-        this.environmental = this.getArvgConfig('environmental') || this.environmental;
-        this.isDevelopment = !this.getArvgConfig('--prod');
-        this.analyzerStatus = !!this.getArvgConfig('--stats-json');
+    ProjectConfig.prototype.parseArgv = function () {
+        this.environmental = resolveProject.getArgvConfig('environmental') || this.environmental;
+        this.isDevelopment = !resolveProject.getArgvConfig('--prod');
+        this.analyzerStatus = !!resolveProject.getArgvConfig('--stats-json');
     };
     ProjectConfig.prototype.parseConfig = function (config) {
         this.config = merge({}, defaultProject, config);
@@ -111,20 +93,6 @@ var ProjectConfig = /** @class */ (function () {
         }, {});
         return build;
     };
-    ProjectConfig.prototype.loadProjectConfig = function () {
-        var projectConfig;
-        var projectConfigJs = this.baseResolve(this.projectPath, 'project.config.js');
-        var projectConfigPath = this.baseResolve(this.projectPath, 'project.config.json');
-        var projectFunction = requireSync(projectConfigJs);
-        if (projectFunction) {
-            projectConfig = (typeof projectFunction === 'function' ? projectFunction : function () { return projectFunction || {}; })();
-        }
-        if (!projectConfig && existsSync(projectConfigPath)) {
-            projectConfig = JSON.parse(readFileSync(projectConfigPath, 'utf-8'));
-        }
-        this.parseConfig(projectConfig);
-        return this.config;
-    };
     ProjectConfig.prototype.parseAlias = function (alias) {
         var _this = this;
         return Object.keys(alias).reduce(function (obj, key) {
@@ -152,8 +120,8 @@ var ProjectConfig = /** @class */ (function () {
         get: function () {
             if (isEmpty(this._project)) {
                 var argv = process.argv;
-                this._project = new ProjectConfig(argv.slice(2)[0], argv);
-                this._project.loadProjectConfig();
+                this._project = new ProjectConfig(argv.slice(2)[0]);
+                this._project.parseConfig(resolveProject.projectConfig);
             }
             return this._project && this._project.config || {};
         },
@@ -215,6 +183,7 @@ export var existenceServer = ProjectConfig.existenceServer;
 export var existenceDll = ProjectConfig.existenceDll;
 export var existenceServerEntry = ProjectConfig.existenceServerEntry;
 export var babellrc = ProjectConfig.babellrc;
+export { baseDir } from './resolve.project';
 export var platformConfig = function (key) {
     var root = project.root, isDevelopment = project.isDevelopment, analyzerStatus = project.analyzerStatus, sourceRoot = project.sourceRoot, outputRoot = project.outputRoot, nodeModules = project.nodeModules;
     var _a = project.architect.build, _b = _a === void 0 ? {} : _a, _c = _b.platform, platform = _c === void 0 ? {} : _c;
@@ -249,4 +218,3 @@ export var platformConfig = function (key) {
         analyzerStatus: analyzerStatus
     };
 };
-export { baseDir };

@@ -1,6 +1,6 @@
 import { __assign, __rest } from "tslib";
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { isEmpty } from 'lodash';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 var factoryUse = function (loader, options, mergeOption) { return ({
     loader: loader,
     options: Object.assign({}, options, mergeOption || {}),
