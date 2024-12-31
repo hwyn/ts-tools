@@ -16,10 +16,11 @@ exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0
                 _a = webpack_merge_1.default;
                 return [4 /*yield*/, (0, webpack_base_config_1.default)()];
             case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
-                        optimization: tslib_1.__assign(tslib_1.__assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
+                        optimization: tslib_1.__assign(tslib_1.__assign({ emitOnErrors: true, mergeDuplicateChunks: true }, analyzerStatus ? { mergeDuplicateChunks: false, concatenateModules: false } : {}), { minimize: true, minimizer: [
                                 new terser_webpack_plugin_1.default({
-                                    minify: terser_webpack_plugin_1.default.uglifyJsMinify,
-                                    terserOptions: {},
+                                    terserOptions: {
+                                        format: { comments: false }
+                                    },
                                     extractComments: false,
                                 })
                             ] }),

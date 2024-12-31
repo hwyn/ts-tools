@@ -37,14 +37,10 @@ var ProjectConfig = /** @class */ (function () {
         this.baseResolve = baseResolve;
         this.projectPath = baseResolve(resolveProject.getArgvConfig('project') || '.');
         this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
-        this.environmental = command === 'start' ? 'development' : 'build';
-        this.parseArgv();
-    }
-    ProjectConfig.prototype.parseArgv = function () {
-        this.environmental = resolveProject.getArgvConfig('environmental') || this.environmental;
-        this.isDevelopment = !resolveProject.getArgvConfig('--prod');
+        this.isDevelopment = command === 'start';
         this.analyzerStatus = !!resolveProject.getArgvConfig('--stats-json');
-    };
+        this.environmental = resolveProject.getArgvConfig('environmental') || (command === 'start' ? 'development' : 'build');
+    }
     ProjectConfig.prototype.parseConfig = function (config) {
         this.config = merge({}, defaultProject, config);
         var _a = this.config, root = _a.root, sourceRoot = _a.sourceRoot, outputRoot = _a.outputRoot, architect = _a.architect;

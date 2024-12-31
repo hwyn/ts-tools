@@ -12,7 +12,7 @@ var compilation_1 = require("./compilation");
 var serverPlatform = (0, config_1.platformConfig)('server');
 var _a = serverPlatform.hotContext, hotContext = _a === void 0 ? '' : _a, outputPath = serverPlatform.outputPath;
 var hotServer = function () { return tslib_1.__awaiter(void 0, void 0, void 0, function () {
-    var vmContext, hotReload, contextSync, hotVmContext, serverConfig, multiCompiler, promise;
+    var vmContext, hotObject, contextSync, hotVmContext, serverConfig, multiCompiler, promise;
     return tslib_1.__generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, fs_1.requireSync)(hotContext)];
@@ -24,18 +24,23 @@ var hotServer = function () { return tslib_1.__awaiter(void 0, void 0, void 0, f
                 serverConfig = _a.sent();
                 multiCompiler = (0, webpack_1.default)(serverConfig);
                 promise = new Promise(function (resolve, reject) {
+                    var interval = setInterval(function () {
+                        if (hotObject) {
+                            resolve(hotObject.hotHost);
+                            clearInterval(interval);
+                        }
+                    }, 500);
                     process.on('unhandledRejection', function (reason) { return console.log(reason); });
                     multiCompiler.hooks.done.tap('hot-server', function (stats) {
-                        if (hotReload)
-                            hotReload();
+                        if (hotObject)
+                            hotObject === null || hotObject === void 0 ? void 0 : hotObject.hotReload();
                         try {
                             if (!stats.hasErrors()) {
                                 multiCompiler.outputFileSystem.readFile(path_1.default.join(outputPath, 'server.js'), function (error, code) {
-                                    var context = (0, lodash_1.merge)(hotVmContext, tslib_1.__assign(tslib_1.__assign({}, global), { require: require, process: process, console: console, global: global, Buffer: Buffer, hotReload: function (reload) { return hotReload = reload; } }));
+                                    var context = (0, lodash_1.merge)(hotVmContext, tslib_1.__assign(tslib_1.__assign({}, global), { require: require, process: process, console: console, global: global, Buffer: Buffer, hotReload: function (reload) { return hotObject = reload; } }));
                                     process.env.NODE_ENV = 'development';
                                     vmContext = vm_1.default.createContext(context);
                                     vm_1.default.runInNewContext(code.toString('utf-8'), vmContext);
-                                    resolve(null);
                                 });
                             }
                             else {
@@ -44,7 +49,6 @@ var hotServer = function () { return tslib_1.__awaiter(void 0, void 0, void 0, f
                         }
                         catch (e) {
                             console.log(e);
-                            reject(e);
                         }
                     });
                 });

@@ -12,10 +12,11 @@ export default (function (entryKey) { return __awaiter(void 0, void 0, void 0, f
                 _a = merge;
                 return [4 /*yield*/, baseConfig(entryKey)];
             case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
-                        optimization: __assign(__assign({ splitChunks: {}, mergeDuplicateChunks: true, minimize: true }, analyzerStatus ? { concatenateModules: false } : {}), { minimizer: [
+                        optimization: __assign(__assign({ mergeDuplicateChunks: true }, analyzerStatus ? { mergeDuplicateChunks: false, concatenateModules: false } : {}), { minimize: true, minimizer: [
                                 new TerserPlugin({
-                                    minify: TerserPlugin.uglifyJsMinify,
-                                    terserOptions: {},
+                                    terserOptions: {
+                                        format: { comments: false }
+                                    },
                                     extractComments: false,
                                 })
                             ] }),

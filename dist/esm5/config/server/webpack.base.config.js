@@ -15,6 +15,7 @@ export default (function () { return __awaiter(void 0, void 0, void 0, function 
             case 0:
                 config = merge(webpackConfig, {
                     target: 'node',
+                    externalsPresets: { node: true },
                     context: root,
                     entry: entry,
                     output: {
@@ -29,7 +30,7 @@ export default (function () { return __awaiter(void 0, void 0, void 0, function 
                         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
                         plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: tsConfig })] : []
                     },
-                    externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: function (name) { return /(@fm|@hwy-fm)\/.*/g.test(name); } } : {})] : [],
+                    externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: function (name) { return /@hwy-fm\/.*/g.test(name); } } : {})] : [],
                     module: {
                         rules: [
                             jsRules.ts({

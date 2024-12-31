@@ -88,7 +88,6 @@ export default (function () { return __awaiter(void 0, void 0, void 0, function 
                                     return (__assign(__assign({}, obj), (_a = {}, _a[key] = __assign({}, entrypoints[key].assets), _a)));
                                 }, { chunk: { css: [] } });
                                 assetsObject.chunk.css = assetsKeys.filter(function (key) { return /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, '')); }).map(function (key) { return assets[key]; });
-                                ;
                                 return assetsObject;
                             },
                             customize: function (_a) {

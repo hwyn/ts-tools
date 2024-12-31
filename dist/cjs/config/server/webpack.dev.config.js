@@ -11,7 +11,11 @@ exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0
                 _a = webpack_merge_1.default;
                 return [4 /*yield*/, (0, webpack_base_config_1.default)()];
             case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
-                        mode: 'development'
+                        mode: 'development',
+                        node: {
+                            __filename: true,
+                            __dirname: true
+                        }
                     }])];
         }
     });

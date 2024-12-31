@@ -82,7 +82,6 @@ export default () => __awaiter(void 0, void 0, void 0, function* () {
                     const entrypointsKeys = Object.keys(entrypoints);
                     const assetsObject = Object.keys(entrypoints).reduce((obj, key) => (Object.assign(Object.assign({}, obj), { [key]: Object.assign({}, entrypoints[key].assets) })), { chunk: { css: [] } });
                     assetsObject.chunk.css = assetsKeys.filter((key) => /.css$/.test(key) && !entrypointsKeys.includes(key.replace(/.css$/, ''))).map((key) => assets[key]);
-                    ;
                     return assetsObject;
                 },
                 customize: ({ key, value }) => {

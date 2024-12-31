@@ -35,13 +35,9 @@ class ProjectConfig {
         this.baseResolve = baseResolve;
         this.projectPath = baseResolve(resolveProject.getArgvConfig('project') || '.');
         this.babelFilePath = baseResolve(this.projectPath, '.babelrc');
-        this.environmental = command === 'start' ? 'development' : 'build';
-        this.parseArgv();
-    }
-    parseArgv() {
-        this.environmental = resolveProject.getArgvConfig('environmental') || this.environmental;
-        this.isDevelopment = !resolveProject.getArgvConfig('--prod');
+        this.isDevelopment = command === 'start';
         this.analyzerStatus = !!resolveProject.getArgvConfig('--stats-json');
+        this.environmental = resolveProject.getArgvConfig('environmental') || (command === 'start' ? 'development' : 'build');
     }
     parseConfig(config) {
         this.config = merge({}, defaultProject, config);

@@ -9,7 +9,11 @@ export default (function () { return __awaiter(void 0, void 0, void 0, function 
                 _a = merge;
                 return [4 /*yield*/, baseConfig()];
             case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
-                        mode: 'development'
+                        mode: 'development',
+                        node: {
+                            __filename: true,
+                            __dirname: true
+                        }
                     }])];
         }
     });

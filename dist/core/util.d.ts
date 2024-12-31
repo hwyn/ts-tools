@@ -1,6 +1,18 @@
 export declare function jsLoader(config: any): any;
 export declare function cssLoader(config: any, isExtract?: boolean): {
-    clone: (getConfig: (current: any) => any, _isExtract?: boolean) => any;
+    clone: (getConfig: (current: any) => any, _isExtract?: boolean) => {
+        clone: /*elided*/ any;
+        css: (mergeOption?: any, preLoader?: string | any) => object & {
+            [x: string]: any;
+        };
+        less: (mergeOption?: any, preLoader?: string | any) => object & {
+            [x: string]: any;
+        };
+        sass: (mergeOption?: any, preLoader?: string | any) => object & {
+            [x: string]: any;
+        };
+        more: (types: string[], options?: any, preLoader?: string) => any[];
+    };
     css: (mergeOption?: any, preLoader?: string | any) => object & {
         [x: string]: any;
     };

@@ -14,10 +14,11 @@ export default (function () { return __awaiter(void 0, void 0, void 0, function 
                 _a = merge;
                 return [4 /*yield*/, baseConfig()];
             case 1: return [2 /*return*/, _a.apply(void 0, [_b.sent(), {
-                        optimization: __assign(__assign({ emitOnErrors: true, runtimeChunk: false, mergeDuplicateChunks: true, splitChunks: {} }, analyzerStatus ? { concatenateModules: false } : {}), { minimize: true, minimizer: [
+                        optimization: __assign(__assign({ emitOnErrors: true, mergeDuplicateChunks: true }, analyzerStatus ? { mergeDuplicateChunks: false, concatenateModules: false } : {}), { minimize: true, minimizer: [
                                 new TerserPlugin({
-                                    minify: TerserPlugin.uglifyJsMinify,
-                                    terserOptions: {},
+                                    terserOptions: {
+                                        format: { comments: false }
+                                    },
                                     extractComments: false,
                                 })
                             ] }),

@@ -17,6 +17,7 @@ exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0
             case 0:
                 config = (0, webpack_merge_1.default)(webpack_config_1.default, {
                     target: 'node',
+                    externalsPresets: { node: true },
                     context: root,
                     entry: entry,
                     output: {
@@ -31,7 +32,7 @@ exports.default = (function () { return tslib_1.__awaiter(void 0, void 0, void 0
                         extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
                         plugins: tsConfig ? [new tsconfig_paths_webpack_plugin_1.default({ configFile: tsConfig })] : []
                     },
-                    externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)(isDevelopment ? { allowlist: function (name) { return /(@fm|@hwy-fm)\/.*/g.test(name); } } : {})] : [],
+                    externals: nodeExternals !== false ? [(0, webpack_node_externals_1.default)(isDevelopment ? { allowlist: function (name) { return /@hwy-fm\/.*/g.test(name); } } : {})] : [],
                     module: {
                         rules: [
                             jsRules.ts({

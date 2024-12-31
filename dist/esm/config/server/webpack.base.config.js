@@ -11,6 +11,7 @@ const { root, entry, assets, sourceRoot, nodeModules, resolveAlias, outputPath, 
 export default () => __awaiter(void 0, void 0, void 0, function* () {
     const config = merge(webpackConfig, {
         target: 'node',
+        externalsPresets: { node: true },
         context: root,
         entry,
         output: {
@@ -25,7 +26,7 @@ export default () => __awaiter(void 0, void 0, void 0, function* () {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
             plugins: tsConfig ? [new TsconfigPathsPlugin({ configFile: tsConfig })] : []
         },
-        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: (name) => /(@fm|@hwy-fm)\/.*/g.test(name) } : {})] : [],
+        externals: nodeExternals !== false ? [nodeExtrnals(isDevelopment ? { allowlist: (name) => /@hwy-fm\/.*/g.test(name) } : {})] : [],
         module: {
             rules: [
                 jsRules.ts({
